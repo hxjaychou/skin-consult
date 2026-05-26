@@ -6,57 +6,222 @@
 <title>皮肤健康咨询 · 从头发丝到脚底板</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-:root { --primary: #2d6a4f; --accent: #d4a373; --bg: #fefae0; --card: #fff; --text: #2d3436; --muted: #636e72; --border: #e8e4df; }
-body { font-family: -apple-system, "PingFang SC", sans-serif; background: var(--bg); color: var(--text); }
-nav { position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(255,255,255,0.95); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; }
-nav a { text-decoration: none; color: var(--muted); font-size: 14px; margin-left: 16px; }
-nav a.active { color: var(--primary); font-weight: 700; }
-section { min-height: 100vh; padding: 80px 20px 40px; max-width: 700px; margin: 0 auto; }
-h1 { font-size: 28px; color: var(--primary); margin-bottom: 12px; }
-h2 { font-size: 20px; color: var(--primary); margin-bottom: 16px; }
-.card { background: var(--card); border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 24px; margin-bottom: 20px; }
-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
-input, select, textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-family: inherit; }
-textarea { min-height: 80px; resize: vertical; }
-.btn { display: block; width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
-.btn:hover { opacity: 0.9; }
-.result { background: #d8f3dc; border-radius: 12px; padding: 20px; margin-top: 20px; display: none; }
-.result-item { background: #fff; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
-.result-item .name { font-weight: 700; color: var(--primary); }
-.result-item .desc { font-size: 13px; color: var(--muted); margin-top: 4px; }
-.item { background: var(--card); border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 16px; margin-bottom: 12px; cursor: pointer; }
-.item .head { display: flex; justify-content: space-between; margin-bottom: 6px; }
-.item .name { font-weight: 700; }
+:root {
+  --primary: #2d6a4f;
+  --primary-light: #40916c;
+  --primary-bg: #d8f3dc;
+  --accent: #d4a373;
+  --bg: #f8f9fa;
+  --card: #fff;
+  --text: #212529;
+  --muted: #6c757d;
+  --border: #dee2e6;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+  --shadow-hover: 0 2px 8px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.06);
+  --radius: 14px;
+  --transition: 0.2s ease;
+}
+body { font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+/* ---- Nav ---- */
+nav { position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.06); padding: 0 24px; height: 56px; display: flex; justify-content: space-between; align-items: center; }
+nav .brand { font-weight: 700; font-size: 15px; color: var(--primary); letter-spacing: 0.5px; }
+nav .links a { text-decoration: none; color: var(--muted); font-size: 14px; margin-left: 20px; padding: 4px 0; border-bottom: 2px solid transparent; transition: var(--transition); }
+nav .links a:hover, nav .links a.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+/* ---- Section ---- */
+section { min-height: 100vh; padding: 80px 20px 40px; max-width: 720px; margin: 0 auto; }
+
+/* ---- Typography ---- */
+h1 { font-size: 32px; font-weight: 800; color: var(--primary); margin-bottom: 12px; letter-spacing: -0.5px; }
+h2 { font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 20px; }
+h3 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+
+/* ---- Card ---- */
+.card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px; margin-bottom: 24px; transition: var(--transition); }
+.card:hover { box-shadow: var(--shadow-hover); }
+
+/* ---- Form ---- */
+label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+input, select, textarea {
+  width: 100%; padding: 12px 14px;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  font-size: 14px; font-family: inherit; color: var(--text);
+  background: #fff; transition: var(--transition);
+  outline: none;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(45,106,79,0.1); }
+textarea { min-height: 90px; resize: vertical; }
+.btn {
+  display: block; width: 100%; padding: 13px;
+  background: var(--primary); color: #fff;
+  border: none; border-radius: 10px;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  transition: var(--transition); letter-spacing: 0.3px;
+}
+.btn:hover { background: var(--primary-light); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(45,106,79,0.25); }
+.btn:active { transform: translateY(0); }
+.btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+.btn-outline:hover { background: var(--primary-bg); }
+
+/* ---- Result ---- */
+.result { background: var(--primary-bg); border-radius: var(--radius); padding: 24px; margin-top: 24px; display: none; border-left: 4px solid var(--primary); }
+
+/* ---- Product Grid ---- */
+.cat-title { font-size: 15px; font-weight: 700; color: var(--primary); margin: 32px 0 14px; padding-bottom: 10px; border-bottom: 2px solid var(--primary-bg); display: flex; align-items: center; gap: 8px; }
+.cat-title::before { content: ''; width: 4px; height: 16px; background: var(--primary); border-radius: 2px; display: inline-block; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.pcard {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 18px;
+  transition: var(--transition); border: 1px solid transparent;
+}
+.pcard:hover { box-shadow: var(--shadow-hover); border-color: var(--primary-bg); transform: translateY(-2px); }
+.pcard .name { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+.pcard .price { font-size: 14px; color: var(--accent); font-weight: 700; margin-bottom: 8px; }
+.pcard .desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.pcard .tag { display: inline-block; font-size: 11px; background: var(--primary-bg); color: var(--primary); padding: 3px 8px; border-radius: 6px; margin-top: 8px; margin-right: 4px; }
+
+/* ---- Admin Items ---- */
+.item {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 18px 20px;
+  margin-bottom: 12px; cursor: pointer;
+  transition: var(--transition); border: 1px solid transparent;
+}
+.item:hover { box-shadow: var(--shadow-hover); border-color: var(--primary-bg); }
+.item .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.item .name { font-weight: 700; font-size: 15px; }
 .item .time { font-size: 12px; color: var(--muted); }
-.tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-right: 6px; }
-.tag.cat { background: #d8f3dc; color: var(--primary); }
+.tag { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 6px; margin-right: 6px; font-weight: 500; }
+.tag.cat { background: var(--primary-bg); color: var(--primary); }
 .tag.status-pending { background: #fff3e0; color: #e65100; }
 .tag.status-replied { background: #e8f5e9; color: #2e7d32; }
-.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: center; padding: 20px; }
+
+/* ---- Modal ---- */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 200; justify-content: center; align-items: center; padding: 20px; }
 .modal.open { display: flex; }
-.modal-inner { background: #fff; border-radius: 12px; padding: 24px; max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto; }
-.modal-inner .close { float: right; background: none; border: none; font-size: 20px; cursor: pointer; }
-.field { margin-bottom: 12px; }
-.field .label { font-size: 12px; color: var(--muted); font-weight: 600; }
-.field .value { font-size: 14px; }
-.status-bar { background: #fff3e0; padding: 8px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; }
+.modal-inner { background: #fff; border-radius: var(--radius); padding: 28px; max-width: 520px; width: 100%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+.modal-inner .close { float: right; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--muted); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+.modal-inner .close:hover { background: #f1f3f5; color: var(--text); }
+.field { margin-bottom: 14px; }
+.field .label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.field .value { font-size: 14px; line-height: 1.6; }
+.status-bar { background: var(--primary-bg); padding: 10px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; color: var(--primary); font-weight: 500; }
+
+/* ---- Warning Card ---- */
+.warn-card { background: #fff3e0; border-radius: var(--radius); padding: 20px 24px; border-left: 4px solid #e65100; }
+.warn-card .warn-title { font-weight: 700; color: #e65100; margin-bottom: 8px; font-size: 14px; }
+.warn-card .warn-body { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+/* ---- Combo Card ---- */
+.combo-card { line-height: 2; font-size: 14px; }
+.combo-card p { padding: 4px 0; border-bottom: 1px solid #f1f3f5; }
+.combo-card p:last-child { border-bottom: none; }
+.combo-card b { color: var(--primary); }
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+/* ===========================
+   响应式适配 — 全终端覆盖
+   =========================== */
+
+/* 手机竖屏 ≤480px */
+@media (max-width: 480px) {
+  nav { padding: 0 14px; height: 50px; }
+  nav .brand { font-size: 14px; }
+  nav .links a { font-size: 13px; margin-left: 12px; }
+  section { padding: 68px 16px 32px; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 18px; }
+  .card { padding: 20px; }
+  .grid { grid-template-columns: 1fr; gap: 10px; }
+  .pcard { padding: 14px; }
+  .pcard .name { font-size: 13px; }
+  .pcard .desc { font-size: 11px; }
+  .combo-card { font-size: 13px; }
+  .modal-inner { padding: 20px; max-height: 90vh; }
+  .btn { padding: 14px; font-size: 16px; }
+  input, select, textarea { padding: 14px; font-size: 16px; }
+  .warn-card { padding: 16px; }
+}
+
+/* 手机横屏 481–768px (或竖屏平板) */
+@media (min-width: 481px) and (max-width: 768px) {
+  nav { padding: 0 20px; }
+  section { padding: 72px 24px 36px; }
+  h1 { font-size: 28px; }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .pcard { padding: 14px; }
+}
+
+/* 平板横屏 769–1024px */
+@media (min-width: 769px) and (max-width: 1024px) {
+  section { padding: 76px 32px 40px; max-width: 800px; }
+  h1 { font-size: 34px; }
+  h2 { font-size: 24px; }
+  .grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .card { padding: 32px; }
+}
+
+/* 桌面 1025–1440px */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  section { max-width: 900px; padding: 80px 40px 48px; }
+  h1 { font-size: 38px; }
+  .grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+}
+
+/* 超宽屏 ≥1441px */
+@media (min-width: 1441px) {
+  section { max-width: 1100px; padding: 80px 48px 56px; }
+  h1 { font-size: 44px; }
+  h2 { font-size: 28px; }
+  .grid { grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .pcard .name { font-size: 15px; }
+  .pcard .desc { font-size: 13px; }
+}
+
+/* 暗色模式适配 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1b1e;
+    --card: #25262b;
+    --text: #e9ecef;
+    --muted: #909296;
+    --border: #373a40;
+    --primary-bg: #1b4332;
+  }
+  nav { background: rgba(26,27,30,0.92); border-bottom-color: rgba(255,255,255,0.06); }
+  nav .brand { color: #52b788; }
+  input, select, textarea { background: #2c2e33; border-color: #373a40; color: #e9ecef; }
+  input:focus, select:focus, textarea:focus { border-color: #52b788; box-shadow: 0 0 0 3px rgba(82,183,136,0.15); }
+  .modal { background: rgba(0,0,0,0.6); }
+  .modal-inner { background: #25262b; }
+  .modal-inner .close:hover { background: #373a40; }
+  .warn-card { background: #2c2017; }
+  ::-webkit-scrollbar-thumb { background: #373a40; }
+}
 </style>
 </head>
 <body>
 
 <nav>
-  <div style="font-weight:700;color:var(--primary);">皮肤健康咨询</div>
-  <div>
+  <div class="brand">皮肤健康咨询</div>
+  <div class="links">
     <a href="#home" class="active">首页</a>
     <a href="#consult">咨询</a>
+    <a href="#products">产品</a>
     <a href="#admin">管理</a>
   </div>
 </nav>
 
 <section id="home" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
   <h1>从头发丝到脚底板</h1>
-  <p style="color:var(--muted);margin-bottom:24px;">专业分析 · 精准推荐 · 全程跟踪</p>
-  <a href="#consult" class="btn" style="max-width:300px;">开始咨询</a>
+  <p style="color:var(--muted);margin-bottom:32px;font-size:16px;">专业分析 · 精准推荐 · 全程跟踪</p>
+  <a href="#consult" class="btn" style="max-width:280px;">开始咨询</a>
 </section>
 
 <section id="consult">
@@ -94,6 +259,119 @@ textarea { min-height: 80px; resize: vertical; }
   </div>
 </section>
 
+<section id="products">
+  <h2>产品展示</h2>
+
+  <div class="cat-title">治疗类</div>
+  <div class="grid">
+    <div class="pcard">
+      <div class="name">美浮特皮肤抗菌液</div>
+      <div class="price">¥178</div>
+      <div class="desc">杀菌止痒渗透，适用于脚气、灰指甲、跖疣。泡脚30-60分钟，共4次，周期35天。</div>
+      <span class="tag">脚气</span>
+      <span class="tag">灰指甲</span>
+      <span class="tag">跖疣</span>
+    </div>
+    <div class="pcard">
+      <div class="name">菲嘉皮肤抗菌液</div>
+      <div class="price">¥198</div>
+      <div class="desc">深层渗透杀菌，适用于灰指甲、顽固性脚气。棉签涂抹或纱布湿敷，周期3-6个月。</div>
+      <span class="tag">灰指甲</span>
+      <span class="tag">顽固脚气</span>
+    </div>
+    <div class="pcard">
+      <div class="name">美浮特皮肤抗菌凝胶</div>
+      <div class="price">¥198</div>
+      <div class="desc">杀菌修复封包治疗，适用于皮肤破损、跖疣。涂抹后包裹，每天1次，周期4-8周。</div>
+      <span class="tag">跖疣</span>
+      <span class="tag">皮肤破损</span>
+    </div>
+    <div class="pcard">
+      <div class="name">积雪草凝胶</div>
+      <div class="price">待确认</div>
+      <div class="desc">消炎愈合修护舒缓，适用于重度糜烂型脚气。早晚各1次，连续3天。</div>
+      <span class="tag">糜烂型脚气</span>
+    </div>
+    <div class="pcard">
+      <div class="name">米浮泡沫皮肤抗菌液</div>
+      <div class="price">¥178</div>
+      <div class="desc">温和杀菌促进愈合，适用于皮肤破损、敏感肌肤。每天涂抹2-3次，修复后泡脚。</div>
+      <span class="tag">敏感肌</span>
+      <span class="tag">皮肤破损</span>
+    </div>
+    <div class="pcard">
+      <div class="name">美浮特滋润修复凝胶</div>
+      <div class="price">¥198</div>
+      <div class="desc">滋润修复保湿，适用于脚后跟干裂、脚底粗糙。每天晚上洗脚后涂抹。</div>
+      <span class="tag">干裂</span>
+      <span class="tag">粗糙</span>
+    </div>
+  </div>
+
+  <div class="cat-title">护肤类</div>
+  <div class="grid">
+    <div class="pcard">
+      <div class="name">浮美御光修护乳</div>
+      <div class="desc">抵御光老化舒缓修护，每天早晚涂抹面部，28天见效。</div>
+      <span class="tag">抗光老化</span>
+    </div>
+    <div class="pcard">
+      <div class="name">浮美氨甲环酸精华液</div>
+      <div class="desc">淡化色斑美白提亮，每天早晚涂抹面部，8周见效。</div>
+      <span class="tag">淡斑</span>
+      <span class="tag">美白</span>
+    </div>
+    <div class="pcard">
+      <div class="name">浮美水润皮肤修护乳</div>
+      <div class="desc">修护屏障舒缓褪红，适用于敏感皮肤，每天早晚使用。</div>
+      <span class="tag">敏感肌</span>
+      <span class="tag">修护</span>
+    </div>
+    <div class="pcard">
+      <div class="name">浮美多肽淡纹眼霜</div>
+      <div class="desc">淡纹紧致点亮明眸，适用于眼周细纹，4周见效。</div>
+      <span class="tag">眼纹</span>
+    </div>
+    <div class="pcard">
+      <div class="name">浮美凝时抗皱冻干精华</div>
+      <div class="desc">抗皱修护全能修护，适用于皱纹松弛暗沉色斑，8-45天见效。新用户先用1/2或1/4支建立耐受。</div>
+      <span class="tag">抗皱</span>
+      <span class="tag">全能</span>
+    </div>
+    <div class="pcard">
+      <div class="name">浮美赋活头皮精华液2.0</div>
+      <div class="desc">防脱生发滋养，适用于雄激素性脱发、斑秃，4-6周见效。</div>
+      <span class="tag">生发</span>
+      <span class="tag">防脱</span>
+    </div>
+  </div>
+
+  <div class="cat-title">心血管保健</div>
+  <div class="grid">
+    <div class="pcard">
+      <div class="name">LISAVEI EPA 120000</div>
+      <div class="desc">心血管健康抗炎，适用于血脂异常及心血管疾病预防。日常1-2粒/天，中高危4粒/天，1-3个月见效。</div>
+      <span class="tag">心血管</span>
+      <span class="tag">降脂</span>
+    </div>
+  </div>
+
+  <div class="cat-title">组合推荐</div>
+  <div class="card combo-card">
+    <p><b>脚气轻度</b>：抗菌液1瓶 ¥178</p>
+    <p><b>脚气中度</b>：抗菌液2瓶 ¥356</p>
+    <p><b>脚气重度</b>：抗菌液2瓶+米浮1瓶 ¥534</p>
+    <p><b>灰指甲轻度</b>：抗菌液+菲嘉 ¥376</p>
+    <p><b>灰指甲重度</b>：抗菌液2瓶+菲嘉2瓶 ¥752</p>
+    <p><b>跖疣</b>：抗菌液+抗菌凝胶 ¥376</p>
+  </div>
+
+  <div class="warn-card">
+    <p class="warn-title">重要禁忌</p>
+    <p class="warn-body">孕妇、哺乳期、12岁以下、65岁以上、白癜风/高血压/糖尿病/牛皮癣/湿疹患者禁用。皮肤破损时先用米浮+凝胶修复，再用抗菌液。</p>
+  </div>
+</section>
+
 <section id="admin">
   <div class="card" id="loginBox">
     <h2>管理后台</h2>
@@ -103,9 +381,9 @@ textarea { min-height: 80px; resize: vertical; }
     <button class="btn" onclick="login()">登录</button>
   </div>
   <div id="dashboard" style="display:none;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <h2>咨询记录</h2>
-      <button class="btn" style="width:auto;padding:8px 16px;font-size:13px;" onclick="logout()">退出</button>
+      <button class="btn btn-outline" style="width:auto;padding:8px 20px;font-size:13px;" onclick="logout()">退出</button>
     </div>
     <div class="status-bar" id="statusBar"></div>
     <div id="list"></div>
