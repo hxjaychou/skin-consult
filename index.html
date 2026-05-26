@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>皮肤健康咨询 · 从头发丝到脚底板</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --primary: #2d6a4f; --accent: #d4a373; --bg: #fefae0; --card: #fff; --text: #2d3436; --muted: #636e72; --border: #e8e4df; }
+body { font-family: -apple-system, "PingFang SC", sans-serif; background: var(--bg); color: var(--text); }
+nav { position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(255,255,255,0.95); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; }
+nav a { text-decoration: none; color: var(--muted); font-size: 14px; margin-left: 16px; }
+nav a.active { color: var(--primary); font-weight: 700; }
+section { min-height: 100vh; padding: 80px 20px 40px; max-width: 700px; margin: 0 auto; }
+h1 { font-size: 28px; color: var(--primary); margin-bottom: 12px; }
+h2 { font-size: 20px; color: var(--primary); margin-bottom: 16px; }
+.card { background: var(--card); border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 24px; margin-bottom: 20px; }
+label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+input, select, textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-family: inherit; }
+textarea { min-height: 80px; resize: vertical; }
+.btn { display: block; width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+.btn:hover { opacity: 0.9; }
+.result { background: #d8f3dc; border-radius: 12px; padding: 20px; margin-top: 20px; display: none; }
+.result-item { background: #fff; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+.result-item .name { font-weight: 700; color: var(--primary); }
+.result-item .desc { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.item { background: var(--card); border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 16px; margin-bottom: 12px; cursor: pointer; }
+.item .head { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.item .name { font-weight: 700; }
+.item .time { font-size: 12px; color: var(--muted); }
+.tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-right: 6px; }
+.tag.cat { background: #d8f3dc; color: var(--primary); }
+.tag.status-pending { background: #fff3e0; color: #e65100; }
+.tag.status-replied { background: #e8f5e9; color: #2e7d32; }
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: center; padding: 20px; }
+.modal.open { display: flex; }
+.modal-inner { background: #fff; border-radius: 12px; padding: 24px; max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto; }
+.modal-inner .close { float: right; background: none; border: none; font-size: 20px; cursor: pointer; }
+.field { margin-bottom: 12px; }
+.field .label { font-size: 12px; color: var(--muted); font-weight: 600; }
+.field .value { font-size: 14px; }
+.status-bar { background: #fff3e0; padding: 8px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div style="font-weight:700;color:var(--primary);">皮肤健康咨询</div>
+  <div>
+    <a href="#home" class="active">首页</a>
+    <a href="#consult">咨询</a>
+    <a href="#admin">管理</a>
+  </div>
+</nav>
+
+<section id="home" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
+  <h1>从头发丝到脚底板</h1>
+  <p style="color:var(--muted);margin-bottom:24px;">专业分析 · 精准推荐 · 全程跟踪</p>
+  <a href="#consult" class="btn" style="max-width:300px;">开始咨询</a>
+</section>
+
+<section id="consult">
+  <div class="card">
+    <h2>在线问诊</h2>
+    <form id="form">
+      <label>昵称 *</label>
+      <input name="nickname" required placeholder="怎么称呼你">
+      <br><br>
+      <label>微信号 *</label>
+      <input name="contact" required placeholder="方便我加你沟通">
+      <br><br>
+      <label>问题类型 *</label>
+      <select name="category" required>
+        <option value="">请选择</option>
+        <option>脚气</option>
+        <option>灰指甲</option>
+        <option>跖疣</option>
+        <option>护肤</option>
+        <option>其他</option>
+      </select>
+      <br><br>
+      <label>症状描述 *</label>
+      <textarea name="symptom" required placeholder="详细描述你的症状..."></textarea>
+      <br><br>
+      <label>治疗经历</label>
+      <textarea name="history" placeholder="之前用过什么药？"></textarea>
+      <br><br>
+      <label>期望</label>
+      <textarea name="expectation" placeholder="你最想解决什么？"></textarea>
+      <br><br>
+      <button type="submit" class="btn">提交咨询</button>
+    </form>
+    <div class="result" id="result"></div>
+  </div>
+</section>
+
+<section id="admin">
+  <div class="card" id="loginBox">
+    <h2>管理后台</h2>
+    <label>密码</label>
+    <input type="password" id="pwd" placeholder="请输入密码">
+    <br><br>
+    <button class="btn" onclick="login()">登录</button>
+  </div>
+  <div id="dashboard" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <h2>咨询记录</h2>
+      <button class="btn" style="width:auto;padding:8px 16px;font-size:13px;" onclick="logout()">退出</button>
+    </div>
+    <div class="status-bar" id="statusBar"></div>
+    <div id="list"></div>
+  </div>
+</section>
+
+<div class="modal" id="modal">
+  <div class="modal-inner">
+    <button class="close" onclick="closeModal()">&times;</button>
+    <h3 id="modalTitle"></h3>
+    <div id="modalBody"></div>
+    <br>
+    <label>状态</label>
+    <select id="modalStatus">
+      <option>待回复</option>
+      <option>已回复</option>
+      <option>跟进中</option>
+      <option>已完成</option>
+    </select>
+    <br><br>
+    <label>专业分析</label>
+    <textarea id="modalAnalysis" placeholder="你的分析和建议..."></textarea>
+    <br><br>
+    <button class="btn" onclick="saveDetail()">保存</button>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+const URL = 'https://pyujfsvhtpgxykvhvnse.supabase.co';
+const KEY = 'sb_publishable_FxeCK7sLnE2H3RK_hGEA6A_ZEgmZttA';
+const DB = '8866';
+
+const sb = createClient(URL, KEY);
+let items = [];
+let curId = null;
+
+// Submit form
+document.getElementById('form').onsubmit = async (e) => {
+  e.preventDefault();
+  const f = e.target;
+  const row = {
+    nickname: f.nickname.value,
+    contact: f.contact.value,
+    category: f.category.value,
+    symptom: f.symptom.value,
+    history: f.history.value || '',
+    expectation: f.expectation.value || '',
+    status: '待回复'
+  };
+
+  const { data, error } = await sb.from('consultations').insert(row).select();
+  if (error) {
+    alert('提交失败: ' + error.message);
+    return;
+  }
+
+  // Show result
+  document.getElementById('result').innerHTML = '<h3>提交成功！</h3><p style="margin-top:8px;">我会在24小时内通过微信联系你。</p>';
+  document.getElementById('result').style.display = 'block';
+  f.reset();
+};
+
+// Login
+window.login = async function() {
+  if (document.getElementById('pwd').value !== DB) {
+    alert('密码错误');
+    return;
+  }
+  document.getElementById('loginBox').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  await load();
+};
+
+window.logout = function() {
+  document.getElementById('loginBox').style.display = 'block';
+  document.getElementById('dashboard').style.display = 'none';
+};
+
+// Load data
+async function load() {
+  const { data, error } = await sb.from('consultations').select('*').order('created_at', { ascending: false });
+  if (error) {
+    document.getElementById('statusBar').textContent = '加载失败: ' + error.message;
+    return;
+  }
+  items = data || [];
+  document.getElementById('statusBar').textContent = '共 ' + items.length + ' 条记录';
+  render();
+}
+
+function render() {
+  const el = document.getElementById('list');
+  if (items.length === 0) {
+    el.innerHTML = '<p style="text-align:center;color:var(--muted);">暂无记录</p>';
+    return;
+  }
+  el.innerHTML = items.map(i => `
+    <div class="item" onclick="openDetail('${i.id}')">
+      <div class="head">
+        <span class="name">${i.nickname}</span>
+        <span class="time">${new Date(i.created_at).toLocaleString('zh-CN')}</span>
+      </div>
+      <span class="tag cat">${i.category}</span>
+      <span class="tag status-pending">${i.status}</span>
+      <p style="font-size:13px;color:var(--muted);margin-top:6px;">${(i.symptom||'').substring(0,80)}</p>
+    </div>
+  `).join('');
+}
+
+window.openDetail = function(id) {
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+  curId = id;
+  document.getElementById('modalTitle').textContent = item.nickname + ' 的咨询';
+  document.getElementById('modalStatus').value = item.status;
+  document.getElementById('modalAnalysis').value = item.analysis || '';
+  document.getElementById('modalBody').innerHTML = [
+    ['联系方式', item.contact],
+    ['问题类型', item.category],
+    ['症状描述', item.symptom],
+    ['治疗经历', item.history],
+    ['期望', item.expectation],
+    ['提交时间', new Date(item.created_at).toLocaleString('zh-CN')]
+  ].map(([k,v]) => `<div class="field"><div class="label">${k}</div><div class="value">${v||'未填写'}</div></div>`).join('');
+  document.getElementById('modal').classList.add('open');
+};
+
+window.closeModal = function() {
+  document.getElementById('modal').classList.remove('open');
+};
+
+window.saveDetail = async function() {
+  const updates = {
+    status: document.getElementById('modalStatus').value,
+    analysis: document.getElementById('modalAnalysis').value
+  };
+  await sb.from('consultations').update(updates).eq('id', curId);
+  await load();
+  closeModal();
+};
+</script>
+
+</body>
+</html>
