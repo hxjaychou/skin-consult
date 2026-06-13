@@ -223,6 +223,7 @@ textarea { min-height: 90px; resize: vertical; }
   <div class="links" id="main-nav">
     <a href="#home" class="active">首页</a>
     <a href="#products">产品</a>
+    <a href="#tools">工具</a>
     <a href="#my">我的</a>
   </div>
   <div class="links" id="my-nav" style="display:none;">
@@ -412,6 +413,94 @@ textarea { min-height: 90px; resize: vertical; }
   <div class="warn-card">
     <p class="warn-title">重要禁忌</p>
     <p class="warn-body">孕妇、哺乳期、12岁以下、65岁以上、白癜风/高血压/糖尿病/牛皮癣/湿疹患者禁用。皮肤破损时先用米浮+凝胶修复，再用抗菌液。</p>
+  </div>
+</section>
+
+<!-- ===== 工具 ===== -->
+<section id="tools">
+  <h2>实用工具</h2>
+
+  <!-- 脱密工具 -->
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <div style="width:6px;height:6px;border-radius:50%;background:#e94560;"></div>
+      <h3 style="margin:0;font-size:18px;">文本脱密工具</h3>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">关键词自动替换为标记符号，身份证/手机号/邮箱自动识别脱敏</p>
+
+    <!-- 映射表 -->
+    <div style="margin-bottom:16px;">
+      <div style="font-size:14px;font-weight:600;margin-bottom:8px;">关键词映射表</div>
+      <div id="desens-map-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;"></div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input id="desens-keyword" placeholder="关键词（如：浙江省教育厅）" style="flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;">
+        <input id="desens-replace" placeholder="代号（如：ORG01）" style="width:120px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;">
+        <button class="btn" style="width:auto;padding:8px 16px;font-size:13px;" onclick="addDesensMapping()">添加</button>
+      </div>
+    </div>
+
+    <!-- 内置规则 -->
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">
+      内置自动识别：
+      <span style="display:inline-block;background:#f0f0f0;border-radius:4px;padding:2px 6px;margin:2px 4px;">身份证号 → [ID_CARD]</span>
+      <span style="display:inline-block;background:#f0f0f0;border-radius:4px;padding:2px 6px;margin:2px 4px;">手机号 → [PHONE]</span>
+      <span style="display:inline-block;background:#f0f0f0;border-radius:4px;padding:2px 6px;margin:2px 4px;">邮箱 → [EMAIL]</span>
+    </div>
+
+    <!-- 输入 -->
+    <textarea id="desens-input" placeholder="在此粘贴文本，或将 .txt / .md 文件拖入此区域..." style="width:100%;min-height:150px;border:1.5px solid var(--border);border-radius:10px;padding:14px;font-size:14px;line-height:1.7;resize:vertical;font-family:inherit;margin-bottom:12px;"></textarea>
+
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="btn" style="width:auto;padding:10px 20px;font-size:14px;" onclick="doDesensitize()">脱敏</button>
+      <button class="btn btn-outline" style="width:auto;padding:10px 20px;font-size:14px;" onclick="clearDesens()">清空</button>
+      <button class="btn btn-outline" style="width:auto;padding:10px 20px;font-size:14px;" onclick="downloadDesensResult()">下载结果</button>
+      <span id="desens-stats" style="font-size:12px;color:var(--muted);margin-left:auto;"></span>
+    </div>
+
+    <!-- 输出 -->
+    <div id="desens-output" style="width:100%;min-height:100px;border:1px solid #e0e0e0;border-radius:10px;padding:14px;font-size:14px;line-height:1.7;background:#fafafa;white-space:pre-wrap;word-break:break-all;max-height:400px;overflow-y:auto;margin-top:16px;color:var(--muted);">脱敏结果将显示在这里</div>
+  </div>
+
+  <!-- 密码管理器（演示） -->
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <div style="width:6px;height:6px;border-radius:50%;background:#e94560;"></div>
+      <h3 style="margin:0;font-size:18px;">密码管理器（演示）</h3>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">本地存储的密码管理工具，数据仅保存在浏览器中</p>
+
+    <!-- 登录/注册 -->
+    <div id="passmgr-login" style="text-align:center;padding:40px 20px;">
+      <div style="font-size:48px;margin-bottom:16px;">🔐</div>
+      <h3 style="margin-bottom:20px;">设置主密码</h3>
+      <input id="passmgr-master-pwd" type="password" placeholder="输入主密码（首次使用将自动注册）" style="max-width:300px;margin:0 auto 12px;display:block;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;text-align:center;">
+      <button class="btn" style="max-width:300px;margin:0 auto;display:block;" onclick="passmgrLogin()">解锁</button>
+    </div>
+
+    <!-- 主界面 -->
+    <div id="passmgr-main" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3 style="margin:0;">密码列表</h3>
+        <div style="display:flex;gap:8px;">
+          <button class="btn" style="width:auto;padding:8px 16px;font-size:13px;" onclick="showAddPass()">添加</button>
+          <button class="btn btn-outline" style="width:auto;padding:8px 16px;font-size:13px;" onclick="passmgrLogout()">锁定</button>
+        </div>
+      </div>
+      <div id="passmgr-list"></div>
+    </div>
+
+    <!-- 添加/编辑表单 -->
+    <div id="passmgr-form" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3 style="margin:0;" id="passmgr-form-title">添加密码</h3>
+        <button class="btn btn-outline" style="width:auto;padding:8px 16px;font-size:13px;" onclick="hideAddPass()">取消</button>
+      </div>
+      <input id="passmgr-site" placeholder="网站/应用名称" style="width:100%;margin-bottom:10px;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;">
+      <input id="passmgr-user" placeholder="用户名/邮箱" style="width:100%;margin-bottom:10px;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;">
+      <input id="passmgr-pass" type="password" placeholder="密码" style="width:100%;margin-bottom:10px;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;">
+      <textarea id="passmgr-note" placeholder="备注（可选）" style="width:100%;min-height:60px;margin-bottom:12px;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;resize:vertical;font-family:inherit;"></textarea>
+      <button class="btn" onclick="savePass()">保存</button>
+    </div>
   </div>
 </section>
 
@@ -1579,6 +1668,260 @@ window.saveDetail = function() {
   load();
   closeModal();
 };
+
+// ===== 脱密工具 =====
+let desensMappings = [
+  { keyword: "浙江省教育厅", replace: "ORG01" },
+  { keyword: "杭州市教育局", replace: "ORG02" },
+  { keyword: "XX中学", replace: "ORG03" },
+  { keyword: "李四", replace: "PER01" },
+  { keyword: "张三", replace: "PER02" },
+];
+
+const DESENS_REGEX_RULES = [
+  { pattern: /\b[1-9]\d{5}(?:19|20)\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])\d{3}[\dXx]\b/g, label: "ID_CARD" },
+  { pattern: /\b1[3-9]\d{9}\b/g, label: "PHONE" },
+  { pattern: /\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/g, label: "EMAIL" },
+];
+
+function renderDesensMap() {
+  const el = document.getElementById("desens-map-list");
+  el.innerHTML = desensMappings.map((m, i) =>
+    `<div style="display:flex;align-items:center;gap:6px;background:#f7f7f7;border-radius:6px;padding:4px 10px;font-size:13px;">
+      <span style="color:#e94560;font-weight:500;">${m.keyword}</span>
+      <span style="color:#aaa;">→</span>
+      <span style="color:#333;font-family:monospace;">[${m.replace}]</span>
+      <span style="cursor:pointer;color:#ccc;margin-left:4px;" onclick="delDesensMapping(${i})">✕</span>
+    </div>`
+  ).join("");
+}
+
+function addDesensMapping() {
+  const kw = document.getElementById("desens-keyword").value.trim();
+  const rp = document.getElementById("desens-replace").value.trim();
+  if (!kw || !rp) return;
+  desensMappings = desensMappings.filter(m => m.keyword !== kw);
+  desensMappings.push({ keyword: kw, replace: rp });
+  document.getElementById("desens-keyword").value = "";
+  document.getElementById("desens-replace").value = "";
+  renderDesensMap();
+}
+
+function delDesensMapping(i) {
+  desensMappings.splice(i, 1);
+  renderDesensMap();
+}
+
+function doDesensitize() {
+  const text = document.getElementById("desens-input").value;
+  if (!text) return;
+
+  let result = text;
+  const stats = {};
+
+  // 正则规则
+  for (const rule of DESENS_REGEX_RULES) {
+    const matches = result.match(rule.pattern);
+    if (matches) {
+      stats[rule.label] = (stats[rule.label] || 0) + matches.length;
+      result = result.replace(rule.pattern, `[${rule.label}]`);
+    }
+  }
+
+  // 关键词替换（按长度降序）
+  const sorted = [...desensMappings].sort((a, b) => b.keyword.length - a.keyword.length);
+  for (const m of sorted) {
+    const regex = new RegExp(m.keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g");
+    const matches = result.match(regex);
+    if (matches) {
+      stats[m.keyword] = (stats[m.keyword] || 0) + matches.length;
+      result = result.replace(regex, `[${m.replace}]`);
+    }
+  }
+
+  // 显示结果
+  document.getElementById("desens-output").textContent = result;
+  document.getElementById("desens-output").style.color = "#333";
+
+  // 统计
+  const total = Object.values(stats).reduce((a, b) => a + b, 0);
+  const detail = Object.entries(stats).map(([k, v]) => `${k}: ${v}次`).join(" | ");
+  document.getElementById("desens-stats").textContent = total > 0 ? `共替换 ${total} 处 — ${detail}` : "无替换";
+}
+
+function clearDesens() {
+  document.getElementById("desens-input").value = "";
+  document.getElementById("desens-output").textContent = "脱敏结果将显示在这里";
+  document.getElementById("desens-output").style.color = "var(--muted)";
+  document.getElementById("desens-stats").textContent = "";
+}
+
+function downloadDesensResult() {
+  const text = document.getElementById("desens-output").textContent;
+  if (!text || text === "脱敏结果将显示在这里") return;
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "脱敏结果.txt";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// 脱密工具拖拽
+const desensTextarea = document.getElementById("desens-input");
+desensTextarea.addEventListener("dragover", e => { e.preventDefault(); desensTextarea.style.borderColor = "#e94560"; });
+desensTextarea.addEventListener("dragleave", () => { desensTextarea.style.borderColor = "var(--border)"; });
+desensTextarea.addEventListener("drop", e => {
+  e.preventDefault();
+  desensTextarea.style.borderColor = "var(--border)";
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => { desensTextarea.value = ev.target.result; };
+  reader.readAsText(file);
+});
+
+// 初始化脱密工具
+renderDesensMap();
+
+// ===== 密码管理器 =====
+let passmgrUnlocked = false;
+let passmgrData = [];
+let passmgrEditingIdx = -1;
+
+function passmgrLogin() {
+  const pwd = document.getElementById("passmgr-master-pwd").value;
+  if (!pwd) return;
+
+  const stored = localStorage.getItem("passmgr_master");
+  if (!stored) {
+    // 首次使用，注册
+    localStorage.setItem("passmgr_master", simpleHash(pwd));
+    passmgrUnlocked = true;
+    passmgrData = [];
+    localStorage.setItem("passmgr_data", JSON.stringify(passmgrData));
+  } else {
+    // 验证密码
+    if (simpleHash(pwd) !== stored) {
+      alert("主密码错误");
+      return;
+    }
+    passmgrUnlocked = true;
+    passmgrData = JSON.parse(localStorage.getItem("passmgr_data") || "[]");
+  }
+
+  document.getElementById("passmgr-login").style.display = "none";
+  document.getElementById("passmgr-main").style.display = "block";
+  renderPassList();
+}
+
+function passmgrLogout() {
+  passmgrUnlocked = false;
+  passmgrData = [];
+  document.getElementById("passmgr-login").style.display = "block";
+  document.getElementById("passmgr-main").style.display = "none";
+  document.getElementById("passmgr-form").style.display = "none";
+  document.getElementById("passmgr-master-pwd").value = "";
+}
+
+function showAddPass() {
+  passmgrEditingIdx = -1;
+  document.getElementById("passmgr-form-title").textContent = "添加密码";
+  document.getElementById("passmgr-site").value = "";
+  document.getElementById("passmgr-user").value = "";
+  document.getElementById("passmgr-pass").value = "";
+  document.getElementById("passmgr-note").value = "";
+  document.getElementById("passmgr-main").style.display = "none";
+  document.getElementById("passmgr-form").style.display = "block";
+}
+
+function hideAddPass() {
+  document.getElementById("passmgr-main").style.display = "block";
+  document.getElementById("passmgr-form").style.display = "none";
+}
+
+function savePass() {
+  const site = document.getElementById("passmgr-site").value.trim();
+  const user = document.getElementById("passmgr-user").value.trim();
+  const pass = document.getElementById("passmgr-pass").value;
+  const note = document.getElementById("passmgr-note").value.trim();
+
+  if (!site || !user || !pass) {
+    alert("请填写网站、用户名和密码");
+    return;
+  }
+
+  const item = { site, user, pass, note, updated: new Date().toISOString() };
+
+  if (passmgrEditingIdx >= 0) {
+    passmgrData[passmgrEditingIdx] = item;
+  } else {
+    passmgrData.push(item);
+  }
+
+  localStorage.setItem("passmgr_data", JSON.stringify(passmgrData));
+  hideAddPass();
+  renderPassList();
+}
+
+function editPass(idx) {
+  passmgrEditingIdx = idx;
+  const item = passmgrData[idx];
+  document.getElementById("passmgr-form-title").textContent = "编辑密码";
+  document.getElementById("passmgr-site").value = item.site;
+  document.getElementById("passmgr-user").value = item.user;
+  document.getElementById("passmgr-pass").value = item.pass;
+  document.getElementById("passmgr-note").value = item.note || "";
+  document.getElementById("passmgr-main").style.display = "none";
+  document.getElementById("passmgr-form").style.display = "block";
+}
+
+function deletePass(idx) {
+  if (!confirm("确定删除这条密码？")) return;
+  passmgrData.splice(idx, 1);
+  localStorage.setItem("passmgr_data", JSON.stringify(passmgrData));
+  renderPassList();
+}
+
+function copyPass(idx) {
+  const pass = passmgrData[idx].pass;
+  navigator.clipboard.writeText(pass).then(() => {
+    alert("密码已复制到剪贴板");
+  });
+}
+
+function renderPassList() {
+  const el = document.getElementById("passmgr-list");
+  if (passmgrData.length === 0) {
+    el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:40px;">暂无保存的密码</p>';
+    return;
+  }
+  el.innerHTML = passmgrData.map((p, i) => `
+    <div style="background:#fff;border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid var(--border);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-weight:700;font-size:15px;">${p.site}</div>
+        <div style="display:flex;gap:6px;">
+          <button onclick="copyPass(${i})" style="background:var(--primary-bg);color:var(--primary);border:none;padding:4px 10px;border-radius:6px;font-size:12px;cursor:pointer;">复制密码</button>
+          <button onclick="editPass(${i})" style="background:#f0f0f0;color:#555;border:none;padding:4px 10px;border-radius:6px;font-size:12px;cursor:pointer;">编辑</button>
+          <button onclick="deletePass(${i})" style="background:#fee;color:#e94560;border:none;padding:4px 10px;border-radius:6px;font-size:12px;cursor:pointer;">删除</button>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--muted);">用户：${p.user}</div>
+      <div style="font-size:13px;color:var(--muted);">密码：${'•'.repeat(Math.min(p.pass.length, 16))}</div>
+      ${p.note ? `<div style="font-size:12px;color:#999;margin-top:4px;">备注：${p.note}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function simpleHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return 'h_' + Math.abs(hash).toString(36);
+}
 </script>
 
 </body>
