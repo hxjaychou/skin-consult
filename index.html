@@ -24,14 +24,16 @@
 body { font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
 
 /* ---- Nav ---- */
-nav { position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.06); padding: 0 24px; height: 56px; display: flex; justify-content: space-between; align-items: center; }
-nav .brand { font-weight: 700; font-size: 15px; color: var(--primary); letter-spacing: 0.5px; }
-nav .links a { text-decoration: none; color: var(--muted); font-size: 14px; margin-left: 20px; padding: 4px 0; border-bottom: 2px solid transparent; transition: var(--transition); }
+nav { position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.06); padding: 0 24px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; }
+nav .brand { font-weight: 700; font-size: 15px; color: var(--primary); letter-spacing: 0.5px; padding: 10px 0 0; width: 100%; text-align: center; }
+nav .links { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; padding: 4px 0 8px; gap: 2px; }
+nav .links a { text-decoration: none; color: var(--muted); font-size: 14px; padding: 4px 8px; border-bottom: 2px solid transparent; transition: var(--transition); }
 nav .links a:hover, nav .links a.active { color: var(--primary); border-bottom-color: var(--primary); }
 
 /* ---- Section ---- */
-section { display: none; min-height: 100vh; padding: 80px 20px 40px; max-width: 720px; margin: 0 auto; }
+section { display: none; min-height: 100vh; padding: 100px 20px 40px; max-width: 720px; margin: 0 auto; }
 section#home { display: flex; flex-direction: column; }
+section#my { max-width: 100%; }
 
 /* ---- Typography ---- */
 h1 { font-size: 32px; font-weight: 800; color: var(--primary); margin-bottom: 12px; letter-spacing: -0.5px; }
@@ -124,9 +126,38 @@ textarea { min-height: 90px; resize: vertical; }
 /* ---- Daily Workshop ---- */
 .d-type-btn.active { border-color: var(--primary) !important; background: var(--primary-bg) !important; }
 .d-type-btn:hover { border-color: var(--primary-light); }
+.d-flex-row { display: flex; gap: 16px; }
+.d-flex-cb { display: flex; gap: 12px; align-items: center; }
+@media (max-width: 480px) {
+  .d-flex-row { flex-direction: column; gap: 10px; }
+  .d-flex-cb { flex-direction: column; align-items: stretch; }
+  .d-flex-cb label { min-width: auto !important; }
+}
 
 /* ---- 二级导航 ---- */
 .my-nav.active { color: #1a1a1a !important; border-bottom-color: #c0392b !important; }
+#my-nav {
+  display: none;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 0;
+  padding: 0 4px;
+}
+#my-nav::-webkit-scrollbar { display: none; }
+#my-nav .my-nav-item,
+#my-nav a {
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-bottom: 2px solid transparent;
+  text-decoration: none;
+  color: var(--muted);
+  transition: var(--transition);
+}
+#my-nav .my-nav-item.active,
+#my-nav a:hover { color: var(--primary); border-bottom-color: var(--primary); }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -141,31 +172,62 @@ textarea { min-height: 90px; resize: vertical; }
 
 /* 手机竖屏 ≤480px */
 @media (max-width: 480px) {
-  nav { padding: 0 14px; height: 50px; }
-  nav .brand { font-size: 14px; }
-  nav .links a { font-size: 13px; margin-left: 12px; }
-  section { padding: 68px 16px 32px; }
-  h1 { font-size: 24px; }
-  h2 { font-size: 18px; }
-  .card { padding: 20px; }
+  nav { padding: 0 14px; height: 50px; flex-wrap: wrap; height: auto; min-height: 50px; }
+  nav .brand { font-size: 14px; width: 100%; text-align: center; padding: 8px 0 0; }
+  nav .links { width: 100%; justify-content: center; padding: 4px 0 6px; flex-wrap: wrap; }
+  nav .links a { font-size: 13px; margin-left: 10px; margin-right: 10px; }
+  #my-nav { padding: 2px 8px 8px; }
+  #my-nav .my-nav-item, #my-nav a { font-size: 12px; padding: 5px 8px; }
+  section { padding: 100px 12px 24px; }
+  section#my { padding: 100px 12px 24px; max-width: 100%; }
+  h1 { font-size: 22px; }
+  h2 { font-size: 17px; }
+  .card { padding: 16px; }
   .grid { grid-template-columns: 1fr; gap: 10px; }
   .pcard { padding: 14px; }
   .pcard .name { font-size: 13px; }
   .pcard .desc { font-size: 11px; }
   .combo-card { font-size: 13px; }
-  .modal-inner { padding: 20px; max-height: 90vh; }
+  .modal-inner { padding: 16px; max-height: 90vh; }
   .btn { padding: 14px; font-size: 16px; }
-  input, select, textarea { padding: 14px; font-size: 16px; }
-  .warn-card { padding: 16px; }
+  input, select, textarea { padding: 12px; font-size: 16px; }
+  .warn-card { padding: 14px; }
+  /* 日报工坊 */
+  #my-daily [style*="display:flex"][style*="gap:16px"] { flex-direction: column !important; }
+  #my-daily .d-type-btn { padding: 12px; }
+  #my-daily textarea { min-height: 160px; font-size: 12px; }
+  /* iframe panels */
+  .my-panel iframe { height: 70vh; }
+  /* 群信息两列变一列 */
+  #my-daily [style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+  /* 小红书/公众号/读书/成长 结果区域按钮行 */
+  #my-xhs [style*="display:flex"][style*="gap:16px"],
+  #my-wechat [style*="display:flex"][style*="gap:16px"],
+  #my-reading [style*="display:flex"][style*="gap:16px"],
+  #my-growth [style*="display:flex"][style*="gap:16px"] { flex-wrap: wrap; gap: 8px !important; }
+  /* 脱密工具按钮行 */
+  #my-desens [style*="display:flex"][style*="gap:10px"] { flex-wrap: wrap; gap: 8px !important; }
+  #my-desens [style*="display:flex"][style*="gap:8px"] { flex-direction: column; }
+  /* 密码管理器 */
+  #my-passmgr [style*="display:flex"][style*="justify-content:space-between"] { flex-direction: column; gap: 10px; }
+  #my-passmgr [style*="display:flex"][style*="gap:8px"] { flex-wrap: wrap; }
+  #my-passmgr input[style*="max-width:300px"],
+  #my-passmgr button[style*="max-width:300px"] { max-width: 100% !important; width: 100%; }
+  /* 我的板块全宽 */
+  section#my { padding: 100px 12px 24px; max-width: 100%; }
 }
 
 /* 手机横屏 481–768px (或竖屏平板) */
 @media (min-width: 481px) and (max-width: 768px) {
-  nav { padding: 0 20px; }
-  section { padding: 72px 24px 36px; }
-  h1 { font-size: 28px; }
+  nav { padding: 0 16px; }
+  nav .links a { font-size: 13px; margin-left: 14px; }
+  #my-nav .my-nav-item, #my-nav a { font-size: 13px; padding: 5px 10px; }
+  section { padding: 76px 18px 36px; }
+  section#my { padding: 76px 18px 36px; max-width: 100%; }
+  h1 { font-size: 26px; }
   .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .pcard { padding: 14px; }
+  .my-panel iframe { height: 75vh; }
 }
 
 /* 平板横屏 769–1024px */
@@ -423,7 +485,7 @@ textarea { min-height: 90px; resize: vertical; }
 </section>
 
 <!-- ===== 我的（日报+卡片+长图+工具） ===== -->
-<section id="my" style="background:#faf8f5;min-height:100vh;padding:80px 20px 40px;max-width:720px;margin:0 auto;">
+<section id="my" style="background:#faf8f5;min-height:100vh;">
 
   <!-- 子板块：日报工坊 -->
   <div id="my-daily" class="my-panel" style="display:block;">
@@ -445,12 +507,12 @@ textarea { min-height: 90px; resize: vertical; }
     <!-- API 配置 -->
     <div style="background:#fff;border:1px solid #1a1a1a;border-radius:12px;padding:24px;margin-bottom:20px;">
       <div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;color:#7f8c8d;">01 — API 配置</div>
-      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+      <div class="d-flex-cb" style="margin-bottom:12px;">
         <label style="font-size:13px;font-weight:600;min-width:70px;">Key</label>
         <input type="password" id="d-api-key" placeholder="sk-..." style="flex:1;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;background:#fafafa;" />
         <button onclick="saveDailyApiKey()" style="padding:10px 20px;background:#2c3e50;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">保存</button>
       </div>
-      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+      <div class="d-flex-cb" style="margin-bottom:12px;">
         <label style="font-size:13px;font-weight:600;min-width:70px;">模型</label>
         <select id="d-model" style="flex:1;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;background:#fafafa;">
           <option value="MiniMax-Text-01">MiniMax-Text-01</option>
@@ -458,7 +520,7 @@ textarea { min-height: 90px; resize: vertical; }
           <option value="MiniMax-M2.7" selected>MiniMax-M2.7（最强）</option>
         </select>
       </div>
-      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+      <div class="d-flex-cb" style="margin-bottom:12px;">
         <label style="font-size:13px;font-weight:600;min-width:70px;">域名</label>
         <select id="d-api-base" style="flex:1;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;background:#fafafa;">
           <option value="https://api.minimax.chat">国内（api.minimax.chat）</option>
@@ -471,7 +533,7 @@ textarea { min-height: 90px; resize: vertical; }
   <!-- 群信息 -->
   <div style="background:#fff;border:1px solid #1a1a1a;border-radius:12px;padding:24px;margin-bottom:20px;">
     <div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;color:#7f8c8d;">02 — 群信息</div>
-    <div style="display:flex;gap:16px;">
+    <div class="d-flex-row">
       <div style="flex:1;">
         <label style="display:block;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;color:#999;">群名称</label>
         <input type="text" id="d-group-name" value="百年孤独共读群" style="width:100%;padding:10px 14px;border:1px solid #ddd;font-size:14px;font-family:inherit;background:#fafafa;" />
@@ -935,6 +997,7 @@ function showMainNav() {
 function showMyNav() {
   mainNav.style.display = 'none';
   myNav.style.display = 'flex';
+  myNav.style.overflowX = 'auto';
 }
 
 // 主导航点击
