@@ -954,13 +954,25 @@ function showSection(id) {
 function showMainNav() {
   mainNav.style.display = 'flex';
   myNav.style.display = 'none';
+  adjustSectionPadding();
 }
 
 function showMyNav() {
   mainNav.style.display = 'none';
   myNav.style.display = 'flex';
   myNav.style.overflowX = 'auto';
+  adjustSectionPadding();
 }
+
+// 动态调整 section padding-top，适配导航栏实际高度
+function adjustSectionPadding() {
+  const nav = document.querySelector('nav');
+  const navH = nav ? nav.offsetHeight : 80;
+  const gap = 24;
+  const pt = (navH + gap) + 'px';
+  document.querySelectorAll('section').forEach(s => { s.style.paddingTop = pt; });
+}
+window.addEventListener('resize', adjustSectionPadding);
 
 // 主导航点击
 document.querySelectorAll('#main-nav a').forEach(a => {
