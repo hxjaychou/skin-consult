@@ -30,7 +30,8 @@ nav .links a { text-decoration: none; color: var(--muted); font-size: 14px; marg
 nav .links a:hover, nav .links a.active { color: var(--primary); border-bottom-color: var(--primary); }
 
 /* ---- Section ---- */
-section { min-height: 100vh; padding: 80px 20px 40px; max-width: 720px; margin: 0 auto; }
+section { display: none; min-height: 100vh; padding: 80px 20px 40px; max-width: 720px; margin: 0 auto; }
+section#home { display: flex; flex-direction: column; }
 
 /* ---- Typography ---- */
 h1 { font-size: 32px; font-weight: 800; color: var(--primary); margin-bottom: 12px; letter-spacing: -0.5px; }
@@ -119,6 +120,15 @@ textarea { min-height: 90px; resize: vertical; }
 .combo-card p { padding: 4px 0; border-bottom: 1px solid #f1f3f5; }
 .combo-card p:last-child { border-bottom: none; }
 .combo-card b { color: var(--primary); }
+
+/* ---- Daily Workshop ---- */
+.d-type-btn.active { border-color: var(--primary) !important; background: var(--primary-bg) !important; }
+.d-type-btn:hover { border-color: var(--primary-light); }
+
+/* ---- 二级导航 ---- */
+.my-nav.active { color: #1a1a1a !important; border-bottom-color: #c0392b !important; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
 
 /* ---- Scrollbar ---- */
 ::-webkit-scrollbar { width: 6px; }
@@ -210,21 +220,37 @@ textarea { min-height: 90px; resize: vertical; }
 
 <nav>
   <div class="brand">皮肤健康咨询</div>
-  <div class="links">
+  <div class="links" id="main-nav">
     <a href="#home" class="active">首页</a>
-    <a href="#consult">咨询</a>
     <a href="#products">产品</a>
-    <a href="#admin">管理</a>
+    <a href="#my">我的</a>
+  </div>
+  <div class="links" id="my-nav" style="display:none;">
+    <a href="#" onclick="showMyTab(event,'my-daily')" class="my-nav-item active">群日报工坊</a>
+    <a href="#" onclick="showMyTab(event,'my-xhs')" class="my-nav-item">小红书卡片</a>
+    <a href="#" onclick="showMyTab(event,'my-wechat')" class="my-nav-item">公众号长图</a>
+    <a href="#" onclick="showMyTab(event,'my-reading')" class="my-nav-item">读书笔记</a>
+    <a href="#" onclick="showMyTab(event,'my-growth')" class="my-nav-item">伴我成长</a>
+    <a href="#" onclick="backToMain()" style="color:#c0392b;">返回</a>
   </div>
 </nav>
 
-<section id="home" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
-  <h1>从头发丝到脚底板</h1>
-  <p style="color:var(--muted);margin-bottom:32px;font-size:16px;">专业分析 · 精准推荐 · 全程跟踪</p>
-  <a href="#consult" class="btn" style="max-width:280px;">开始咨询</a>
-</section>
+<!-- 密码弹窗 -->
+<div id="password-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:200;justify-content:center;align-items:center;padding:20px;">
+  <div style="background:#fff;border-radius:14px;padding:28px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
+    <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--text);">访问验证</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">请输入密码查看内部内容</p>
+    <input type="password" id="access-pwd" placeholder="请输入密码" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;" />
+    <div style="display:flex;gap:12px;">
+      <button onclick="closePasswordModal()" style="flex:1;padding:12px;border:1.5px solid var(--border);border-radius:10px;background:#fff;font-size:14px;font-weight:600;cursor:pointer;">取消</button>
+      <button onclick="verifyPassword()" style="flex:1;padding:12px;border:none;border-radius:10px;background:var(--primary);color:#fff;font-size:14px;font-weight:600;cursor:pointer;">确认</button>
+    </div>
+    <div id="pwd-error" style="color:#e65100;font-size:12px;margin-top:8px;display:none;">密码错误，请重试</div>
+  </div>
+</div>
 
-<section id="consult">
+<section id="home">
+  <!-- 咨询 -->
   <div class="card">
     <h2>在线问诊</h2>
     <form id="form">
@@ -256,6 +282,23 @@ textarea { min-height: 90px; resize: vertical; }
       <button type="submit" class="btn">提交咨询</button>
     </form>
     <div class="result" id="result"></div>
+  </div>
+
+  <!-- 档案管理 -->
+  <div class="card" id="loginBox">
+    <h2>档案管理</h2>
+    <label>密码</label>
+    <input type="password" id="pwd" placeholder="请输入密码">
+    <br><br>
+    <button class="btn" onclick="login()">登录</button>
+  </div>
+  <div id="dashboard" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2>咨询记录</h2>
+      <button class="btn btn-outline" style="width:auto;padding:8px 20px;font-size:13px;" onclick="logout()">退出</button>
+    </div>
+    <div class="status-bar" id="statusBar"></div>
+    <div id="list"></div>
   </div>
 </section>
 
@@ -372,22 +415,302 @@ textarea { min-height: 90px; resize: vertical; }
   </div>
 </section>
 
-<section id="admin">
-  <div class="card" id="loginBox">
-    <h2>管理后台</h2>
-    <label>密码</label>
-    <input type="password" id="pwd" placeholder="请输入密码">
-    <br><br>
-    <button class="btn" onclick="login()">登录</button>
-  </div>
-  <div id="dashboard" style="display:none;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <h2>咨询记录</h2>
-      <button class="btn btn-outline" style="width:auto;padding:8px 20px;font-size:13px;" onclick="logout()">退出</button>
+<!-- ===== 我的（日报+卡片+长图） ===== -->
+<section id="my" style="background:#faf8f5;min-height:100vh;padding:80px 20px 40px;max-width:720px;margin:0 auto;">
+
+  <!-- 子板块：日报工坊 -->
+  <div id="my-daily" class="my-panel" style="display:block;">
+    <div style="text-align:center;margin-bottom:48px;">
+      <h2 style="font-size:32px;font-weight:700;letter-spacing:-0.5px;margin-bottom:8px;color:#1a1a1a;">群聊日报工坊</h2>
+      <p style="color:#7f8c8d;font-size:14px;">粘贴聊天记录，AI 自动提炼日报</p>
     </div>
-    <div class="status-bar" id="statusBar"></div>
-    <div id="list"></div>
+
+    <div style="display:flex;justify-content:center;gap:8px;margin:20px 0 40px;font-size:13px;color:#7f8c8d;">
+      <span style="color:#c0392b;font-weight:600;">上传记录</span>
+      <span>→</span>
+      <span style="color:#c0392b;font-weight:600;">选择类型</span>
+      <span>→</span>
+      <span style="color:#c0392b;font-weight:600;">AI 提炼</span>
+      <span>→</span>
+      <span style="color:#c0392b;font-weight:600;">生成海报</span>
+    </div>
+
+    <!-- API 配置 -->
+    <div style="background:#fff;border:1px solid #1a1a1a;border-radius:12px;padding:24px;margin-bottom:20px;">
+      <div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;color:#7f8c8d;">01 — API 配置</div>
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+        <label style="font-size:13px;font-weight:600;min-width:70px;">Key</label>
+        <input type="password" id="d-api-key" placeholder="sk-..." style="flex:1;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;background:#fafafa;" />
+        <button onclick="saveDailyApiKey()" style="padding:10px 20px;background:#2c3e50;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">保存</button>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+        <label style="font-size:13px;font-weight:600;min-width:70px;">模型</label>
+        <select id="d-model" style="flex:1;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;background:#fafafa;">
+          <option value="MiniMax-Text-01">MiniMax-Text-01</option>
+          <option value="MiniMax-M1">MiniMax-M1</option>
+          <option value="MiniMax-M2.7" selected>MiniMax-M2.7（最强）</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+        <label style="font-size:13px;font-weight:600;min-width:70px;">域名</label>
+        <select id="d-api-base" style="flex:1;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;background:#fafafa;">
+          <option value="https://api.minimax.chat">国内（api.minimax.chat）</option>
+          <option value="https://api.minimaxi.chat">国际（api.minimaxi.chat）</option>
+        </select>
+      </div>
+      <div id="d-api-status" style="font-size:12px;color:#7f8c8d;">未设置</div>
+    </div>
+
+  <!-- 群信息 -->
+  <div style="background:#fff;border:1px solid #1a1a1a;border-radius:12px;padding:24px;margin-bottom:20px;">
+    <div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;color:#7f8c8d;">02 — 群信息</div>
+    <div style="display:flex;gap:16px;">
+      <div style="flex:1;">
+        <label style="display:block;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;color:#999;">群名称</label>
+        <input type="text" id="d-group-name" placeholder="织梦师读书群" style="width:100%;padding:10px 14px;border:1px solid #ddd;font-size:14px;font-family:inherit;background:#fafafa;" />
+      </div>
+      <div style="flex:1;">
+        <label style="display:block;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;color:#999;">期号</label>
+        <input type="text" id="d-issue" placeholder="Vol.12" style="width:100%;padding:10px 14px;border:1px solid #ddd;font-size:14px;font-family:inherit;background:#fafafa;" />
+      </div>
+    </div>
   </div>
+
+  <!-- 日报类型 -->
+  <div style="background:#fff;border:1px solid #1a1a1a;border-radius:12px;padding:24px;margin-bottom:20px;">
+    <div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;color:#7f8c8d;">03 — 日报类型</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div class="d-type-btn active" data-type="skincare" onclick="selectDailyType(this)" style="padding:16px;border:2px solid #1a1a1a;border-radius:10px;text-align:left;cursor:pointer;background:#fff;transition:0.2s;display:flex;align-items:center;gap:12px;">
+        <div style="font-size:20px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:#faf8f5;border:1px solid #e0ddd8;">🧴</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;">客户群</div>
+          <div style="font-size:11px;color:#999;margin-top:2px;">咨询·产品·案例</div>
+        </div>
+      </div>
+      <div class="d-type-btn" data-type="business" onclick="selectDailyType(this)" style="padding:16px;border:2px solid #eee;border-radius:10px;text-align:left;cursor:pointer;background:#fff;transition:0.2s;display:flex;align-items:center;gap:12px;">
+        <div style="font-size:20px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:#faf8f5;border:1px solid #e0ddd8;">💼</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;">业务群</div>
+          <div style="font-size:11px;color:#999;margin-top:2px;">决策·行动·风险</div>
+        </div>
+      </div>
+      <div class="d-type-btn" data-type="reading" onclick="selectDailyType(this)" style="padding:16px;border:2px solid #eee;border-radius:10px;text-align:left;cursor:pointer;background:#fff;transition:0.2s;display:flex;align-items:center;gap:12px;">
+        <div style="font-size:20px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:#faf8f5;border:1px solid #e0ddd8;">📚</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;">读书群</div>
+          <div style="font-size:11px;color:#999;margin-top:2px;">共读·金句·思考</div>
+        </div>
+      </div>
+      <div class="d-type-btn" data-type="general" onclick="selectDailyType(this)" style="padding:16px;border:2px solid #eee;border-radius:10px;text-align:left;cursor:pointer;background:#fff;transition:0.2s;display:flex;align-items:center;gap:12px;">
+        <div style="font-size:20px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:#faf8f5;border:1px solid #e0ddd8;">💬</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;">通用</div>
+          <div style="font-size:11px;color:#999;margin-top:2px;">热点·精彩·氛围</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 聊天记录 -->
+  <div style="background:#fff;border:1px solid #1a1a1a;border-radius:12px;padding:24px;margin-bottom:20px;">
+    <div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;color:#7f8c8d;">04 — 聊天记录</div>
+    <div id="d-upload-zone" style="border:2px dashed #ccc;border-radius:12px;padding:40px;text-align:center;cursor:pointer;margin-bottom:16px;transition:0.2s;" onclick="document.getElementById('d-file-input').click()">
+      <div style="font-size:48px;margin-bottom:12px;">📄</div>
+      <div style="font-size:15px;font-weight:600;margin-bottom:4px;">点击上传聊天记录</div>
+      <div style="font-size:12px;color:#7f8c8d;">支持 .txt / .json 文件（微信导出格式）</div>
+    </div>
+    <input type="file" id="d-file-input" accept=".txt,.json" style="display:none" onchange="handleDailyFile(event)" />
+    <div style="text-align:center;color:#7f8c8d;font-size:13px;margin:16px 0;">—— 或者直接粘贴 ——</div>
+    <textarea id="d-chat-input" placeholder="将微信聊天记录粘贴到这里..." style="width:100%;min-height:200px;padding:14px;border:1px solid #ddd;border-radius:8px;font-size:13px;font-family:'SF Mono',Menlo,Consolas,monospace;line-height:1.6;resize:vertical;background:#fafafa;"></textarea>
+    <span onclick="fillDailyExample()" style="display:inline-block;margin-top:8px;font-size:12px;color:#c0392b;cursor:pointer;text-decoration:underline;">↙ 填入示例数据试试看</span>
+  </div>
+
+  <button onclick="generateDaily()" id="d-btn-generate" style="width:100%;padding:16px;background:#1a1a1a;color:white;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;margin-top:20px;transition:0.2s;">
+    ▶ AI 提炼要点
+  </button>
+
+  <!-- 生成中 -->
+  <div id="d-progress" style="display:none;text-align:center;padding:80px 0;">
+    <div style="width:40px;height:40px;border:3px solid #eee;border-top-color:#c0392b;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
+    <p style="color:#7f8c8d;font-size:14px;" id="d-progress-text">正在分析聊天记录...</p>
+  </div>
+
+  <!-- 结果 -->
+  <div id="d-result" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+      <button onclick="resetDaily()" style="padding:8px 16px;border:1px solid #1a1a1a;border-radius:8px;background:white;cursor:pointer;font-size:13px;font-weight:600;">← 重新生成</button>
+      <div style="display:flex;gap:8px;">
+        <button onclick="copyDailyHtml()" style="padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:#2c3e50;color:white;">复制 HTML</button>
+        <button onclick="downloadDailyHtml()" style="padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:#c0392b;color:white;">下载文件</button>
+      </div>
+    </div>
+    <iframe id="d-result-frame" style="width:100%;border:1px solid #1a1a1a;border-radius:12px;overflow:hidden;background:white;min-height:600px;" sandbox="allow-same-origin"></iframe>
+  </div>
+
+  <div style="text-align:center;margin-top:40px;font-size:12px;color:#7f8c8d;">数据仅在本地处理，不会上传到任何服务器</div>
+  </div><!-- /my-daily -->
+
+  <!-- 子板块：小红书卡片制作 -->
+  <div id="my-xhs" class="my-panel" style="display:none;">
+    <h2 style="font-size:22px;font-weight:700;color:var(--primary);margin-bottom:8px;">小红书卡片制作</h2>
+    <p style="color:var(--muted);margin-bottom:24px;font-size:14px;">输入主题和要点，AI 生成可截图分享的小红书风格卡片。</p>
+
+    <div class="card" style="background:#fff;">
+      <label>卡片主题</label>
+      <input id="xhs-title" placeholder="如：脚气反复发作的3个原因" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
+      <label>核心要点（每行一条）</label>
+      <textarea id="xhs-points" placeholder="真菌没杀干净就停药，是复发主因&#10;潮湿环境是真菌温床，鞋袜要透气&#10;巩固期用米浮泡沫液，防止卷土重来" style="width:100%;min-height:120px;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;resize:vertical;margin-bottom:12px;"></textarea>
+      <label>风格</label>
+      <select id="xhs-style" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:16px;">
+        <option value="minimal">极简文艺（墨绿+白）</option>
+        <option value="tech">技术风（蓝灰+数据感）</option>
+        <option value="warm">温暖风（暖棕+手写感）</option>
+        <option value="bold">大字报（黑+红强调）</option>
+      </select>
+      <button class="btn" onclick="generateXhs()">生成卡片</button>
+    </div>
+
+    <div id="xhs-progress" style="display:none;text-align:center;padding:60px 0;">
+      <div class="spinner" style="width:32px;height:32px;border:2px solid #e0ddd8;border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
+      <p style="color:var(--muted);font-size:13px;">正在生成卡片...</p>
+    </div>
+
+    <div id="xhs-result" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0 12px;">
+        <button class="btn-link" onclick="document.getElementById('xhs-result').style.display='none';document.getElementById('xhs-progress').style.display='none';" style="font-size:12px;color:var(--primary);cursor:pointer;background:none;border:none;font-family:inherit;">← 重新生成</button>
+        <div style="display:flex;gap:16px;">
+          <button class="btn-link" onclick="navigator.clipboard.writeText(xhsGeneratedHtml).then(()=>alert('已复制'))" style="font-size:12px;color:var(--primary);cursor:pointer;background:none;border:none;font-family:inherit;">复制 HTML</button>
+          <button class="btn-link" onclick="downloadFile(xhsGeneratedHtml,'小红书卡片','html')" style="font-size:12px;color:var(--primary);cursor:pointer;background:none;border:none;font-family:inherit;">下载文件</button>
+        </div>
+      </div>
+      <iframe id="xhs-result-frame" style="width:100%;border:1px solid var(--border);background:#fff;min-height:500px;"></iframe>
+    </div>
+
+    <!-- 已生成卡片集（画廊） -->
+    <div style="margin-top:32px;">
+      <div class="cat-title">已生成的卡片</div>
+      <div id="xhs-gallery-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;"></div>
+    </div>
+
+    <div id="xhs-lightbox" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:300;justify-content:center;align-items:center;cursor:pointer;padding:20px;" onclick="closeXhsLightbox()">
+      <img id="xhs-lightbox-img" style="max-width:90%;max-height:90vh;object-fit:contain;border-radius:4px;" />
+      <button style="position:absolute;top:16px;right:20px;background:none;border:none;color:white;font-size:28px;cursor:pointer;">&times;</button>
+    </div>
+  </div><!-- /my-xhs -->
+
+  <!-- 子板块：公众号长图制作 -->
+  <div id="my-wechat" class="my-panel" style="display:none;">
+    <h2 style="font-size:22px;font-weight:700;color:var(--primary);margin-bottom:8px;">公众号长图制作</h2>
+    <p style="color:var(--muted);margin-bottom:24px;font-size:14px;">输入文章内容，AI 生成适合公众号发布的长图 HTML。</p>
+
+    <div class="card" style="background:#fff;">
+      <label>文章标题</label>
+      <input id="wx-title" placeholder="如：国产AI工具选择指南" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
+      <label>文章内容</label>
+      <textarea id="wx-content" placeholder="粘贴你的文章正文，或写下核心要点..." style="width:100%;min-height:160px;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;resize:vertical;margin-bottom:12px;"></textarea>
+      <label>排版风格</label>
+      <select id="wx-style" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:16px;">
+        <option value="editorial">编辑风（墨绿+衬线体）</option>
+        <option value="tech">技术风（蓝灰+数据条带）</option>
+        <option value="red">红色强调（#e94560+深色代码块）</option>
+        <option value="minimal">极简白（大量留白+细线）</option>
+      </select>
+      <button class="btn" onclick="generateWechat()">生成长图</button>
+    </div>
+
+    <div id="wx-progress" style="display:none;text-align:center;padding:60px 0;">
+      <div class="spinner" style="width:32px;height:32px;border:2px solid #e0ddd8;border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
+      <p style="color:var(--muted);font-size:13px;">正在生成长图...</p>
+    </div>
+
+    <div id="wx-result" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0 12px;">
+        <button class="btn-link" onclick="document.getElementById('wx-result').style.display='none';document.getElementById('wx-progress').style.display='none';" style="font-size:12px;color:var(--primary);cursor:pointer;background:none;border:none;font-family:inherit;">← 重新生成</button>
+        <div style="display:flex;gap:16px;">
+          <button class="btn-link" onclick="navigator.clipboard.writeText(wxGeneratedHtml).then(()=>alert('已复制'))" style="font-size:12px;color:var(--primary);cursor:pointer;background:none;border:none;font-family:inherit;">复制 HTML</button>
+          <button class="btn-link" onclick="downloadFile(wxGeneratedHtml,'公众号长图','html')" style="font-size:12px;color:var(--primary);cursor:pointer;background:none;border:none;font-family:inherit;">下载文件</button>
+        </div>
+      </div>
+      <iframe id="wx-result-frame" style="width:100%;border:1px solid var(--border);background:#fff;min-height:600px;"></iframe>
+    </div>
+  </div><!-- /my-wechat -->
+
+  <!-- 子板块：读书笔记 -->
+  <div id="my-reading" class="my-panel" style="display:none;">
+    <h2 style="font-size:22px;font-weight:700;color:var(--primary);margin-bottom:8px;">读书笔记</h2>
+    <p style="color:var(--muted);margin-bottom:24px;font-size:14px;">输入书名和读书心得，AI 生成精美的读书笔记卡片。</p>
+
+    <div class="card" style="background:#fff;">
+      <label>书名</label>
+      <input id="rd-book" placeholder="如：《思考，快与慢》" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
+      <label>作者</label>
+      <input id="rd-author" placeholder="如：丹尼尔·卡尼曼" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
+      <label>核心笔记（每行一条）</label>
+      <textarea id="rd-notes" placeholder="系统1是快思考，自动化的；系统2是慢思考，需要专注力&#10;锚定效应：你看到的第一个数字会影响后面的判断&#10;我们总是过度依赖直觉，而直觉往往只是偏见的另一种形式" style="width:100%;min-height:120px;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;resize:vertical;margin-bottom:12px;"></textarea>
+      <label>一句话感悟</label>
+      <input id="rd-insight" placeholder="如：直觉不是敌人，但不能只靠直觉" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
+      <label>卡片风格</label>
+      <select id="rd-style" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:16px;">
+        <option value="sketchnote">手绘笔记风（暖纸+手写体）</option>
+        <option value="editorial">杂志风（墨绿+衬线体）</option>
+        <option value="minimal">极简风（白底+细线）</option>
+      </select>
+      <button class="btn" onclick="generateReading()">生成笔记卡片</button>
+    </div>
+
+    <div id="rd-progress" style="display:none;text-align:center;padding:60px 0;">
+      <div class="spinner" style="width:32px;height:32px;border:2px solid #e0ddd8;border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
+      <p style="color:var(--muted);font-size:13px;">正在生成读书笔记...</p>
+    </div>
+
+    <div id="rd-result" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0 12px;">
+        <button class="btn-link" onclick="document.getElementById('rd-result').style.display='none';document.getElementById('rd-progress').style.display='none';" style="font-size:12px;color:var(--primary);cursor:pointer;background:none;border:none;font-family:inherit;">← 重新生成</button>
+        <div style="display:flex;gap:16px;">
+          <button class="btn-link" onclick="navigator.clipboard.writeText(rdGeneratedHtml).then(()=>alert('已复制'))" style="font-size:12px;color:var(--primary);cursor:pointer;background:none;border:none;font-family:inherit;">复制 HTML</button>
+          <button class="btn-link" onclick="downloadFile(rdGeneratedHtml,'读书笔记','html')" style="font-size:12px;color:var(--primary);cursor:pointer;background:none;border:none;font-family:inherit;">下载文件</button>
+        </div>
+      </div>
+      <iframe id="rd-result-frame" style="width:100%;border:1px solid var(--border);background:#fff;min-height:500px;"></iframe>
+    </div>
+  </div><!-- /my-reading -->
+
+  <!-- 子板块：伴我成长（照见） -->
+  <div id="my-growth" class="my-panel" style="display:none;">
+    <h2 style="font-size:22px;font-weight:700;color:var(--primary);margin-bottom:8px;">伴我成长</h2>
+    <p style="color:var(--muted);margin-bottom:24px;font-size:14px;">写下一段感悟或反思，AI 生成「照见」风格的长图——像一面镜子，照见此刻的自己。</p>
+
+    <div class="card" style="background:#fff;">
+      <label>今日主题</label>
+      <input id="gr-topic" placeholder="如：关于'整合不起来'这件事" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
+      <label>我的感悟</label>
+      <textarea id="gr-content" placeholder="写下你此刻的想法、感受、反思..." style="width:100%;min-height:160px;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;resize:vertical;margin-bottom:12px;"></textarea>
+      <label>情绪基调</label>
+      <select id="gr-mood" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:16px;">
+        <option value="reflective">沉思（深蓝+月光白）</option>
+        <option value="warm">温暖（暖棕+米白）</option>
+        <option value="growth">生长（墨绿+嫩芽色）</option>
+        <option value="calm">平静（灰蓝+雾白）</option>
+      </select>
+      <button class="btn" onclick="generateGrowth()">生成照见长图</button>
+    </div>
+
+    <div id="gr-progress" style="display:none;text-align:center;padding:60px 0;">
+      <div class="spinner" style="width:32px;height:32px;border:2px solid #e0ddd8;border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
+      <p style="color:var(--muted);font-size:13px;">正在生成照见长图...</p>
+    </div>
+
+    <div id="gr-result" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0 12px;">
+        <button class="btn-link" onclick="document.getElementById('gr-result').style.display='none';document.getElementById('gr-progress').style.display='none';" style="font-size:12px;color:var(--primary);cursor:pointer;background:none;border:none;font-family:inherit;">← 重新生成</button>
+        <div style="display:flex;gap:16px;">
+          <button class="btn-link" onclick="navigator.clipboard.writeText(grGeneratedHtml).then(()=>alert('已复制'))" style="font-size:12px;color:var(--primary);cursor:pointer;background:none;border:none;font-family:inherit;">复制 HTML</button>
+          <button class="btn-link" onclick="downloadFile(grGeneratedHtml,'照见','html')" style="font-size:12px;color:var(--primary);cursor:pointer;background:none;border:none;font-family:inherit;">下载文件</button>
+        </div>
+      </div>
+      <iframe id="gr-result-frame" style="width:100%;border:1px solid var(--border);background:#fff;min-height:600px;"></iframe>
+    </div>
+  </div><!-- /my-growth -->
 </section>
 
 <div class="modal" id="modal">
@@ -411,16 +734,746 @@ textarea { min-height: 90px; resize: vertical; }
   </div>
 </div>
 
-<script type="module">
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+<script>
+// ===== 密码验证 =====
+let passwordVerified = false;
+const ACCESS_PASSWORD = '8866';
 
-const URL = 'https://pyujfsvhtpgxykvhvnse.supabase.co';
-const KEY = 'sb_publishable_FxeCK7sLnE2H3RK_hGEA6A_ZEgmZttA';
+// ===== 导航切换 =====
+const mainNav = document.getElementById('main-nav');
+const myNav = document.getElementById('my-nav');
+const sections = document.querySelectorAll('section');
+
+function showSection(id) {
+  sections.forEach(s => s.style.display = 'none');
+  const target = document.getElementById(id);
+  if (target) target.style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function showMainNav() {
+  mainNav.style.display = 'flex';
+  myNav.style.display = 'none';
+}
+
+function showMyNav() {
+  mainNav.style.display = 'none';
+  myNav.style.display = 'flex';
+}
+
+// 主导航点击
+document.querySelectorAll('#main-nav a').forEach(a => {
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const id = a.getAttribute('href').slice(1);
+    document.querySelectorAll('#main-nav a').forEach(x => x.classList.remove('active'));
+    a.classList.add('active');
+    if (id === 'my') {
+      if (passwordVerified) {
+        showMyNav();
+        showSection('my');
+        showMyTab(null, 'my-daily');
+      } else {
+        document.getElementById('password-modal').style.display = 'flex';
+        document.getElementById('access-pwd').value = '';
+        document.getElementById('pwd-error').style.display = 'none';
+      }
+    } else {
+      showSection(id);
+    }
+  });
+});
+
+// 初始显示首页
+showSection('home');
+showMainNav();
+
+// ===== 密码弹窗 =====
+window.closePasswordModal = function() {
+  document.getElementById('password-modal').style.display = 'none';
+};
+
+window.verifyPassword = function() {
+  const pwd = document.getElementById('access-pwd').value;
+  if (pwd === ACCESS_PASSWORD) {
+    passwordVerified = true;
+    closePasswordModal();
+    showMyNav();
+    showSection('my');
+    showMyTab(null, 'my-daily');
+  } else {
+    document.getElementById('pwd-error').style.display = 'block';
+  }
+};
+
+window.backToMain = function() {
+  showMainNav();
+  showSection('home');
+  document.querySelectorAll('#main-nav a').forEach(x => x.classList.remove('active'));
+  document.querySelector('#main-nav a[href="#home"]').classList.add('active');
+};
+
+document.getElementById('access-pwd').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') verifyPassword();
+});
+
+// ===== "我的"板块子导航 =====
+window.showMyTab = function(e, tabId) {
+  if (e) e.preventDefault();
+  document.querySelectorAll('.my-panel').forEach(p => p.style.display = 'none');
+  document.getElementById(tabId).style.display = 'block';
+  document.querySelectorAll('.my-nav-item').forEach(a => {
+    a.classList.remove('active');
+    a.style.color = '#7f8c8d';
+  });
+  if (e && e.target) {
+    e.target.classList.add('active');
+    e.target.style.color = '#1a1a1a';
+  } else {
+    document.querySelector('.my-nav-item').classList.add('active');
+    document.querySelector('.my-nav-item').style.color = '#1a1a1a';
+  }
+};
+
+// ===== 本地存储（替代Supabase） =====
 const DB = '8866';
-
-const sb = createClient(URL, KEY);
-let items = [];
+let items = JSON.parse(localStorage.getItem('consultations') || '[]');
 let curId = null;
+
+function saveToLocal() {
+  localStorage.setItem('consultations', JSON.stringify(items));
+}
+
+// ===== 日报工坊状态 =====
+let dGeneratedHtml = '';
+let dCurrentType = 'skincare';
+let dApiKey = localStorage.getItem('minimax_api_key') || '';
+
+// 初始化日报 API Key
+if (dApiKey) {
+  document.getElementById('d-api-key').value = dApiKey;
+  document.getElementById('d-api-status').textContent = '已设置 ✓';
+  document.getElementById('d-api-status').style.color = '#27ae60';
+}
+
+// 保存 API Key
+window.saveDailyApiKey = function() {
+  dApiKey = document.getElementById('d-api-key').value.trim();
+  localStorage.setItem('minimax_api_key', dApiKey);
+  const status = document.getElementById('d-api-status');
+  if (dApiKey) {
+    status.textContent = '已设置 ✓';
+    status.style.color = '#27ae60';
+  } else {
+    status.textContent = '未设置';
+    status.style.color = '#7f8c8d';
+  }
+};
+
+// 日报类型选择
+window.selectDailyType = function(el) {
+  document.querySelectorAll('.d-type-btn').forEach(b => {
+    b.classList.remove('active');
+    b.style.borderColor = '#eee';
+    b.style.background = '#fff';
+  });
+  el.classList.add('active');
+  el.style.borderColor = '#1a1a1a';
+  el.style.background = '#fef9f8';
+  dCurrentType = el.dataset.type;
+};
+
+// ===== 共用 API 调用 =====
+async function callAiApi(prompt) {
+  const apiBase = document.getElementById('d-api-base') ? document.getElementById('d-api-base').value : 'https://api.minimax.chat';
+  const model = document.getElementById('d-model') ? document.getElementById('d-model').value : 'MiniMax-M2.7';
+  dApiKey = document.getElementById('d-api-key') ? document.getElementById('d-api-key').value.trim() : localStorage.getItem('minimax_api_key') || '';
+  if (!dApiKey) throw new Error('请先在日报工坊设置 API Key');
+
+  const url = `${apiBase}/v1/text/chatcompletion_v2`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${dApiKey}` },
+    body: JSON.stringify({
+      model: model,
+      messages: [
+        { role: 'system', content: '你是一个极简主义视觉设计师。输出时只返回HTML代码，不要任何解释。严格遵循用户给出的配色和布局要求。' },
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 8000,
+      temperature: 0.3
+    })
+  });
+  if (!response.ok) { const err = await response.text(); throw new Error(`API 错误 (${response.status}): ${err}`); }
+  const data = await response.json();
+  let html = data.choices[0].message.content;
+  const htmlMatch = html.match(/```html\s*([\s\S]*?)```/) || html.match(/```\s*([\s\S]*?)```/);
+  if (htmlMatch) html = htmlMatch[1];
+  if (!html.includes('<!DOCTYPE')) {
+    html = `<!DOCTYPE html>\n<html lang="zh-CN">\n<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Generated</title></head>\n<body>\n${html}\n</body>\n</html>`;
+  }
+  return html;
+}
+
+function downloadFile(html, name, ext) {
+  const date = new Date().toISOString().slice(0, 10);
+  const blob = new Blob([html], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${name}_${date}.${ext}`;
+  a.click();
+}
+
+// ===== 小红书卡片生成 =====
+let xhsGeneratedHtml = '';
+
+const xhsStylePrompts = {
+  minimal: `风格：极简文艺风
+- 背景：#f2f1ed（浅灰白）
+- 卡片：#ffffff，边框 #e0ddd8
+- 强调色：#2d5a47（墨绿），用于标题和编号
+- 正文：#1a1a1a，副文：#555555
+- 标题用衬线体（"Noto Serif SC", serif），正文用无衬线体
+- 编号用等宽字体，左上角灰色小字
+- 布局：左对齐，标题→分隔线→要点列表→底部一行灰色小字
+- 每个要点前加一个墨绿色竖线装饰
+- 页面宽1080px，适配手机截图`,
+
+  tech: `风格：技术风
+- 背景：#F0F3F7（浅蓝灰）
+- 卡片：#ffffff，边框 #D0D7DE
+- 强调色：#2563EB（蓝色），用于标题
+- 正文：#1F2937，副文：#6B7280
+- 标题用无衬线体加粗，正文用系统字体
+- 编号用等宽字体（"SF Mono", monospace），蓝色
+- 布局：顶部大标题+蓝色装饰条，下方网格排列要点，每个要点有编号色块
+- 页面宽1080px`,
+
+  warm: `风格：温暖风
+- 背景：#FBF7F0（暖米白）
+- 卡片：#FFFCF7，边框 #E8DFD0
+- 强调色：#B45309（琥珀棕），用于标题
+- 正文：#3D3229，副文：#8B7E6F
+- 标题用衬线体（"Noto Serif SC", serif），正文用无衬线体
+- 布局：居中标题+手写体引言，下方要点用圆点列表
+- 底部加一行手写体签名
+- 页面宽1080px`,
+
+  bold: `风格：大字报
+- 背景：#1A1A1A（深灰黑）
+- 卡片：无卡片，直接文字
+- 强调色：#EF4444（红色），用于关键数字和标题
+- 正文：#FFFFFF，副文：#9CA3AF
+- 标题用超大字号（48-64px）加粗，正文用24-28px
+- 布局：超大标题占满宽度，要点用红色编号+白色大字
+- 页面宽1080px`
+};
+
+window.generateXhs = async function() {
+  const title = document.getElementById('xhs-title').value.trim();
+  const points = document.getElementById('xhs-points').value.trim();
+  if (!title || !points) { alert('请填写主题和要点'); return; }
+
+  const style = document.getElementById('xhs-style').value;
+  document.getElementById('xhs-progress').style.display = 'block';
+  document.getElementById('xhs-result').style.display = 'none';
+
+  try {
+    const today = new Date().toLocaleDateString('zh-CN', {year:'numeric', month:'long', day:'numeric'});
+    const prompt = `你是一位极简主义视觉设计师。请将以下内容生成一张精美的小红书风格信息图卡片。
+
+【风格要求 — 严格遵循】
+${xhsStylePrompts[style]}
+
+关键规则：
+- 禁止三等分等宽卡片
+- 内嵌CSS，不依赖外部资源
+- 输出完整HTML文件，从<!DOCTYPE html>开始到</html>结束
+- 不要使用emoji作为装饰
+- 卡片内容精炼，每个要点一句话，不超过20字
+
+卡片主题：${title}
+日期：${today}
+
+核心要点：
+${points}
+
+请直接输出完整的HTML文件代码，不要包含任何解释说明。`;
+
+    const html = await callAiApi(prompt);
+    xhsGeneratedHtml = html;
+    document.getElementById('xhs-progress').style.display = 'none';
+    document.getElementById('xhs-result').style.display = 'block';
+    document.getElementById('xhs-result-frame').srcdoc = html;
+  } catch (err) {
+    alert('生成失败：' + err.message);
+    document.getElementById('xhs-progress').style.display = 'none';
+  }
+};
+
+window.closeXhsLightbox = function() {
+  document.getElementById('xhs-lightbox').style.display = 'none';
+};
+
+// ===== 公众号长图生成 =====
+let wxGeneratedHtml = '';
+
+const wxStylePrompts = {
+  editorial: `风格：编辑风
+- 背景：#f2f1ed（浅灰白）
+- 正文区：#ffffff卡片，边框 #e0ddd8
+- 强调色：#2d5a47（墨绿），用于标题和金句
+- 正文：#1a1a1a，副文：#555555
+- 标题用衬线体（"Noto Serif SC", serif），正文用无衬线体
+- 布局：顶部大标题+日期，正文分段落，关键句用墨绿底色白色文字突出
+- 页面宽720px，长图形式`,
+
+  tech: `风格：技术风
+- 背景：#F0F3F7（浅蓝灰）
+- 正文区：#ffffff卡片
+- 强调色：#2563EB（蓝色）
+- 正文：#1F2937，副文：#6B7280
+- 代码块用 #1a1a2e 深色底
+- 布段落，技术术语用蓝色高亮
+- 页面宽720px，长图形式`,
+
+  red: `风格：红色强调
+- 背景：#ffffff
+- 强调色：#e94560（红色），用于标题和重点
+- 代码块：#1a1a2e 深色底+绿色代码文字
+- 正文：#333333，副文：#666666
+- 圆形红色编号标记段落
+- 黄色边框提示框
+- 表格用红色表头+隔行变色
+- 页面宽720px，长图形式`,
+
+  minimal: `风格：极简白
+- 背景：#ffffff
+- 无卡片，纯文字+细线分隔
+- 强调色：#333333（深灰），不用彩色
+- 正文：#333333，副文：#999999
+- 大量留白，行间距2.0
+- 标题用细体衬线，正文用轻量无衬线
+- 页面宽720px，长图形式`
+};
+
+window.generateWechat = async function() {
+  const title = document.getElementById('wx-title').value.trim();
+  const content = document.getElementById('wx-content').value.trim();
+  if (!title || !content) { alert('请填写标题和内容'); return; }
+
+  const style = document.getElementById('wx-style').value;
+  document.getElementById('wx-progress').style.display = 'block';
+  document.getElementById('wx-result').style.display = 'none';
+
+  try {
+    const today = new Date().toLocaleDateString('zh-CN', {year:'numeric', month:'long', day:'numeric'});
+    const prompt = `你是一位资深的公众号排版设计师。请将以下文章内容生成一张适合微信公众号发布的精美长图 HTML。
+
+【排版风格 — 严格遵循】
+${wxStylePrompts[style]}
+
+关键规则：
+- 内嵌CSS，不依赖外部资源
+- 输出完整HTML文件
+- 长图形式，适合手机上下滑动阅读
+- 段落之间留足呼吸空间
+- 重点句子用强调色突出
+- 不要使用emoji作为装饰
+
+文章标题：${title}
+日期：${today}
+
+文章内容：
+${content}
+
+请直接输出完整的HTML文件代码，不要包含任何解释说明。`;
+
+    const html = await callAiApi(prompt);
+    wxGeneratedHtml = html;
+    document.getElementById('wx-progress').style.display = 'none';
+    document.getElementById('wx-result').style.display = 'block';
+    document.getElementById('wx-result-frame').srcdoc = html;
+  } catch (err) {
+    alert('生成失败：' + err.message);
+    document.getElementById('wx-progress').style.display = 'none';
+  }
+};
+
+// ===== 读书笔记生成 =====
+let rdGeneratedHtml = '';
+
+const rdStylePrompts = {
+  sketchnote: `风格：手绘笔记风
+- 背景：#FAF7EF（暖纸色）
+- 纸张纹理感，模拟手账本
+- 强调色：#B23A2C（暗红）用于标题，#3D5A80（深蓝）用于重点，#BB8A2B（琥珀）用于金句
+- 标题用衬线体（"Noto Serif SC", serif），笔记用手写体（"Caveat", "楷体", cursive），正文用无衬线体
+- 布局：顶部书名+作者+日期，中间是编号笔记卡片（暖色底+左侧彩色竖线），底部金句区用深色底白色手写体
+- 每个笔记卡片有手写体编号和小图标
+- 页面宽1080px`,
+
+  editorial: `风格：杂志风
+- 背景：#f2f1ed（浅灰白）
+- 卡片：#ffffff，边框 #e0ddd8
+- 强调色：#2d5a47（墨绿），用于标题和金句
+- 正文：#1a1a1a，副文：#555555
+- 标题用衬线体（"Noto Serif SC", serif），正文用无衬线体
+- 编号用等宽字体（"SF Mono", monospace），左上角
+- 布局：左上书名+右上章节号，下方非对称网格排列笔记卡片
+- 底部金句区：墨绿底+白色衬线体
+- 页面宽1080px`,
+
+  minimal: `风格：极简风
+- 背景：#ffffff
+- 无卡片，纯文字+细线分隔
+- 强调色：#333333
+- 正文：#333333，副文：#999999
+- 大量留白
+- 标题用细体衬线，笔记用系统字体
+- 底部一行灰色小字：书名 · 日期
+- 页面宽1080px`
+};
+
+window.generateReading = async function() {
+  const book = document.getElementById('rd-book').value.trim();
+  const author = document.getElementById('rd-author').value.trim();
+  const notes = document.getElementById('rd-notes').value.trim();
+  const insight = document.getElementById('rd-insight').value.trim();
+  if (!book || !notes) { alert('请至少填写书名和笔记'); return; }
+
+  const style = document.getElementById('rd-style').value;
+  document.getElementById('rd-progress').style.display = 'block';
+  document.getElementById('rd-result').style.display = 'none';
+
+  try {
+    const today = new Date().toLocaleDateString('zh-CN', {year:'numeric', month:'long', day:'numeric'});
+    const prompt = `你是一位精致的读书笔记设计师。请将以下读书笔记生成一张精美的读书笔记卡片 HTML。
+
+【风格要求 — 严格遵循】
+${rdStylePrompts[style]}
+
+关键规则：
+- 内嵌CSS，不依赖外部资源
+- 输出完整HTML文件
+- 书名和作者突出显示
+- 每条笔记精炼为一句话
+- 如果有感悟，放在底部金句区，用特殊样式突出
+- 不要使用emoji作为装饰
+
+书名：${book}
+${author ? '作者：' + author : ''}
+日期：${today}
+
+读书笔记（每行一条）：
+${notes}
+
+${insight ? '一句话感悟：' + insight : ''}
+
+请直接输出完整的HTML文件代码，不要包含任何解释说明。`;
+
+    const html = await callAiApi(prompt);
+    rdGeneratedHtml = html;
+    document.getElementById('rd-progress').style.display = 'none';
+    document.getElementById('rd-result').style.display = 'block';
+    document.getElementById('rd-result-frame').srcdoc = html;
+  } catch (err) {
+    alert('生成失败：' + err.message);
+    document.getElementById('rd-progress').style.display = 'none';
+  }
+};
+
+// ===== 伴我成长（照见）生成 =====
+let grGeneratedHtml = '';
+
+const grMoodPrompts = {
+  reflective: `情绪基调：沉思
+- 背景：#0F172A（深蓝夜空）→ #1E293B 渐变
+- 文字：#E2E8F0（月光白），标题：#F8FAFC（亮白）
+- 强调色：#60A5FA（星光蓝），用于关键词
+- 引言区用斜体衬线体，居中，大字号
+- 整体像深夜独处时的自我对话
+- 页面宽720px，长图形式`,
+
+  warm: `情绪基调：温暖
+- 背景：#FFFBF0（暖米白）
+- 文字：#5D4E37（暖棕），标题：#3D2E1C（深棕）
+- 强调色：#D97706（琥珀），用于关键词
+- 布局像一封写给自己的信
+- 段落间用暖色细线分隔
+- 页面宽720px，长图形式`,
+
+  growth: `情绪基调：生长
+- 背景：#F0FDF4（嫩芽绿）→ #ECFDF5 渐变
+- 文字：#14532D（深绿），标题：#064E3B（墨绿）
+- 强调色：#22C55E（翠绿），用于关键词
+- 布局像一棵树的生长记录，从上到下是时间线
+- 每个节点有绿色圆点+日期+内容
+- 页面宽720px，长图形式`,
+
+  calm: `情绪基调：平静
+- 背景：#F8FAFC（雾白）
+- 文字：#475569（灰蓝），标题：#1E293B（深灰蓝）
+- 强调色：#94A3B8（雾蓝），用于装饰线
+- 大量留白，行间距2.2
+- 像水面一样安静的页面
+- 底部一行小字：日期 · 心情
+- 页面宽720px，长图形式`
+};
+
+window.generateGrowth = async function() {
+  const topic = document.getElementById('gr-topic').value.trim();
+  const content = document.getElementById('gr-content').value.trim();
+  if (!topic || !content) { alert('请填写主题和感悟'); return; }
+
+  const mood = document.getElementById('gr-mood').value;
+  document.getElementById('gr-progress').style.display = 'block';
+  document.getElementById('gr-result').style.display = 'none';
+
+  try {
+    const today = new Date().toLocaleDateString('zh-CN', {year:'numeric', month:'long', day:'numeric', weekday:'long'});
+    const prompt = `你是一位擅长自我觉察的视觉设计师。请将以下个人感悟生成一张「照见」风格的长图 HTML——像一面镜子，帮人照见此刻的自己。
+
+【情绪基调 — 严格遵循】
+${grMoodPrompts[mood]}
+
+【内容结构】
+1. 顶部：日期 + 主题（大字号，居中）
+2. 引言：用一句话概括这段感悟的核心，斜体，居中
+3. 正文：将感悟展开为3-5个段落，每段一个核心意思
+4. 金句区：从感悟中提炼最有力的一句话，用特殊样式突出
+5. 底部：日期 + 一句收尾的话
+
+关键规则：
+- 内嵌CSS，不依赖外部资源
+- 输出完整HTML文件
+- 长图形式，适合手机上下滑动阅读
+- 不要使用emoji作为装饰
+- 文字要有温度，像在跟自己对话
+- 段落之间留足呼吸空间
+
+主题：${topic}
+日期：${today}
+
+我的感悟：
+${content}
+
+请直接输出完整的HTML文件代码，不要包含任何解释说明。`;
+
+    const html = await callAiApi(prompt);
+    grGeneratedHtml = html;
+    document.getElementById('gr-progress').style.display = 'none';
+    document.getElementById('gr-result').style.display = 'block';
+    document.getElementById('gr-result-frame').srcdoc = html;
+  } catch (err) {
+    alert('生成失败：' + err.message);
+    document.getElementById('gr-progress').style.display = 'none';
+  }
+};
+
+
+
+// 文件读取
+const dUploadZone = document.getElementById('d-upload-zone');
+dUploadZone.addEventListener('dragover', e => { e.preventDefault(); dUploadZone.style.borderColor = 'var(--primary)'; dUploadZone.style.background = 'var(--primary-bg)'; });
+dUploadZone.addEventListener('dragleave', () => { dUploadZone.style.borderColor = 'var(--border)'; dUploadZone.style.background = '#fff'; });
+dUploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dUploadZone.style.borderColor = 'var(--border)';
+  dUploadZone.style.background = '#fff';
+  if (e.dataTransfer.files[0]) readDailyFile(e.dataTransfer.files[0]);
+});
+
+window.handleDailyFile = function(event) {
+  if (event.target.files[0]) readDailyFile(event.target.files[0]);
+};
+
+function readDailyFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('d-chat-input').value = e.target.result;
+    dUploadZone.querySelector('div:nth-child(2)').textContent = file.name;
+    dUploadZone.querySelector('div:nth-child(3)').textContent = `${(file.size / 1024).toFixed(1)} KB · 点击重新选择`;
+  };
+  reader.readAsText(file);
+}
+
+// 示例数据
+window.fillDailyExample = function() {
+  document.getElementById('d-chat-input').value = `[2026-05-27 09:12] 小王: 大家好！最近有客户问脚气反复发作怎么办
+[2026-05-27 09:15] 小李: 脚气反复很正常，真菌没杀干净就会复发
+[2026-05-27 09:18] 陈姐: 我之前用抗菌液泡了4次好了，结果半年又犯了
+[2026-05-27 09:20] 小王: 这种情况需要加一个巩固步骤，泡完脚后每天涂米浮泡沫液
+[2026-05-27 09:22] 小李: 对，真菌藏在皮肤深层，表面好了不代表根除了
+[2026-05-27 09:25] 陈姐: 那这次我让客户抗菌液+米浮一起用
+[2026-05-27 09:28] 小王: 另外提醒客户穿鞋要透气，潮湿环境是真菌的温床
+[2026-05-27 09:30] 小李: 今天有个新客户咨询灰指甲，已经报价了
+[2026-05-27 09:32] 陈姐: 好的！这周的客户反馈都挺好的，三个脚气客户都好了
+[2026-05-27 09:35] 小王: 棒！记得让客户拍对比图，发朋友圈做案例`;
+  document.getElementById('d-chat-input').value = document.getElementById('d-chat-input').value;
+};
+
+// 生成日报
+window.generateDaily = async function() {
+  const chatText = document.getElementById('d-chat-input').value.trim();
+  if (!chatText) { alert('请先上传或粘贴聊天记录'); return; }
+
+  dApiKey = document.getElementById('d-api-key').value.trim();
+  localStorage.setItem('minimax_api_key', dApiKey);
+  if (!dApiKey) { alert('请先设置 API Key'); return; }
+
+  const apiBase = document.getElementById('d-api-base').value;
+  const model = document.getElementById('d-model').value;
+  const groupName = document.getElementById('d-group-name').value || '群聊';
+  const issueNo = document.getElementById('d-issue').value || '';
+
+  document.getElementById('d-btn-generate').disabled = true;
+  document.getElementById('d-progress').style.display = 'block';
+  document.getElementById('d-result').style.display = 'none';
+  document.getElementById('d-progress-text').textContent = '正在分析聊天记录...';
+
+  try {
+    const today = new Date().toLocaleDateString('zh-CN', {year:'numeric', month:'long', day:'numeric', weekday:'long'});
+    const prompt = buildDailyPrompt(chatText, groupName, issueNo, dCurrentType, today);
+    const url = `${apiBase}/v1/text/chatcompletion_v2`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${dApiKey}` },
+      body: JSON.stringify({
+        model: model,
+        messages: [
+          { role: 'system', content: '你是一个极简主义视觉设计师和日报编辑。输出时只返回HTML代码，不要任何解释。严格遵循用户给出的配色和布局要求。' },
+          { role: 'user', content: prompt }
+        ],
+        max_tokens: 8000,
+        temperature: 0.3
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(`API 错误 (${response.status}): ${err}`);
+    }
+
+    const data = await response.json();
+    let html = data.choices[0].message.content;
+    const htmlMatch = html.match(/```html\s*([\s\S]*?)```/) || html.match(/```\s*([\s\S]*?)```/);
+    if (htmlMatch) html = htmlMatch[1];
+    if (!html.includes('<!DOCTYPE')) {
+      html = `<!DOCTYPE html>\n<html lang="zh-CN">\n<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>群聊日报</title></head>\n<body>\n${html}\n</body>\n</html>`;
+    }
+
+    dGeneratedHtml = html;
+    document.getElementById('d-progress').style.display = 'none';
+    document.getElementById('d-result').style.display = 'block';
+    document.getElementById('d-result-frame').srcdoc = html;
+  } catch (err) {
+    alert('生成失败：' + err.message);
+    document.getElementById('d-progress').style.display = 'none';
+  }
+  document.getElementById('d-btn-generate').disabled = false;
+};
+
+function buildDailyPrompt(chatText, groupName, issueNo, type, today) {
+  const typePrompts = {
+    skincare: `日报包含以下模块：
+· 客户咨询 — 今天处理了哪些客户问题
+· 产品推荐 — 推荐了哪些产品，为什么
+· 治疗要点 — 关键的治疗建议和注意事项
+· 成功案例 — 客户反馈好的案例
+· 注意事项 — 需要提醒客户的重要禁忌
+· 下步跟进 — 需要跟进的客户`,
+
+    business: `日报包含以下模块：
+· 业务动态 — 重要业务信息
+· 决策事项 — 已达成的决定
+· 行动项 — 需执行的任务
+· 风险提醒 — 可能的问题
+· 下步计划 — 接下来的安排`,
+
+    reading: `日报包含以下模块：
+· 今日共读 — 讨论了哪本书/章节
+· 核心观点 — 3-5个核心观点
+· 精彩金句 — 2-3条有分量的发言
+· 思考延伸 — 1-2个值得深想的问题
+· 活跃贡献 — 发言质量最高的3人`,
+
+    general: `日报包含以下模块：
+· 今日热点 — 讨论最多的3个话题
+· 重要信息 — 关键消息
+· 精彩发言 — 最有趣的几条聊天
+· 活跃贡献 — 最活跃的3人
+· 群氛围 — 整体讨论氛围`
+  };
+
+  return `你是一位极简主义视觉设计师。请将以下群聊记录分析结果，生成一个精美的单页HTML日报。
+
+【风格要求 — 严格遵循】
+整体风格：极简、安静、文艺、有呼吸感。像一本精致的独立杂志内页。
+
+配色：
+- 背景：#f2f1ed（浅灰白）
+- 卡片：#ffffff，边框 #e0ddd8
+- 强调色：#2d5a47（墨绿），用于标题和金句
+- 正文：#1a1a1a
+- 副文：#555555
+- 辅助灰：#999999
+
+布局结构（从上到下）：
+1. 顶部区域：左上角群名称（墨绿色，衬线体，24px），右上角期号（等宽字体，12px，下划线墨绿）。下方一行：日期 + 统计数据，灰色小字。
+2. 主内容区：使用非对称网格布局（不要等宽卡片！）。至少一个大卡片占2/3宽度，其余小卡片占1/3。
+3. 每个内容模块：左上角有编号（01、02、03...，等宽字体，11px，灰色），下方是模块标题（墨绿色，加粗），再下方是内容。
+4. 金句区：深色墨绿底色（#2d5a47）全宽条带，白色衬线体文字居中，上下留足呼吸空间。
+5. 底部：一条细分割线，下方灰色小字，左对齐日期，右对齐来源。
+
+字体：
+- 标题和金句用衬线体（"Noto Serif SC", "STSong", serif）
+- 正文用无衬线体（系统字体）
+- 编号和元数据用等宽字体（"SF Mono", "Menlo", monospace）
+
+关键规则：
+- 禁止三等分等宽卡片
+- 禁止纯黑 #000 背景
+- 页面宽度100%，适配手机截图
+- 内嵌CSS，不依赖外部资源
+- 输出完整HTML文件，从<!DOCTYPE html>开始到</html>结束
+- 不要使用emoji作为装饰
+
+群名称：${groupName}
+${issueNo ? '期号：' + issueNo : ''}
+日期：${today}
+
+日报类型要求：
+${typePrompts[type]}
+
+以下是原始聊天记录：
+---
+${chatText}
+---
+
+请直接输出完整的HTML文件代码，不要包含任何解释说明。`;
+}
+
+window.copyDailyHtml = function() {
+  navigator.clipboard.writeText(dGeneratedHtml).then(() => alert('已复制到剪贴板'));
+};
+
+window.downloadDailyHtml = function() {
+  const groupName = document.getElementById('d-group-name').value || '群聊';
+  const date = new Date().toISOString().slice(0, 10);
+  const blob = new Blob([dGeneratedHtml], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${groupName}_日报_${date}.html`;
+  a.click();
+};
+
+window.resetDaily = function() {
+  document.getElementById('d-result').style.display = 'none';
+  document.getElementById('d-progress').style.display = 'none';
+};
+
+// ===== 原有功能 =====
 
 // Submit form
 document.getElementById('form').onsubmit = async (e) => {
@@ -436,11 +1489,11 @@ document.getElementById('form').onsubmit = async (e) => {
     status: '待回复'
   };
 
-  const { data, error } = await sb.from('consultations').insert(row).select();
-  if (error) {
-    alert('提交失败: ' + error.message);
-    return;
-  }
+  // 保存到本地存储
+  row.id = Date.now();
+  row.created_at = new Date().toISOString();
+  items.unshift(row);
+  saveToLocal();
 
   // Show result
   document.getElementById('result').innerHTML = '<h3>提交成功！</h3><p style="margin-top:8px;">我会在24小时内通过微信联系你。</p>';
@@ -465,13 +1518,8 @@ window.logout = function() {
 };
 
 // Load data
-async function load() {
-  const { data, error } = await sb.from('consultations').select('*').order('created_at', { ascending: false });
-  if (error) {
-    document.getElementById('statusBar').textContent = '加载失败: ' + error.message;
-    return;
-  }
-  items = data || [];
+function load() {
+  items = JSON.parse(localStorage.getItem('consultations') || '[]');
   document.getElementById('statusBar').textContent = '共 ' + items.length + ' 条记录';
   render();
 }
@@ -517,13 +1565,18 @@ window.closeModal = function() {
   document.getElementById('modal').classList.remove('open');
 };
 
-window.saveDetail = async function() {
+window.saveDetail = function() {
   const updates = {
     status: document.getElementById('modalStatus').value,
     analysis: document.getElementById('modalAnalysis').value
   };
-  await sb.from('consultations').update(updates).eq('id', curId);
-  await load();
+  // 更新本地数据
+  const idx = items.findIndex(i => i.id === curId);
+  if (idx !== -1) {
+    items[idx] = { ...items[idx], ...updates };
+    saveToLocal();
+  }
+  load();
   closeModal();
 };
 </script>
