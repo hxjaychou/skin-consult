@@ -472,11 +472,11 @@ textarea { min-height: 90px; resize: vertical; }
     <div style="display:flex;gap:16px;">
       <div style="flex:1;">
         <label style="display:block;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;color:#999;">群名称</label>
-        <input type="text" id="d-group-name" placeholder="织梦师读书群" style="width:100%;padding:10px 14px;border:1px solid #ddd;font-size:14px;font-family:inherit;background:#fafafa;" />
+        <input type="text" id="d-group-name" value="百年孤独共读群" style="width:100%;padding:10px 14px;border:1px solid #ddd;font-size:14px;font-family:inherit;background:#fafafa;" />
       </div>
       <div style="flex:1;">
         <label style="display:block;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;color:#999;">期号</label>
-        <input type="text" id="d-issue" placeholder="Vol.12" style="width:100%;padding:10px 14px;border:1px solid #ddd;font-size:14px;font-family:inherit;background:#fafafa;" />
+        <input type="text" id="d-issue" value="Vol.03" style="width:100%;padding:10px 14px;border:1px solid #ddd;font-size:14px;font-family:inherit;background:#fafafa;" />
       </div>
     </div>
   </div>
@@ -526,8 +526,16 @@ textarea { min-height: 90px; resize: vertical; }
     </div>
     <input type="file" id="d-file-input" accept=".txt,.json" style="display:none" onchange="handleDailyFile(event)" />
     <div style="text-align:center;color:#7f8c8d;font-size:13px;margin:16px 0;">—— 或者直接粘贴 ——</div>
-    <textarea id="d-chat-input" placeholder="将微信聊天记录粘贴到这里..." style="width:100%;min-height:200px;padding:14px;border:1px solid #ddd;border-radius:8px;font-size:13px;font-family:'SF Mono',Menlo,Consolas,monospace;line-height:1.6;resize:vertical;background:#fafafa;"></textarea>
-    <span onclick="fillDailyExample()" style="display:inline-block;margin-top:8px;font-size:12px;color:#c0392b;cursor:pointer;text-decoration:underline;">↙ 填入示例数据试试看</span>
+    <textarea id="d-chat-input" style="width:100%;min-height:200px;padding:14px;border:1px solid #ddd;border-radius:8px;font-size:13px;font-family:'SF Mono',Menlo,Consolas,monospace;line-height:1.6;resize:vertical;background:#fafafa;">[2026-06-12 09:12] 树袋熊: 今天读到奥雷里亚诺上校发动三十二次起义都失败了，真的太震撼了
+[2026-06-12 09:15] 月酱: 马尔克斯写的不是历史，是人类重复犯错的循环
+[2026-06-12 09:18] 小七: 上校最后熔了小金鱼又做出来，这种循环感太强了
+[2026-06-12 09:20] 树袋熊: 对！而且布恩迪亚家族每一代都在重复相似的命运，名字都一样
+[2026-06-12 09:22] 月酱: 这就是魔幻现实主义的精髓——用荒诞揭示真实
+[2026-06-12 09:25] 小七: 我最喜欢丽贝卡吃土那段，太魔幻了但又觉得合理
+[2026-06-12 09:28] 树袋熊: 今天讨论：你们觉得马孔多的覆灭是注定的吗？
+[2026-06-12 09:30] 月酱: 从家族第一代就注定了，乱伦的诅咒只是表象
+[2026-06-12 09:32] 小七: 我觉得是孤独造成的，每个人都活在自己的世界里
+[2026-06-12 09:35] 树袋熊: 今天的讨论太精彩了！明天继续读最后一代</textarea>
   </div>
 
   <button onclick="generateDaily()" id="d-btn-generate" style="width:100%;padding:16px;background:#1a1a1a;color:white;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;margin-top:20px;transition:0.2s;">
@@ -562,9 +570,13 @@ textarea { min-height: 90px; resize: vertical; }
 
     <div class="card" style="background:#fff;">
       <label>卡片主题</label>
-      <input id="xhs-title" placeholder="如：脚气反复发作的3个原因" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
+      <input id="xhs-title" value="《百年孤独》最扎心的5个真相" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
       <label>核心要点（每行一条）</label>
-      <textarea id="xhs-points" placeholder="真菌没杀干净就停药，是复发主因&#10;潮湿环境是真菌温床，鞋袜要透气&#10;巩固期用米浮泡沫液，防止卷土重来" style="width:100%;min-height:120px;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;resize:vertical;margin-bottom:12px;"></textarea>
+      <textarea id="xhs-points" style="width:100%;min-height:120px;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;resize:vertical;margin-bottom:12px;">孤独是布恩迪亚家族的宿命，每一代都在重复
+乱伦的诅咒只是表象，真正的枷锁是封闭与隔绝
+上校发动32次起义，最后却熔了小金鱼又重做
+丽贝卡吃土不是魔幻，是绝望到极致的表达
+马孔多的覆灭，是所有乌托邦的终局</textarea>
       <label>风格</label>
       <select id="xhs-style" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:16px;">
         <option value="minimal">极简文艺（墨绿+白）</option>
@@ -611,9 +623,21 @@ textarea { min-height: 90px; resize: vertical; }
 
     <div class="card" style="background:#fff;">
       <label>文章标题</label>
-      <input id="wx-title" placeholder="如：国产AI工具选择指南" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
+      <input id="wx-title" value="《百年孤独》：为什么我们都在重复家族的命运？" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
       <label>文章内容</label>
-      <textarea id="wx-content" placeholder="粘贴你的文章正文，或写下核心要点..." style="width:100%;min-height:160px;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;resize:vertical;margin-bottom:12px;"></textarea>
+      <textarea id="wx-content" style="width:100%;min-height:160px;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;resize:vertical;margin-bottom:12px;">马尔克斯在《百年孤独》里写了一个魔咒：布恩迪亚家族的每一代都在重复相似的命运。名字一样，性格一样，结局也一样。
+
+这不只是小说——我们每个人都在重复某种模式。
+
+有人重复父母的婚姻模式，有人重复童年的匮乏感，有人重复"努力-放弃-再努力"的循环。
+
+为什么会这样？马尔克斯给出的答案是：孤独。
+
+当一个人活在自己的世界里，不去真正理解和连接他人，他就只能用熟悉的方式应对一切。熟悉=安全，哪怕这个模式是痛苦的。
+
+打破循环的关键不是意志力，而是觉察。当你能说出"我正在重复什么"，改变就开始了。
+
+今天读到奥雷里亚诺上校最后熔了小金鱼又重新做的那段，突然明白：循环不是诅咒，是未被看见的孤独在说话。</textarea>
       <label>排版风格</label>
       <select id="wx-style" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:16px;">
         <option value="editorial">编辑风（墨绿+衬线体）</option>
@@ -649,13 +673,17 @@ textarea { min-height: 90px; resize: vertical; }
 
     <div class="card" style="background:#fff;">
       <label>书名</label>
-      <input id="rd-book" placeholder="如：《思考，快与慢》" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
+      <input id="rd-book" value="《百年孤独》" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
       <label>作者</label>
-      <input id="rd-author" placeholder="如：丹尼尔·卡尼曼" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
+      <input id="rd-author" value="加西亚·马尔克斯" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
       <label>核心笔记（每行一条）</label>
-      <textarea id="rd-notes" placeholder="系统1是快思考，自动化的；系统2是慢思考，需要专注力&#10;锚定效应：你看到的第一个数字会影响后面的判断&#10;我们总是过度依赖直觉，而直觉往往只是偏见的另一种形式" style="width:100%;min-height:120px;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;resize:vertical;margin-bottom:12px;"></textarea>
+      <textarea id="rd-notes" style="width:100%;min-height:120px;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;resize:vertical;margin-bottom:12px;">布恩迪亚家族七代人都在重复相似的命运，名字一样，性格一样，结局也一样
+奥雷里亚诺上校发动三十二次起义，全部失败，最后熔了小金鱼又重新做
+丽贝卡吃土不是魔幻，是绝望到极致的表达——当人无法改变处境时，只能用荒诞来应对
+马孔多从建立到覆灭，是一个乌托邦从理想到幻灭的完整周期
+孤独是这个家族的宿命，但不是因为命运，而是因为每一代都选择封闭自己</textarea>
       <label>一句话感悟</label>
-      <input id="rd-insight" placeholder="如：直觉不是敌人，但不能只靠直觉" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
+      <input id="rd-insight" value="循环不是诅咒，是未被看见的孤独在说话。" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
       <label>卡片风格</label>
       <select id="rd-style" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:16px;">
         <option value="sketchnote">手绘笔记风（暖纸+手写体）</option>
@@ -690,9 +718,19 @@ textarea { min-height: 90px; resize: vertical; }
 
     <div class="card" style="background:#fff;">
       <label>今日主题</label>
-      <input id="gr-topic" placeholder="如：关于'整合不起来'这件事" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
+      <input id="gr-topic" value="关于'整合不起来'这件事" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;">
       <label>我的感悟</label>
-      <textarea id="gr-content" placeholder="写下你此刻的想法、感受、反思..." style="width:100%;min-height:160px;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;resize:vertical;margin-bottom:12px;"></textarea>
+      <textarea id="gr-content" style="width:100%;min-height:160px;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;resize:vertical;margin-bottom:12px;">手里有太多东西，但就是串不起来。
+
+学了计算机，学了心理学，学了教育学，考了营养师证，考了心理咨询师证，每个方向都懂一点，但没有一个能成为"主赛道"。
+
+和AI协作的时候，我发现了一个突破口：我不需要自己会所有技术，只需要会指挥。Her做策划，Codex做执行，我当总策划人。
+
+但这个发现本身也让我困惑——为什么我花了这么多年才明白，整合的关键不是"学会更多"，而是"放弃一些"？
+
+今天读到《百年孤独》里布恩迪亚家族的命运，突然意识到：他们的问题不是能力不够，而是每一代都选择封闭自己。我也是一样——什么都想做，结果什么都做不深。
+
+也许整合的起点，不是找到"最正确的那条路"，而是允许自己只走一条路。</textarea>
       <label>情绪基调</label>
       <select id="gr-mood" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:16px;">
         <option value="reflective">沉思（深蓝+月光白）</option>
