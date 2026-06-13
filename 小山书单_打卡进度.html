@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>小山书单 · 打卡进度</title>
+<style>
+  :root {
+    --bg: #FBF9F1;
+    --text: #1D1D1F;
+    --text-mid: #6E6E73;
+    --text-dim: #ACACB0;
+    --accent: #6B4E3D;
+    --accent-light: #E8DED5;
+    --accent-hover: #5A4234;
+    --rule: #E5E5EA;
+    --green: #5A8B5A;
+    --green-light: #E8F1E0;
+    --font: 'KingHwa_OldSong', 'PingFang SC', 'Noto Serif SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+    --radius: 12px;
+    --shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    padding: 32px 20px 48px;
+    max-width: 800px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .header { text-align: center; margin-bottom: 28px; }
+  .header h1 {
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .header .subtitle {
+    font-size: clamp(14px, 3vw, 18px);
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    margin: 4px 0 16px;
+  }
+  .header .accent-line {
+    width: 48px; height: 3px;
+    background: var(--accent);
+    margin: 0 auto;
+  }
+
+  /* ── Progress Bar ── */
+  .progress-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 16px 20px;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    flex-wrap: wrap;
+  }
+  .progress-stats { flex-shrink: 0; text-align: center; }
+  .progress-stats .number {
+    font-size: clamp(28px, 5vw, 36px);
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .progress-stats .label { font-size: 13px; color: var(--text-mid); white-space: nowrap; }
+  .progress-track {
+    flex: 1; min-width: 80px;
+    height: 10px;
+    background: var(--rule);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; width: 0%;
+    background: var(--green);
+    border-radius: 5px;
+    transition: width 0.4s ease;
+  }
+  .progress-percent {
+    font-size: clamp(16px, 3vw, 20px);
+    font-weight: 600;
+    color: var(--green);
+    min-width: 44px;
+    text-align: right;
+  }
+
+  /* ── Sync Bar ── */
+  .sync-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    padding: 8px 16px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+  }
+  .sync-status {
+    font-size: 13px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sync-status .dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--text-dim);
+  }
+  .sync-status .dot.online {
+    background: var(--green);
+    box-shadow: 0 0 4px rgba(90,139,90,0.5);
+  }
+
+  .sync-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .sync-btn {
+    font: 400 12px/1 var(--font);
+    color: var(--text-mid);
+    background: transparent;
+    border: 1px solid var(--rule);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .sync-btn:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+  /* ── Action Buttons ── */
+  .actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .actions button {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 14px;
+    border: 1.5px solid var(--accent);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--accent);
+    font: 500 clamp(13px, 2.5vw, 15px)/1 var(--font);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .actions button:hover { background: var(--accent-light); }
+  .actions button.primary {
+    background: var(--accent);
+    color: white;
+  }
+  .actions button.primary:hover { background: var(--accent-hover); }
+  .actions button.warning {
+    border-color: #C0392B;
+    color: #C0392B;
+  }
+  .actions button.warning:hover { background: #FADBD8; }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #1D1D1F;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font: 400 14px/1 var(--font);
+    opacity: 0;
+    transition: all 0.35s ease;
+    pointer-events: none;
+    z-index: 999;
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── Category ── */
+  .category {
+    margin-bottom: 14px;
+    border-radius: var(--radius);
+    background: white;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .category-header:active { background: rgba(0,0,0,0.03); }
+  .category-header .name {
+    font-size: clamp(17px, 3vw, 20px);
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .category-header .cat-progress {
+    font-size: clamp(13px, 2.2vw, 14px);
+    color: var(--text-mid);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .category-header .cat-progress .count-done { color: var(--green); font-weight: 600; }
+  .category-header .arrow {
+    font-size: 12px; color: var(--text-dim);
+    transition: transform 0.25s ease;
+  }
+  .category-header .arrow.open { transform: rotate(180deg); }
+
+  .category-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .category-body.open { max-height: 3000px; }
+
+  /* ── Book Item ── */
+  .book-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--rule);
+    transition: background 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .book-item:active { background: rgba(0,0,0,0.02); }
+
+  .book-item input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: clamp(22px, 4vw, 24px);
+    height: clamp(22px, 4vw, 24px);
+    min-width: clamp(22px, 4vw, 24px);
+    border: 2px solid var(--text-dim);
+    border-radius: 5px;
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .book-item input[type="checkbox"]:checked {
+    border-color: var(--green);
+    background: var(--green);
+  }
+  .book-item input[type="checkbox"]:checked::after {
+    content: '\2713';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: clamp(14px, 2.5vw, 16px);
+    font-weight: 700;
+    line-height: 1;
+  }
+  .book-item .title {
+    font-size: clamp(14px, 2.6vw, 16px);
+    color: var(--text);
+    transition: color 0.2s;
+    line-height: 1.5;
+    word-break: break-all;
+  }
+  .book-item input[type="checkbox"]:checked ~ .title {
+    color: var(--text-dim);
+    text-decoration: line-through;
+  }
+
+  /* ── Footer ── */
+  .footer-note {
+    text-align: center;
+    margin-top: 32px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+    font-size: clamp(12px, 2.2vw, 14px);
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+  .footer-note .signature { font-size: clamp(10px, 2vw, 12px); }
+
+  /* ── Mobile Fine-tune ── */
+  @media (max-width: 400px) {
+    body { padding: 20px 12px 36px; }
+    .progress-section { padding: 12px 14px; gap: 8px; }
+    .category-header { padding: 12px 14px; }
+    .book-item { padding: 8px 14px; gap: 10px; }
+    .actions button { padding: 10px 8px; font-size: 13px; }
+  }
+  @media (max-width: 360px) {
+    .sync-bar { flex-direction: column; align-items: stretch; text-align: center; }
+    .sync-actions { justify-content: center; }
+    .actions { flex-direction: column; }
+  }
+</style>
+<!-- 嵌入式进度数据：导出时写入此标签，迁移时自动读取 -->
+<script id="embedded-progress" type="application/json">{}</script>
+</head>
+<body>
+
+<div class="header">
+  <h1>小山老师书单</h1>
+  <p class="subtitle">14个分类 · 140本经典</p>
+  <div class="accent-line"></div>
+</div>
+
+<div class="progress-section">
+  <div class="progress-stats">
+    <div class="number" id="doneCount">0</div>
+    <div class="label">/ 140 本已读</div>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-percent" id="progressPercent">0%</div>
+</div>
+
+<!-- 同步工具栏 -->
+<div class="sync-bar">
+  <div class="sync-status">
+    <span class="dot" id="syncDot"></span>
+    <span id="syncText">本机存储 · 离线可用</span>
+  </div>
+  <div class="sync-actions">
+    <button class="sync-btn" onclick="copyShareLink()" title="复制进度链接到剪贴板">复制链接</button>
+    <button class="sync-btn" onclick="exportSelf()">导出含进度</button>
+    <button class="sync-btn" onclick="importProgress()">导入进度</button>
+  </div>
+</div>
+
+<div class="actions">
+  <button onclick="expandAll()">展开全部</button>
+  <button onclick="collapseAll()">收起全部</button>
+  <button class="primary" onclick="resetAll()">重置进度</button>
+</div>
+
+<div id="bookList"></div>
+
+<div class="footer-note">
+  根据小山老师的共读《百年孤独》课程录音整理<br>
+  <span class="signature">树袋熊战功赫赫</span>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const booksData = [
+  { cat: '西方小说', items: [
+    '《百年孤独》加西亚·马尔克斯', '《战争与和平》列夫·托尔斯泰', '《卡拉马佐夫兄弟》陀思妥耶夫斯基',
+    '《悲惨世界》维克多·雨果', '《一九八四》乔治·奥威尔', '《简·爱》夏洛蒂·勃朗特',
+    '《局外人》阿尔贝·加缪', '《西线无战事》埃里希·玛利亚·雷马克', '《杀死一只知更鸟》哈珀·李',
+    '《刀锋》威廉·萨默塞特·毛姆'
+  ]},
+  { cat: '中国现代小说', items: [
+    '《受戒》汪曾祺', '《城南旧事》林海音', '《妻妾成群》苏童', '《霸王别姬》李碧华',
+    '《黄金时代》王小波', '《看上去很美》王朔', '《在细雨中呼喊》余华', '《棋王·树王·孩子王》阿城',
+    '《生死疲劳》莫言', '《白鹿原》陈忠实'
+  ]},
+  { cat: '中国近代小说', items: [
+    '《呐喊》鲁迅', '《彷徨》鲁迅', '《边城》沈从文', '《茶馆》老舍', '《骆驼祥子》老舍',
+    '《呼兰河传》萧红', '《半生缘》张爱玲', '《京华烟云》林语堂', '《围城》钱钟书', '《传奇》张爱玲'
+  ]},
+  { cat: '中国古代小说', items: [
+    '《红楼梦》曹雪芹', '《三国演义》罗贯中', '《水浒传》施耐庵', '《西游记》吴承恩',
+    '《金瓶梅》兰陵笑笑生', '《聊斋志异》蒲松龄', '《儒林外史》吴敬梓', '《封神演义》许仲琳编',
+    '《东周列国志》冯梦龙、蔡元放', '《镜花缘》李汝珍'
+  ]},
+  { cat: '中国散文杂文', items: [
+    '《朝花夕拾》鲁迅', '《雨天的书》周作人', '《汪曾祺散文集》汪曾祺', '《雅舍小品》梁实秋',
+    '《朱自清散文集》朱自清', '《我的精神家园》王小波', '《沉默的大多数》王小波', '《我与地坛》史铁生',
+    '《如何成为一个怪物》冯唐', '《文化苦旅》余秋雨'
+  ]},
+  { cat: '历史', items: [
+    '《中国历代政治得失》钱穆', '《国史大纲》钱穆', '《万历十五年》黄仁宇', '《叫魂：1768年中国妖术大恐慌》孔飞力',
+    '《大明王朝1566》刘和平', '《近代中国社会的新陈代谢》陈旭麓', '《天朝的崩溃：鸦片战争再研究》茅海建',
+    '《东晋门阀政治》田余庆', '《历史研究》汤因比', '《全球通史》斯塔夫里阿诺斯'
+  ]},
+  { cat: '哲学', items: [
+    '《易经》三圣', '《道德经》老子', '《中国哲学简史》冯友兰', '《理想国》柏拉图',
+    '《存在与虚无》让-保罗·萨特', '《纯粹理性批判》伊曼努尔·康德', '《正义论》约翰·罗尔斯',
+    '《查拉图斯特拉如是说》弗里德里希·威廉·尼采', '《刘擎西方现代思想讲义》刘擎', '《苏菲的世界》乔斯坦·贾德'
+  ]},
+  { cat: '国学', items: [
+    '《论语》孔子门生编订', '《庄子》庄子', '《诗经》', '《史记》司马迁', '《资治通鉴》司马光',
+    '《传习录》王阳明门生编订', '《世说新语》刘义庆编订', '《古文观止》吴楚材、吴调侯编订',
+    '《唐诗三百首》孙洙编订', '《宋词三百首》朱孝臧编订'
+  ]},
+  { cat: '心理学', items: [
+    '《梦的解析》西格蒙德·弗洛伊德', '《亲密关系》罗兰·米勒', '《心理学与生活》理查德·格里格；菲利普·津巴多',
+    '《乌合之众》古斯塔夫·勒庞', '《最好的告别》阿图·葛文德', '《少有人走的路》M·斯科特·派克',
+    '《社会性动物》埃利奥特·阿伦森', '《善终守护师》柴田久美子', '《被讨厌的勇气》岸见一郎；古贺史健',
+    '《非暴力沟通》马歇尔·卢森堡'
+  ]},
+  { cat: '社科', items: [
+    '《毛选》毛泽东', '《异类》马尔科姆·格拉德威尔', '《乡土中国》费孝通', '《美的历程》李泽厚',
+    '《娱乐至死》尼尔·波兹曼', '《人类简史》尤瓦尔·诺亚·赫拉利', '《枪炮、病菌与钢铁》贾雷德·戴蒙德',
+    '《菊与刀》鲁思·本尼迪克特', '《置身事内》兰小欢', '《潜规则》吴思'
+  ]},
+  { cat: '科普', items: [
+    '《时间简史》斯蒂芬·威廉·霍金', '《上帝掷骰子吗》曹天元', '《时间的秩序》卡洛·罗韦利',
+    '《自私的基因》理查德·道金斯', '《王立铭进化论讲义》王立铭', '《从一到无穷大》乔治·伽莫夫',
+    '《大脑的故事》大卫·伊格曼', '《昆虫记》让-亨利·卡西米尔·法布尔', '《how to》兰道尔·门罗',
+    '《what if》兰道尔·门罗'
+  ]},
+  { cat: '商业', items: [
+    '《定位》艾·里斯；杰克·特劳特', '《基业长青》吉姆·柯林斯；杰里·波拉斯',
+    '《创新者的窘境》克莱顿·克里斯坦森', '《引爆点》马尔科姆·格拉德威尔', '《隐形冠军》赫尔曼·西蒙',
+    '《失控》凯文·凯利', '《只有偏执狂才能生存》安迪·格鲁夫', '《浩荡·跌荡·激荡三部曲》吴晓波',
+    '《薛兆丰经济学讲义》薛兆丰', '《追求卓越》托马斯·彼得斯；罗伯特·沃特曼'
+  ]},
+  { cat: '传记', items: [
+    '《人类群星闪耀时》斯蒂芬·茨威格', '《梵高传》欧文·斯通', '《李鸿章传》梁启超',
+    '《史蒂夫·乔布斯传》沃尔特·艾萨克森', '《别闹了费曼先生》理查德·费曼', '《苏东坡传》林语堂',
+    '《我们仨》杨绛', '《从文自传》沈从文', '《我的前半生》溥仪', '《相信》蔡磊'
+  ]},
+  { cat: '军事', items: [
+    '《孙子兵法》孙武', '《战争论》克劳塞维茨', '《第二次世界大战史》利德尔·哈特', '《海权论》阿尔弗雷德·塞耶·马汉',
+    '《制空权》朱利奥·杜黑', '《第二次世界大战回忆录》丘吉尔', '《第三帝国的兴亡》威廉·夏伊勒',
+    '《南京大屠杀》张纯如', '《二战信息图》让·洛佩兹；樊尚·贝尔纳；尼古拉·奥宾', '《中国军事史》郭汝瑰'
+  ]}
+];
+
+const STORAGE_KEY = 'xiaoshan_booklist_progress';
+
+// ════ Persistence ════
+
+function getEmbeddedProgress() {
+  const el = document.getElementById('embedded-progress');
+  if (!el) return {};
+  try {
+    const raw = el.textContent.trim();
+    if (!raw || raw === '{}') return {};
+    return JSON.parse(raw);
+  } catch { return {}; }
+}
+
+function getProgress() {
+  let local = {};
+  try { local = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch {}
+  const embed = getEmbeddedProgress();
+  return { ...embed, ...local };
+}
+
+function saveProgress(p) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+}
+
+// 首次加载：嵌入数据 → localStorage 迁移
+(function migrateEmbedded() {
+  const embed = getEmbeddedProgress();
+  const keys = Object.keys(embed);
+  if (keys.length === 0) return;
+  let local = {};
+  try { local = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch {}
+  let changed = false;
+  for (const k of keys) {
+    if (embed[k] && !local[k]) { local[k] = true; changed = true; }
+  }
+  if (changed) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(local));
+    setTimeout(() => showToast('已从嵌入数据恢复 ' + Object.keys(local).length + ' 本'), 300);
+  }
+  const el = document.getElementById('embedded-progress');
+  if (el) el.textContent = '{}';
+})();
+
+// ════ Toast ════
+
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ════ 导出：下载内嵌进度的 HTML ════
+
+function exportSelf() {
+  const progress = getProgress();
+  const encoded = JSON.stringify(progress).replace(/</g, '\\u003C');
+  const doctype = '<!DOCTYPE html>\n';
+  const html = doctype + document.documentElement.outerHTML;
+  const newHtml = html.replace(
+    /(<script id="embedded-progress"[^>]*>)([^<]*)(<\/script>)/,
+    '$1' + encoded + '$3'
+  );
+  const blob = new Blob([newHtml], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '小山书单_已标记_' + new Date().toISOString().slice(0, 10) + '.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+  showToast('已导出含进度的 HTML 文件');
+  document.getElementById('syncText').textContent = '已导出 ' + Object.keys(progress).length + ' 本';
+}
+
+// ════ 导入进度 ════
+
+function importProgress() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.html,.json';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const text = ev.target.result;
+      let imported = {};
+      try {
+        imported = JSON.parse(text);
+      } catch {
+        try {
+          const m = text.match(/<script id="embedded-progress"[^>]*>([^<]*)<\/script>/);
+          if (m && m[1].trim()) imported = JSON.parse(m[1].trim());
+        } catch {}
+      }
+      const keys = Object.keys(imported);
+      if (!keys.length) { showToast('未找到可导入的进度数据'); return; }
+      const cur = getProgress();
+      saveProgress({ ...cur, ...imported });
+      showToast('已导入 ' + keys.length + ' 本');
+      document.getElementById('syncText').textContent = '已导入 ' + keys.length + ' 本';
+      render();
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+// ════ 复制分享链接（URL fragment 编码进度） ════
+
+function copyShareLink() {
+  const progress = getProgress();
+  const keys = Object.keys(progress).filter(k => progress[k]);
+  const code = btoa(JSON.stringify(keys));
+  const url = location.href.split('#')[0] + '#sync=' + code;
+  const ok = () => {
+    showToast('进度链接已复制');
+    document.getElementById('syncText').textContent = '链接已复制';
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(ok).catch(() => fallbackCopy(url));
+  } else {
+    fallbackCopy(url);
+  }
+}
+function fallbackCopy(t) {
+  const ta = document.createElement('textarea');
+  ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+  document.body.removeChild(ta); showToast('进度链接已复制');
+}
+
+// ════ 从 URL 恢复进度 ════
+
+(function restoreFromHash() {
+  try {
+    const hash = location.hash;
+    if (!hash || !hash.includes('sync=')) return;
+    const code = hash.split('sync=')[1].split('&')[0];
+    const keys = JSON.parse(atob(code));
+    if (!Array.isArray(keys) || !keys.length) return;
+    const p = {};
+    keys.forEach(k => { p[k] = true; });
+    saveProgress({ ...getProgress(), ...p });
+    showToast('从链接恢复 ' + keys.length + ' 本');
+    history.replaceState(null, '', location.pathname + location.search);
+  } catch {}
+})();
+
+// ════ Render ════
+
+function render() {
+  const progress = getProgress();
+  const container = document.getElementById('bookList');
+  container.innerHTML = '';
+  booksData.forEach((cat, ci) => {
+    const div = document.createElement('div');
+    div.className = 'category';
+    const done = cat.items.filter((_, bi) => progress[ci + '-' + bi]).length;
+    const hdr = document.createElement('div');
+    hdr.className = 'category-header';
+    hdr.onclick = () => {
+      hdr.nextElementSibling.classList.toggle('open');
+      hdr.querySelector('.arrow').classList.toggle('open');
+    };
+    hdr.innerHTML = '<span class="name">' + cat.cat + '</span>'
+      + '<span class="cat-progress"><span class="count-done">' + done + '</span>/' + cat.items.length
+      + '<span class="arrow">&#9662;</span></span>';
+    const body = document.createElement('div');
+    body.className = 'category-body';
+    cat.items.forEach((book, bi) => {
+      const key = ci + '-' + bi;
+      const item = document.createElement('div');
+      item.className = 'book-item';
+      item.innerHTML = '<input type="checkbox" id="cb-' + key + '"' + (progress[key] ? ' checked' : '') + '>'
+        + '<label class="title" for="cb-' + key + '">' + book + '</label>';
+      item.querySelector('input').addEventListener('change', function () {
+        progress[key] = this.checked;
+        saveProgress(progress);
+        updateStats();
+        const hdrSpan = item.closest('.category').querySelector('.cat-progress .count-done');
+        const all = item.closest('.category-body').querySelectorAll('.book-item input');
+        hdrSpan.textContent = Array.from(all).filter(i => i.checked).length;
+      });
+      body.appendChild(item);
+    });
+    div.appendChild(hdr);
+    div.appendChild(body);
+    container.appendChild(div);
+  });
+  updateStats();
+}
+
+function updateStats() {
+  const p = getProgress();
+  let total = 0;
+  for (let ci = 0; ci < booksData.length; ci++)
+    for (let bi = 0; bi < booksData[ci].items.length; bi++)
+      if (p[ci + '-' + bi]) total++;
+  const pct = total === 0 ? 0 : Math.round(total / 140 * 100);
+  document.getElementById('doneCount').textContent = total;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPercent').textContent = pct + '%';
+  const dot = document.getElementById('syncDot');
+  dot.className = 'dot online';
+  const n = Object.keys(p).length;
+  document.getElementById('syncText').textContent = '本机已保存（' + n + ' 本）';
+}
+
+function expandAll() {
+  document.querySelectorAll('.category-body').forEach(b => b.classList.add('open'));
+  document.querySelectorAll('.arrow').forEach(a => a.classList.add('open'));
+}
+function collapseAll() {
+  document.querySelectorAll('.category-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.arrow').forEach(a => a.classList.remove('open'));
+}
+function resetAll() {
+  if (!confirm('确定要重置所有打卡进度吗？')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  showToast('已重置');
+  render();
+}
+
+document.addEventListener('DOMContentLoaded', render);
+</script>
+</body>
+</html>
