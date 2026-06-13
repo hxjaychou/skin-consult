@@ -31,20 +31,20 @@ nav .links { display: flex; align-items: center; gap: 0; }
 nav .links a { text-decoration: none; color: var(--muted); font-size: 14px; padding: 6px 12px; border-bottom: 2px solid transparent; transition: var(--transition); white-space: nowrap; }
 nav .links a:hover, nav .links a.active { color: var(--primary); border-bottom-color: var(--primary); }
 /* 二级导航行 */
-nav .nav-secondary { display: none; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 8px 12px; gap: 8px; border-top: 1px solid rgba(0,0,0,0.04); }
+nav .nav-secondary { display: none; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 8px 12px; gap: 8px; border-top: 1px solid rgba(0,0,0,0.04); flex-wrap: nowrap; }
 nav .nav-secondary::-webkit-scrollbar { display: none; }
 nav .nav-secondary a { white-space: nowrap; flex-shrink: 0; font-size: 13px; padding: 6px 14px; border-radius: 20px; text-decoration: none; color: var(--muted); background: rgba(0,0,0,0.04); transition: var(--transition); }
 nav .nav-secondary a:hover { background: rgba(0,0,0,0.08); color: var(--text); }
 nav .nav-secondary a.active { background: var(--primary); color: #fff; }
 
 /* ---- Section ---- */
-section { display: none; min-height: 100vh; padding: 120px 20px 40px; max-width: 720px; margin: 0 auto; }
+section { display: none; min-height: 100vh; padding: 120px 20px 40px; max-width: 720px; margin: 0 auto; overflow: visible; }
 section#home { display: flex; flex-direction: column; }
 section#my { max-width: 100%; }
 
 /* ---- Typography ---- */
 h1 { font-size: 32px; font-weight: 800; color: var(--primary); margin-bottom: 12px; letter-spacing: -0.5px; }
-h2 { font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 20px; }
+h2 { font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 20px; line-height: 1.3; }
 h3 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
 
 /* ---- Card ---- */
