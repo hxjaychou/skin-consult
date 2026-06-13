@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>浙江技术选考 · 65天备考计划</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #f5f5f0; --sidebar-bg: #2c2c2c; --sidebar-text: #ccc; --sidebar-active: #e8c547;
+  --card-bg: #fff; --text: #222; --text-light: #666; --border: #ddd;
+  --accent: #b8860b; --accent-light: #f0e6c8; --done: #4caf50; --today: #ff6b35;
+  --phase1: #5b8def; --phase2: #e8a838; --phase3: #e06040; --phase4: #4a9e6f;
+}
+body { font-family: -apple-system, "Microsoft YaHei", "PingFang SC", sans-serif; display: flex; height: 100vh; background: var(--bg); color: var(--text); overflow: hidden; }
+
+/* SIDEBAR */
+#sidebar { width: 280px; min-width: 280px; background: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; overflow: hidden; }
+#sidebar-header { padding: 16px 14px 10px; border-bottom: 1px solid #444; }
+#sidebar-header h1 { font-size: 15px; color: #fff; font-weight: 600; }
+#sidebar-header .sub { font-size: 11px; color: #999; margin-top: 2px; }
+#sidebar-header .today-badge { display: inline-block; margin-top: 6px; font-size: 11px; background: var(--today); color: #fff; padding: 2px 8px; border-radius: 8px; }
+#day-list { flex: 1; overflow-y: auto; padding: 6px 0; }
+#day-list::-webkit-scrollbar { width: 4px; }
+#day-list::-webkit-scrollbar-thumb { background: #555; border-radius: 2px; }
+
+.phase-group { margin: 2px 0; }
+.phase-header { display: flex; align-items: center; padding: 8px 14px; cursor: pointer; font-size: 12px; font-weight: 600; user-select: none; transition: .15s; }
+.phase-header:hover { background: rgba(255,255,255,.08); }
+.phase-header .arrow { margin-right: 6px; font-size: 10px; transition: transform .2s; }
+.phase-header .arrow.open { transform: rotate(90deg); }
+.phase-header .tag { font-size: 10px; padding: 1px 6px; border-radius: 8px; margin-left: 8px; color: #fff; }
+.phase-header .days-range { font-size: 10px; color: #888; margin-left: auto; }
+
+.week-group { overflow: hidden; }
+.week-header { display: flex; align-items: center; padding: 5px 14px 5px 28px; cursor: pointer; font-size: 11px; color: #aaa; user-select: none; transition: .15s; }
+.week-header:hover { color: #ddd; }
+.week-header .arrow { margin-right: 5px; font-size: 9px; transition: transform .2s; }
+.week-header .arrow.open { transform: rotate(90deg); }
+
+.day-item { display: flex; align-items: center; padding: 5px 14px 5px 42px; cursor: pointer; font-size: 12px; border-left: 3px solid transparent; transition: .12s; position: relative; }
+.day-item:hover { background: rgba(255,255,255,.06); }
+.day-item.active { background: rgba(255,255,255,.1); border-left-color: var(--sidebar-active); color: #fff; }
+.day-item .date { font-size: 10px; color: #777; margin-right: 6px; min-width: 38px; }
+.day-item .title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.day-item .check { width: 14px; height: 14px; border: 2px solid #666; border-radius: 3px; margin-right: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; transition: .15s; }
+.day-item .check.done { background: var(--done); border-color: var(--done); }
+.day-item.is-today { border-left-color: var(--today); }
+.day-item.is-today .date { color: var(--today); font-weight: 700; }
+.day-item.is-rest { opacity: .5; }
+.day-item.is-rest .title { font-style: italic; }
+
+/* MAIN */
+#main { flex: 1; overflow-y: auto; padding: 28px 36px; min-width: 0; }
+#main::-webkit-scrollbar { width: 6px; }
+#main::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+.day-detail { max-width: 800px; margin: 0 auto; animation: fadeIn .25s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.detail-header { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid var(--border); }
+.detail-header .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.detail-header .phase-badge { font-size: 11px; padding: 2px 10px; border-radius: 10px; color: #fff; }
+.detail-header h2 { font-size: 22px; margin-top: 8px; }
+.detail-header .date-sub { font-size: 13px; color: var(--text-light); margin-top: 4px; }
+.detail-header .time-est { display: inline-block; margin-top: 6px; font-size: 12px; background: var(--accent-light); color: var(--accent); padding: 2px 10px; border-radius: 10px; }
+
+.detail-section { margin-bottom: 20px; }
+.detail-section h3 { font-size: 15px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 6px; }
+.detail-section ul, .detail-section ol { padding-left: 20px; font-size: 13.5px; line-height: 1.8; }
+.detail-section li { margin-bottom: 2px; }
+.detail-section li .note { color: var(--text-light); font-size: 12px; }
+.detail-section li .tag-imp { display: inline-block; font-size: 10px; background: #fff3cd; color: #856404; padding: 0 6px; border-radius: 4px; margin-left: 4px; }
+.detail-section li .tag-trap { display: inline-block; font-size: 10px; background: #f8d7da; color: #721c24; padding: 0 6px; border-radius: 4px; margin-left: 4px; }
+
+.template-box { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px; padding: 12px 16px; margin: 8px 0; font-family: "Consolas","Courier New",monospace; font-size: 12.5px; line-height: 1.6; overflow-x: auto; white-space: pre; }
+
+.weak-practice { background: #fff8e1; border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 8px 0; }
+.weak-practice h4 { font-size: 13px; color: var(--accent); margin-bottom: 4px; }
+
+.code-ref { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.code-ref a { font-size: 12px; background: #e8f0fe; color: #1a56db; padding: 3px 10px; border-radius: 12px; text-decoration: none; cursor: pointer; }
+.code-ref a:hover { background: #d2e3fc; }
+
+/* EMPTY STATE */
+#empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #999; }
+#empty-state h2 { font-size: 22px; margin-bottom: 8px; color: #bbb; }
+#empty-state p { font-size: 14px; }
+
+/* Progress bar */
+#progress-bar { padding: 8px 14px; border-top: 1px solid #444; }
+#progress-bar .bar-track { height: 4px; background: #444; border-radius: 2px; overflow: hidden; }
+#progress-bar .bar-fill { height: 100%; background: var(--done); border-radius: 2px; transition: width .3s; }
+#progress-bar .prog-text { font-size: 10px; color: #888; margin-top: 3px; display: flex; justify-content: space-between; }
+
+/* Responsive */
+@media (max-width: 700px) { #sidebar { width: 200px; min-width: 200px; } #main { padding: 16px; } }
+/* ===== 批注工具（六脉神笔）===== */
+#annotToggle{position:fixed;bottom:24px;right:24px;z-index:9997;width:56px;height:56px;border-radius:50%;background:#3b82f6;color:#fff;font-size:26px;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4);transition:all .3s;display:flex;align-items:center;justify-content:center}
+#annotToggle:hover{transform:scale(1.1);background:#2563eb}
+#annotToggle.active{background:#ef4444}
+#annotCanvas{position:absolute;top:0;left:0;z-index:9998;display:none;touch-action:none;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cg transform='translate(0,-25)%20rotate(135,8,33)'%3E%3Cpolygon points='2,4 14,4 15,20 1,20' fill='%23FCD34D' stroke='%23333' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpolygon points='1,20 15,20 13,26 3,26' fill='%23D4A373' stroke='%23333' stroke-width='0.5'/%3E%3Cpolygon points='3,26 13,26 8,33' fill='%23333' stroke='%23333' stroke-width='0.5' stroke-linejoin='round'/%3E%3Crect x='3' y='0' width='10' height='4' rx='1' fill='%23EF4444' stroke='%23333' stroke-width='0.8'/%3E%3C/g%3E%3C/svg%3E") 8 8,crosshair}
+#annotCanvas.active{display:block}
+#annotCanvas.mode-eraser{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='40'%3E%3Crect x='4' y='22' width='52' height='15' rx='4' fill='%23333' stroke='%23555' stroke-width='2'/%3E%3Cline x1='13' y1='22' x2='13' y2='37' stroke='%23444' stroke-width='1'/%3E%3Cline x1='24' y1='22' x2='24' y2='37' stroke='%23444' stroke-width='1'/%3E%3Cline x1='35' y1='22' x2='35' y2='37' stroke='%23444' stroke-width='1'/%3E%3Cline x1='46' y1='22' x2='46' y2='37' stroke='%23444' stroke-width='1'/%3E%3Crect x='4' y='3' width='52' height='20' rx='4' fill='%23C19A6B' stroke='%238B6914' stroke-width='2.5'/%3E%3Cline x1='4' y1='9' x2='56' y2='9' stroke='%23B07D4A' stroke-width='1'/%3E%3Cline x1='4' y1='15' x2='56' y2='15' stroke='%23B07D4A' stroke-width='1'/%3E%3C/svg%3E") 30 29,crosshair}
+#annotToolbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:10000;display:none;background:#1c2128;border:1px solid #30363d;border-radius:14px;padding:8px 14px;box-shadow:0 8px 32px rgba(0,0,0,.5);flex-direction:column;gap:6px}
+#annotToolbar.active{display:flex}
+.annot-row{display:flex;align-items:center;gap:4px;justify-content:center;flex-wrap:nowrap}
+.annot-group{display:flex;align-items:center;gap:3px;padding:0 6px;border-right:1px solid #30363d}
+.annot-group:last-child{border-right:none}
+.annot-clr{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,.15);cursor:pointer;transition:all .15s;flex-shrink:0}
+.annot-clr:hover{border-color:#60a5fa;transform:scale(1.15)}
+.annot-clr.active{border-color:#fff;box-shadow:0 0 6px rgba(255,255,255,.3)}
+.annot-tb{height:36px;border-radius:6px;border:1px solid #30363d;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px;font-size:16px;transition:all .15s;background:#0d1117;color:#e6edf3;flex-shrink:0;padding:0 12px;white-space:nowrap;font-family:inherit}
+.annot-tb:hover{border-color:#60a5fa;background:#1c2533}
+.annot-tb.active{border-color:#f59e0b;background:rgba(245,158,11,.15)}
+.annot-tb.primary{border-color:#3b82f6;color:#60a5fa}
+.annot-tb.primary:hover{background:#3b82f6;color:#fff}
+.annot-tb.danger:hover{border-color:#ef4444;background:rgba(239,68,68,.15)}
+.annot-mode{height:36px;border-radius:6px;border:1px solid #30363d;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px;font-size:15px;transition:all .15s;background:#0d1117;color:#8b949e;flex-shrink:0;padding:0 12px;white-space:nowrap;font-family:inherit}
+.annot-mode:hover{border-color:#60a5fa;color:#e6edf3}
+.annot-mode.active{border-color:#3b82f6;background:rgba(59,130,246,.15);color:#60a5fa}
+.annot-sz{height:36px;border-radius:6px;border:1px solid #30363d;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;background:#0d1117;color:#e6edf3;flex-shrink:0;min-width:38px;font-size:18px}
+.annot-sz:hover{border-color:#60a5fa;background:#1c2533}
+.annot-sz.active{border-color:#3b82f6;background:rgba(59,130,246,.15)}
+.annot-status{font-size:14px;color:#8b949e;padding:0 8px;flex-shrink:0}
+.annot-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:99999}
+.annot-modal.active{display:flex}
+.annot-modal-box{background:#1c2128;border:1px solid #30363d;border-radius:16px;padding:28px 32px;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,.5);text-align:center}
+.annot-modal-box h3{font-size:22px;margin-bottom:12px;color:#e6edf3}
+.annot-modal-box p{font-size:16px;color:#8b949e;margin-bottom:16px;line-height:1.6}
+.annot-modal-btns{display:flex;gap:8px;justify-content:center}
+.annot-modal-btns button{padding:10px 24px;border-radius:8px;border:1px solid #30363d;cursor:pointer;font-size:16px;font-family:inherit;background:#0d1117;color:#e6edf3;transition:all .15s}
+.annot-modal-btns button:hover{border-color:#60a5fa}
+.annot-modal-btns button.primary{background:#3b82f6;color:#fff;border-color:#3b82f6}
+.annot-modal-btns button.primary:hover{background:#2563eb}
+.annot-modal-btns button.danger{border-color:#ef4444;color:#ef4444}
+.annot-modal-btns button.danger:hover{background:rgba(239,68,68,.15)}
+@media(max-width:768px){#annotToolbar{bottom:12px;padding:6px 8px;width:auto;max-width:96vw}.annot-clr{width:26px;height:26px}.annot-tb,.annot-mode{font-size:13px;padding:0 8px;height:30px}.annot-sz{min-width:32px;height:30px;font-size:15px}.annot-sz:last-child{display:none}#annotToggle{width:46px;height:46px;font-size:20px;bottom:12px;right:12px}}
+
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div id="sidebar-header">
+    <h1>📘 技术选考 · 65天</h1>
+    <div class="sub">2026.5.4 → 2026.7.8</div>
+    <span class="today-badge" id="todayBadge"></span>
+  </div>
+  <div id="day-list"></div>
+  <div id="progress-bar">
+    <div class="bar-track"><div class="bar-fill" id="barFill" style="width:0%"></div></div>
+    <div class="prog-text"><span id="progDone">0</span><span>/65 已完成</span></div>
+  </div>
+</div>
+
+<div id="main">
+  <div id="empty-state">
+    <h2>浙江技术选考 · 备考计划</h2>
+    <p>左侧选择日期查看详细学习内容</p>
+  </div>
+  <div id="content" style="display:none"></div>
+</div>
+
+<script>
+// ===== DAY DATA =====
+const DAYS = [];
+
+// Helper to add a day
+function d(dateStr, title, opts) {
+  opts = opts || {};
+  const m = dateStr.match(/(\d+)\.(\d+)/);
+  const dateObj = new Date(2026, parseInt(m[1])-1, parseInt(m[2]));
+  DAYS.push({
+    dateStr, title, dateObj, isRest: opts.rest || false,
+    phase: opts.phase || 1, week: opts.week || 1,
+    dayNum: DAYS.length + 1,
+    sections: opts.sections || [],
+    weakPractice: opts.weakPractice || null,
+    timeEst: opts.timeEst || null,
+    templates: opts.templates || [],
+    traps: opts.traps || []
+  });
+}
+
+// ==================== POPULATE DATA ====================
+
+// ---- PHASE 1: 基础巩固 (Days 1-21) ----
+
+// === WEEK 1 (5.4-5.10): 必修1 ===
+d("5.4","A1 数据基础",{phase:1,week:1,timeEst:"30min",sections:[
+  {h:"数制转换",items:[
+    "二进制 → 十进制：按权展开相加","十进制 → 二进制：除2取余倒序",
+    "二进制 → 八进制：三位一组（421法）","二进制 → 十六进制：四位一组（8421法）",
+    "十进制 → 八/十六进制：除8/16取余倒序","小数十进制→二进制：乘2取整正序",
+    "常见后缀：B(二进制) H(十六进制) O(八进制) D(十进制)"
+  ]},
+  {h:"逻辑运算",items:[
+    "与(and)：全1为1，有0为0","或(or)：有1为1，全0为0",
+    "非(not)：取反","异或(xor)：相同为0，相异为1",
+    "优先级：not > and > or"
+  ]},
+  {h:"数据容量",items:[
+    "1Byte=8bit, 1KB=1024B, 1MB=1024KB, 1GB=1024MB, 1TB=1024GB",
+    "⚠️ 陷阱：存储容量用1024，传输速率用1000",
+    "ASCII码：1字符=1Byte（7位编码+1校验位）",
+    "Unicode/UTF-8：英1B/中3B"
+  ]},
+  {h:"8421法速算（×16¹ 的快速解法）",items:[
+    "位权表：D₇(128) D₆(64) D₅(32) D₄(16) D₃(8) D₂(4) D₁(2) D₀(1)",
+    "二进制 11011001B = 128+64+0+16+8+0+0+1 = 217D",
+    "十六进制 A3H = 10×16 + 3 = 163D",
+    "ISIn公式：ISIn=1024×2^(n-1)"
+  ]}
+],weakPractice:"【薄弱附加】栈选择题2道：入栈序列1,2,3,4，出栈序列不可能的是？",templates:[],traps:["进制后缀混淆 B/H/O/D","Byte与bit换算差8倍","存储1024 vs 网络1000"]});
+
+d("5.5","A2 Python Day1：变量/分支/循环/列表",{phase:1,week:1,timeEst:"35min",sections:[
+  {h:"变量与数据类型",items:[
+    "变量命名：字母/下划线开头，区分大小写，不能是关键字",
+    "int/float/str/bool/None","type() 查看类型","⚠️ input() 返回 str，数值需 int()/float() 转型"
+  ]},
+  {h:"分支结构",items:[
+    "if-elif-else 语法","条件表达式：> < >= <= == !=",
+    "and/or/not 逻辑组合","三元表达式：a if cond else b"
+  ]},
+  {h:"循环结构",items:[
+    "for i in range(n):","for i in range(start, stop, step):",
+    "while 条件:","break / continue / else 子句",
+    "⚠️ 死循环检查：循环变量是否更新"
+  ]},
+  {h:"列表基础",items:[
+    "创建：[] / list() / 列表推导式","索引和切片：a[i] / a[i:j:k]",
+    "常用方法：append() / insert() / pop(i) / remove(v) / sort()",
+    "⚠️ 列表引用传递：b=a 不复制，b=a[:] 才是浅拷贝"
+  ]}
+],weakPractice:"【薄弱附加】二叉树遍历2题：已知前序ABDECF和中序DBEACF，求后序",templates:[],traps:["input不转型直接运算","列表引用传递而非复制","range(n) 从0到n-1"]});
+
+d("5.6","A2 Python Day2：字典/字符串/函数",{phase:1,week:1,timeEst:"35min",sections:[
+  {h:"字典",items:[
+    "创建：{} / dict() / {k:v}","d[key] 取值 / d.get(key,default) 安全取值",
+    "d.keys() / d.values() / d.items()","⚠️ d[key] 若key不存在会报 KeyError",
+    "遍历：for k,v in d.items():"
+  ]},
+  {h:"字符串",items:[
+    "索引和切片（同列表）","常用方法：split(sep) / ' '.join(list) / replace(old,new)",
+    "strip() / find() / count() / upper() / lower()",
+    "⚠️ 字符串不可变，s[0]='a' 会报错",
+    "⚠️ split 结果是列表，join 是字符串方法（不是列表方法）"
+  ]},
+  {h:"函数",items:[
+    "def 函数名(参数):","return 返回值（无return返回None）",
+    "局部变量 vs 全局变量：函数内修改全局需 global",
+    "默认参数：def f(a, b=10):","⚠️ 默认参数是可变对象时的陷阱（列表/字典）"
+  ]}
+],weakPractice:"【薄弱附加】二分查找选择题2题：有序数组[2,5,8,12,19,23,30]，二分查找19的路径",templates:[],traps:["KeyError 字典key不存在","字符串不可变","split/join 方向记反"]});
+
+d("5.7","A3 算法基础",{phase:1,week:1,timeEst:"30min",sections:[
+  {h:"算法要素",items:[
+    "有穷性/确定性/可行性/输入/输出","自然语言/流程图/N-S图/伪代码/代码"
+  ]},
+  {h:"枚举法",items:[
+    "逐一列举所有可能，然后判断是否满足条件",
+    "优化方向：缩小枚举范围、减少循环层数",
+    "经典：水仙花数/百钱百鸡/质数判断"
+  ]},
+  {h:"解析法",items:[
+    "用数学公式直接求解","经典：一元二次方程/等差数列求和",
+    "⚠️ 区分枚举（试）和解析（公式直接算）"
+  ]},
+  {h:"二重循环",items:[
+    "外层循环一次，内层循环一轮","时间复杂度：O(n×m)",
+    "⚠️ 内层循环是否依赖于外层变量（如 j in range(i, n)）"
+  ]}
+],weakPractice:"【薄弱附加】冒泡排序选择题2题：第3趟排序后的结果",templates:[],traps:["枚举vs解析概念混淆","二重循环次数计算错"]});
+
+d("5.8","A4 pandas+matplotlib",{phase:1,week:1,timeEst:"40min",sections:[
+  {h:"pandas数据结构",items:[
+    "Series：一维带标签数组","DataFrame：二维表格，行索引+列名",
+    "读取：pd.read_csv() / pd.read_excel()",
+    "⚠️ numpy二维数组创建陷阱：[[0]*3 for _ in range(4)] 而不是 [[0]*3]*4"
+  ]},
+  {h:"数据筛选与处理",items:[
+    "df[条件] 筛选行","df[df['列'] > 值]",
+    "⚠️ 复姓筛选：df[df['姓名'].str.len() > 2]",
+    "df.groupby('列').count() / .sum() / .mean()",
+    "df.sort_values('列', ascending=False)",
+    "df.merge(df2, on='键') 合并"
+  ]},
+  {h:"matplotlib可视化",items:[
+    "柱状图：plt.bar(x, y)","折线图：plt.plot(x, y)",
+    "饼图：plt.pie(sizes, labels=labels)","散点图：plt.scatter(x, y)",
+    "词云：WordCloud().generate(text) 需导入",
+    "导出：df.to_csv('文件.csv', encoding='utf_8_sig')",
+    "⚠️ 中文显示问题：plt.rcParams['font.sans-serif']=['SimHei']"
+  ]}
+],weakPractice:"【薄弱附加】链表操作选择题2题：head→a→b→c→d，在b和c之间插入x的步骤",templates:["pandas数据处理","排序筛选分组"],traps:["[[0]*3]*4 行引用传递","复姓用len>2而非contains","to_csv编码用utf_8_sig"]});
+
+d("5.9","必修1综合自测",{phase:1,week:1,timeEst:"45min",sections:[
+  {h:"自测安排",items:[
+    "15道选择题限时15分钟","覆盖：数制/逻辑/容量/Python基础/算法/pandas/matplotlib",
+    "完成后逐题核对答案，标记错题"
+  ]},
+  {h:"附加练习",items:[
+    "第15题 check() 火车进出站 1道",
+    "入栈序列[1,2,3,4,5]，判断出栈序列[3,5,4,2,1]是否可能"
+  ]}
+],weakPractice:"【薄弱附加】第15题 check() 1道：验证出栈序列",templates:["check()火车进出站","冒泡排序优化"]});
+
+d("5.10","休息日",{phase:1,week:1,rest:true,sections:[
+  {h:"今日建议",items:["不碰新题，想复习可看错题本","回顾本周做错的题，想清楚为什么错"]}
+]});
+
+// === WEEK 2 (5.11-5.17): 必修2 + 切入数据结构 ===
+d("5.11","B1信息系统 + B2数据库SQL",{phase:1,week:2,timeEst:"30min",sections:[
+  {h:"信息系统组成",items:[
+    "硬件/软件/数据/通信/人","输入/输出/存储/控制 设备分类",
+    "用户界面/传感器/执行器（物联网）","C/S架构 vs B/S架构"
+  ]},
+  {h:"关系型数据库",items:[
+    "表/记录/字段/主键","SELECT 列名 FROM 表名 WHERE 条件",
+    "WHERE 条件：= > < >= <= != AND OR LIKE",
+    "聚合函数：COUNT() / SUM() / AVG() / MAX() / MIN()",
+    "⚠️ WHERE 后不能用聚合函数，要用 HAVING",
+    "⚠️ SQL 关键字不区分大小写"
+  ]}
+],weakPractice:"【薄弱附加】队列T/Q操作2题：模拟T(出队再入队)和Q(出队)操作过程",templates:["队列T/Q操作"]});
+
+d("5.12","B3 计算机网络",{phase:1,week:2,timeEst:"35min",sections:[
+  {h:"OSI七层模型",items:[
+    "物理层→数据链路层→网络层→传输层→会话层→表示层→应用层",
+    "口诀：物链网传会表应（物联网传会表应）",
+    "每层作用：物理(比特流) / 链路(帧/MAC) / 网络(IP路由) / 传输(TCP/UDP端口)"
+  ]},
+  {h:"TCP/IP四层",items:[
+    "网络接口层→网际层→传输层→应用层",
+    "IP地址：IPv4(32位4段) / IPv6(128位8段)",
+    "子网掩码：区分网络号和主机号",
+    "DNS：域名→IP地址的解析服务"
+  ]},
+  {h:"HTTP/HTTPS",items:[
+    "HTTP 80端口 / HTTPS 443端口（加密SSL/TLS）",
+    "GET：参数在URL，不安全，有长度限制",
+    "POST：参数在请求体，安全，无长度限制",
+    "URL格式：协议://域名[:端口]/路径?参数#锚点",
+    "⚠️ HTTP是应用层，TCP是传输层——不要混淆"
+  ]}
+],weakPractice:"【薄弱附加】栈出栈序列2题：入栈12345，以下哪个不可能？A.54321 B.34251 C.14352 D.42315",templates:[],traps:["HTTP vs TCP层级混淆","IP地址范围判断错误","子网掩码概念"]});
+
+d("5.13","B4+B5 物联网/安全 + B0 Flask",{phase:1,week:2,timeEst:"30min",sections:[
+  {h:"物联网",items:[
+    "感知层(传感器/RFID)→网络层(通信)→应用层",
+    "传感器：温度/湿度/压力/红外/加速度",
+    "反馈控制：传感器采集→判断→执行器动作",
+    "⚠️ 区分传感器（采集）和执行器（动作）"
+  ]},
+  {h:"信息安全",items:[
+    "机密性/完整性/可用性（CIA三要素）","访问控制：身份认证→权限管理",
+    "数据备份：完全/增量/差异备份",
+    "常见威胁：病毒/木马/DoS/DDoS/钓鱼"
+  ]},
+  {h:"Flask基础",items:[
+    "@app.route('/') 路由装饰器","def 视图函数(): return render_template()",
+    "GET获取数据 / POST提交数据","request.args.get() / request.form.get()",
+    "SQLAlchemy ORM 数据库操作"
+  ]}
+],weakPractice:"【薄弱附加】二叉树还原2题：已知后序DEBFCA和中序DBEACF，求前序",templates:[]});
+
+d("5.14","必修2综合自测 + 切入C1栈",{phase:1,week:2,timeEst:"45min",sections:[
+  {h:"① 必修2自测（15min）",items:[
+    "15道选择题：覆盖SQL/网络/安全/物联网/Flask"
+  ]},
+  {h:"② 切入C1栈（25min）",items:[
+    "栈定义：后进先出（LIFO），一端操作（栈顶）",
+    "基本操作：push(入栈) pop(出栈) peek(取栈顶) empty(判空)",
+    "⚠️ 栈空时pop会报错（需要先判空）"
+  ]},
+  {h:"十进制转二进制（栈实现）",items:[
+    "while n > 0: st.append(n % 2); n //= 2",
+    "然后逐个pop输出，得到逆序结果"
+  ]}
+],weakPractice:"【薄弱附加】第15题 逆波兰表达式1道：计算 '3 4 + 5 ×'",templates:["逆波兰表达式计算","check()火车进出站"]});
+
+d("5.15","C1栈：括号匹配/逆波兰/check()",{phase:1,week:2,timeEst:"40min",sections:[
+  {h:"括号匹配",items:[
+    "遍历字符串，左括号入栈，右括号与栈顶匹配则出栈",
+    "最终栈空则全部匹配",
+    "变式：最少添加括号数→统计未匹配的左括号数和未匹配的右括号数"
+  ]},
+  {h:"逆波兰表达式（后缀表达式）",items:[
+    "数字入栈，遇运算符出栈两个运算后将结果入栈",
+    "⚠️ 注意运算顺序：先出的是右操作数，后出的是左操作数",
+    "中缀→后缀：运算符优先级栈 + 输出队列"
+  ]},
+  {h:"check() 火车进出站",items:[
+    "四分支判断：入=出 / 栈顶=出 / 入栈 / 失败",
+    "while j < len(out_list): 循环",
+    "边界：入栈索引i不能越界"
+  ]}
+],weakPractice:"【薄弱附加】二分最优解2题：找第一个 ≥ target 的位置",templates:["check()火车进出站","逆波兰表达式计算","中缀转后缀"],traps:["逆波兰运算数顺序","check() 四分支遗漏"]});
+
+d("5.16","C2队列：T/Q/循环队列/约瑟夫/BFS",{phase:1,week:2,timeEst:"40min",sections:[
+  {h:"队列基础",items:[
+    "先进先出（FIFO）","head队首/tail队尾",
+    "入队：queue.append(x)；出队：queue.pop(0)"
+  ]},
+  {h:"循环队列（数组模拟）",items:[
+    "⚠️ 四个公式必须记牢：",
+    "队满：(tail+1) % n == head","队空：head == tail",
+    "入队：tail = (tail+1) % n","出队：head = (head+1) % n",
+    "元素个数：(tail - head + n) % n"
+  ]},
+  {h:"T/Q操作（高频考点）",items:[
+    "T操作：出队再入队（先pop(0)再append）","Q操作：出队（只pop(0)）",
+    "模拟题：画出每次操作后的队列状态",
+    "⚠️ 注意head和tail的移动"
+  ]},
+  {h:"约瑟夫问题",items:[
+    "队列解法：数到k的出队，没数到的T操作重新入队",
+    "循环链表解法：到达k的节点删除，继续从下一个开始"
+  ]},
+  {h:"BFS广度优先搜索（队列实现）",items:[
+    "起点入队→while队列非空→出队→扩展相邻未访问节点入队",
+    "⚠️ BFS找最短路径，DFS不一定"
+  ]}
+],weakPractice:"【薄弱附加】第15题 约瑟夫问题1道：n=7, k=3，求出队顺序",templates:["循环队列4公式","T/Q操作模拟","约瑟夫问题"],traps:["循环队列队满条件 vs 队空条件","T操作先出后入顺序"]});
+
+d("5.17","休息日",{phase:1,week:2,rest:true});
+
+// === WEEK 3 (5.18-5.22): 选择性必修剩余 ===
+d("5.18","C3二叉树：遍历/还原/表达式树/排序树",{phase:1,week:3,timeEst:"45min",sections:[
+  {h:"二叉树性质",items:[
+    "第i层最多 2ⁱ⁻¹ 个节点","深度k的树最多 2ᵏ−1 个节点",
+    "叶节点数 = 度为2的节点数 + 1（n₀=n₂+1）"
+  ]},
+  {h:"数组存储👉高频必用",items:[
+    "父亲：(i-1)//2","左孩子：2i+1","右孩子：2i+2",
+    "⚠️ 数组下标从0开始，考试必算"
+  ]},
+  {h:"三种遍历",items:[
+    "前序（根左右）","中序（左根右）","后序（左右根）",
+    "层序（逐层从左到右）——用队列实现",
+    "⚠️ 前/中/后序遍历用递归或栈，层序用队列"
+  ]},
+  {h:"由遍历还原树（高频）",items:[
+    "前序+中序：前序第一个为根，找中序中位置分左右子树",
+    "后序+中序：后序最后一个为根",
+    "⚠️ 必须有中序才能唯一确定二叉树"
+  ]},
+  {h:"表达式树/排序树",items:[
+    "表达式树：叶节点为操作数，内部节点为运算符",
+    "二叉排序树：左<根<右，中序遍历得到升序",
+    "判定树：用于二分查找的比较过程"
+  ]}
+],weakPractice:"【薄弱附加】链表操作2题：单向链表删除倒数第k个节点",templates:["二叉树下标","三种遍历递归","由遍历还原树"]});
+
+d("5.19","C4排序+C5查找",{phase:1,week:3,timeEst:"45min",sections:[
+  {h:"冒泡排序优化（swapPos法）",items:[
+    "记录最后交换位置swapPos，缩小右边界",
+    "每轮排序后 R = swapPos - 1",
+    "⚠️ 不是每轮都 n-1-i，而是动态缩小"
+  ]},
+  {h:"双向冒泡（鸡尾酒排序）",items:[
+    "从左到右冒泡（最大到右端），再从右到左（最小到左端）",
+    "两端同时收缩，效率更高"
+  ]},
+  {h:"其他排序",items:[
+    "选择排序：每轮选最小放前面","插入排序：像打牌插牌",
+    "基数排序：按位比较（个十百千）","索引排序：不移动原数组，排索引"
+  ]},
+  {h:"二分查找（高频）",items:[
+    "前提：有序数组","left=0 / right=n-1 / mid=(left+right)//2",
+    "标准二分：找key是否存在",
+    "⚠️ 左偏 vs 右偏？a[m]>=key→R=m-1（返回L）找第一个≥key",
+    "a[m]<=key→L=m+1（返回L）找最后一个≤key",
+    "⚠️ search_last(key)：找最后一个等于key的位置",
+    "⚠️ 绝对值最小：a[m]正负性判断 + 最后比较abs",
+    "⚠️ 旋转数组：判断mid在哪一段，再缩小"
+  ]}
+],weakPractice:"【薄弱附加】第15题 BFS/DFS迷宫1道：4×4网格求最短路径步数",templates:["冒泡优化swapPos","双向冒泡","二分最优解模板","search_last模板","旋转数组二分"],traps:["二分边界±1","冒泡优化swapPos初始值","左偏右偏条件记反"]});
+
+d("5.20","C6链表+算法策略入门",{phase:1,week:3,timeEst:"40min",sections:[
+  {h:"数组模拟链表",items:[
+    "a[i][0] 数据域，a[i][1] 指针域（存放下标）",
+    "head 头指针","-1 表示链表结束",
+    "头插法：新节点.next = head; head = 新节点",
+    "哨兵节点：添加dummy节点简化边界处理"
+  ]},
+  {h:"链表6种高阶操作",items:[
+    "重排：按某种规则重新链接","间隔：间隔取节点组成新链",
+    "相交：找两个链表的交叉点","归并：合并两个有序链表",
+    "删除倒数第k个：快慢指针法","分块索引：按值域分块维护索引"
+  ]},
+  {h:"贪心算法入门",items:[
+    "局部最优推导全局最优","典型：找零问题(先用大面额)/活动选择(选结束最早的)",
+    "⚠️ 不是所有问题都能用贪心"
+  ]},
+  {h:"回溯入门",items:[
+    "全排列/子集/组合的递归生成","0-1背包回溯：选/不选两种分支",
+    "⚠️ 回溯后要撤销选择（恢复状态）"
+  ]}
+],weakPractice:"【薄弱附加】栈+队列联合操作2题：U操作和H操作模拟",templates:["链表头插法","链表归并","链表删除倒数k（快慢指针）"]});
+
+d("5.21","选择性必修综合自测",{phase:1,week:3,timeEst:"50min",sections:[
+  {h:"自测（30min）",items:[
+    "20道选择题限时20分钟","覆盖：栈/队列/二叉树/排序/查找/链表",
+    "完成后逐题分析，标记错题类型"
+  ]},
+  {h:"薄弱诊断",items:[
+    "根据错题判断：哪个数据结构最弱？",
+    "栈队列问题→多画图模拟","二叉树→多练遍历还原",
+    "排序/查找→默写模板","链表→画指针变化图"
+  ]}
+],weakPractice:"【薄弱附加】第15题 冒泡优化1道：给定序列，写出每轮swapPos变化",templates:["冒泡优化swapPos","二分查找最优解"]});
+
+d("5.22","TOP3薄弱补强",{phase:1,week:3,timeEst:"45min",sections:[
+  {h:"根据前3周数据",items:[
+    "选出最弱的3个知识点", "每个知识点做5道针对性选择题",
+    "所有错题整理进错题本（标红）"
+  ]}
+],weakPractice:"【薄弱附加】综合薄弱项补强，全天针对性"});
+
+d("5.23","阶段一回顾 + 错题重做",{phase:1,week:3,timeEst:"40min",sections:[
+  {h:"回顾安排",items:[
+    "重做所有错题本标记的题目","不看答案先做一遍，再核对",
+    "错的仍然错→重点标记，后面阶段二重点关注"
+  ]}
+]});
+
+d("5.24","休息日",{phase:1,week:3,rest:true});
+
+// ---- PHASE 2: 强化训练 (Days 22-42, 5.25-6.14) ----
+// === WEEK 4 (5.25-5.31): 第13+14题专项 ===
+d("5.25","第13题 pandas数据处理 Day1",{phase:2,week:4,timeEst:"40min",sections:[
+  {h:"第13题标准流程",items:[
+    "① 读数据：pd.read_csv() / pd.read_excel()","② 清洗：缺失值处理/类型转换",
+    "③ 筛选：df[条件]","④ 分组聚合：groupby().count()/sum()/mean()",
+    "⑤ 排序：sort_values()","⑥ 输出：print() / to_csv('',encoding='utf_8_sig')",
+    "⚠️ 所有步骤在同一个链上完成，注意中间变量的类型"
+  ]},
+  {h:"高频陷阱",items:[
+    "复姓筛选：`df[df['姓名'].str.len()>2]` 而不是 `.str.contains('')`",
+    "二维数组合并：`np.vstack()` / `np.hstack()`",
+    "日期解析：`pd.to_datetime(df['日期'])` 后提取 `.dt.year/month`"
+  ]}
+],weakPractice:"【薄弱附加】栈+队列随机选择题2道",templates:["pandas数据处理套路"]});
+
+d("5.26","第13题 pandas Day2",{phase:2,week:4,timeEst:"40min",sections:[
+  {h:"实战训练",items:[
+    "独立完成一道完整pandas题","读题→写筛选条件→分组→排序→可视化→导出",
+    "完成后与答案逐行对比","标注自己遗漏的步骤"
+  ]},
+  {h:"高频易错",items:[
+    "⚠️ df.列名 vs df['列名'] 当列名有空格/特殊字符时必须用后者",
+    "⚠️ 分组后.reset_index() 将分组索引变回普通列",
+    "⚠️ 多个条件用 &(and) |(or) 每个条件加括号：df[(a>1) & (b<2)]"
+  ]}
+],weakPractice:"【薄弱附加】栈+队列随机选择题2道"});
+d("5.27","第14题 代码补全/状态机 Day1",{phase:2,week:4,timeEst:"40min",sections:[
+  {h:"第14题常见题型",items:[
+    "温度状态码：超过阈值改变状态","连续k个满足条件触发动作",
+    "Flask路由补全：@app.route() / render_template() / request对象",
+    "⚠️ 注意补全处的缩进级别"
+  ]}
+]});
+d("5.28","第14题 Day2",{phase:2,week:4,timeEst:"40min",sections:[
+  {h:"状态机类题强化",items:[
+    "状态转换图：必须画图辅助理解","每个状态的进入条件和离开条件",
+    "⚠️ 是否有延迟反馈（连续k次才触发）",
+    "⚠️ 重置条件是什么"
+  ]},
+  {h:"Flask路由补全专项",items:[
+    "@app.route('/url', methods=['GET','POST']) → 装饰器",
+    "def index(): → 视图函数名自由","return render_template('file.html', 变量=值)",
+    "request.args.get('key') / request.form.get('key')"
+  ]}
+],weakPractice:"【薄弱附加】二叉树遍历还原2题"});
+d("5.29","第13+14题混合练",{phase:2,week:4,timeEst:"45min",sections:[
+  {h:"混合训练",items:["先做1道第13题（pandas 10min）","再做1道第14题（代码补全 12min）","核对两题答案，标注扣分点"]}
+],weakPractice:"【薄弱附加】二分查找选择题2道"});
+d("5.30","限时练：13+14各2道",{phase:2,week:4,timeEst:"50min",sections:[
+  {h:"限时安排",items:["第13题2道（各限时10min=20min）","第14题2道（各限时12min=24min）","总耗时约44min，剩余时间核对错题"]}
+],weakPractice:"【薄弱附加】链表操作选择题2道"});
+d("5.31","休息日",{phase:2,week:4,rest:true});
+
+// === WEEK 5 (6.1-6.7): 第15题专项 ===
+d("6.1","第15题：check()火车进出站",{phase:2,week:5,timeEst:"45min",sections:[
+  {h:"check() 函数（默写）",items:[
+    "def check(in_list, out_list):",
+    "st = []; i = j = 0","while j < len(out_list):",
+    "  if i < len(in_list) and in_list[i]==out_list[j]: i+=1; j+=1",
+    "  elif st and st[-1]==out_list[j]: st.pop(); j+=1",
+    "  elif i < len(in_list): st.append(in_list[i]); i+=1",
+    "  else: return False","return True"
+  ]},
+  {h:"变式训练",items:[
+    "给定出栈序列，判断是否可能","计算所有可能的出栈序列数（卡特兰数）"
+  ]}
+],weakPractice:"【薄弱附加】薄弱选择题2道",templates:["check()火车进出站"]});
+
+d("6.2","第15题：逆波兰表达式",{phase:2,week:5,timeEst:"45min",sections:[
+  {h:"逆波兰表达式计算",items:[
+    "数字入栈，遇运算符出栈两个数，计算后结果入栈",
+    "⚠️ 先出栈的是右操作数，后出栈的是左操作数",
+    "例：'3 4 + 5 ×' → 3入栈,4入栈,遇+→(3+4)=7入栈,5入栈,遇×→(7×5)=35"
+  ]},
+  {h:"中缀转后缀（必会过程）",items:[
+    "准备运算符优先级字典：+−=1, ×/=2, ^=3",
+    "遍历中缀表达式：","数字→直接输出到结果","左括号→入栈",
+    "右括号→出栈至左括号（左括号丢弃）",
+    "运算符→while栈顶优先级≥当前：出栈到结果，然后当前入栈",
+    "最后栈中剩余运算符全部出栈"
+  ]}
+],weakPractice:"【薄弱附加】薄弱选择题2道",templates:["逆波兰表达式计算","中缀转后缀"]});
+d("6.3","第15题：约瑟夫问题（队列+循环链表）",{phase:2,week:5,timeEst:"45min",sections:[
+  {h:"约瑟夫问题（队列解法）",items:[
+    "n个人围成一圈，数到k的人出列","队列实现：从队首取人",
+    "没数到的T操作（出队再入队）→回到队列尾部","数到k的Q操作（只出队不入队）→出列",
+    "⚠️ 注意k有时候包含当前人，有时候数k-1步"
+  ]},
+  {h:"循环链表解法",items:[
+    "构建循环链表（尾节点指向头）","遍历到第k-1个节点，删除第k个",
+    "从下一个继续开始计数"
+  ]}
+],weakPractice:"【薄弱附加】薄弱选择题2道",templates:["约瑟夫问题队列解法","循环链表实现"]});
+d("6.4","第15题：BFS迷宫 + DFS迷宫",{phase:2,week:5,timeEst:"45min",sections:[
+  {h:"BFS迷宫（最短路径）",items:[
+    "队列实现：起点入队→while队列非空→出队→检查上下左右","访问标记避免重走",
+    "距离数组dist记录步数","⚠️ BFS第一次到达终点即为最短路径"
+  ]},
+  {h:"DFS迷宫walk2()（栈回溯）",items:[
+    "栈实现：当前位置入栈→尝试四个方向→能走则走→不能走则回溯",
+    "回溯条件：四个方向都不能走→pop栈顶回到上一个位置",
+    "⚠️ 走过的标记为已访问，回溯时要不要取消标记？（看题目要求）"
+  ]}
+],weakPractice:"【薄弱附加】薄弱选择题2道",templates:["BFS迷宫模板","DFS栈回溯walk2()"]});
+d("6.5","第15题：二分查找最优解",{phase:2,week:5,timeEst:"45min",sections:[
+  {h:"三种模板默写",items:[
+    "① 找第一个≥key（左偏）：a[m]>=key → R=m-1 else L=m+1 → return L",
+    "② 找最后一个≤key（右偏）：a[m]<=key → L=m+1 else R=m-1 → return R",
+    "③ search_last(key) 找最后一个等于key的：找到key后L=m+1继续向右"
+  ]},
+  {h:"变式训练",items:[
+    "绝对值最小：正负分界+最后比较abs","三分查找（凸函数极值）",
+    "旋转数组找最小值：判断mid在哪一段",
+    "判定树构建（用于选择题）"
+  ]}
+],weakPractice:"【薄弱附加】薄弱选择题2道",templates:["二分最优解3模板","search_last","旋转数组二分"]});
+d("6.6","第15题：排序优化 + 链表归并",{phase:2,week:5,timeEst:"45min",sections:[
+  {h:"冒泡排序优化（务必默写）",items:[
+    "swapPos记录最后交换位置","下一轮右边界=swapPos-1",
+    "⚠️ swapPos初始值：如果每轮都从左到右，初始为0"
+  ]},
+  {h:"双向冒泡（鸡尾酒排序）",items:[
+    "for i in range(n//2):","从左到右冒泡（将最大移到最后）→右边界-1",
+    "从右到左冒泡（将最小移到最前）→左边界+1"
+  ]},
+  {h:"链表归并",items:[
+    "两个有序链表合并成一个","dummy哨兵节点 + p指针遍历",
+    "两个链表谁小就连谁→直到一个为空→连上剩下的"
+  ]}
+],weakPractice:"【薄弱附加】薄弱选择题2道",templates:["冒泡优化swapPos","双向冒泡","链表归并"]});
+d("6.7","休息日",{phase:2,week:5,rest:true});
+
+// === WEEK 6 (6.8-6.14): 真题 ===
+d("6.8","2024.1 真题全卷",{phase:2,week:6,timeEst:"50min",sections:[
+  {h:"限时模考",items:["50分钟完整模拟","⏰ 选择题控制在20分钟内","非选30分钟内","考完后不看答案先标记不确定的题"]}
+],weakPractice:"【薄弱附加】考后错题标注"});
+d("6.9","2024.6 真题全卷",{phase:2,week:6,timeEst:"50min",sections:[
+  {h:"步骤同前",items:["限时50分钟做完→标不确定→核对答案→整理错题"]}
+],weakPractice:"【薄弱附加】重点看Q10-12错题"});
+d("6.10","2025.1 真题全卷",{phase:2,week:6,timeEst:"50min"});
+d("6.11","2025.6 真题全卷",{phase:2,week:6,timeEst:"50min"});
+d("6.12","2026.1 首考真题",{phase:2,week:6,timeEst:"50min"});
+d("6.13","错题分类整理",{phase:2,week:6,timeEst:"40min",sections:[{h:"按模块整理",items:["栈队列错题一组/二叉树一组/排序查找一组/链表一组","分析每道题做错的原因：概念不清/计算失误/代码没读懂"]}]});
+d("6.14","休息日",{phase:2,week:6,rest:true});
+
+// ---- PHASE 3: 冲刺模拟 (Days 43-56, 6.15-6.28) ----
+d("6.15","模拟卷① 限时模考",{phase:3,week:7,timeEst:"50min",sections:[
+  {h:"限时规约",items:["⏰ 50分钟全卷限时（严格按考试标准）","⏰ 选择题≤20分钟","完成后先自行检查再对答案","记录各模块耗时"]}
+]});
+d("6.16","模拟卷① 错题分析",{phase:3,week:7,timeEst:"40min",sections:[
+  {h:"分析流程",items:["逐题核对，不管对错都看解析","错题标注：概念错/代码错/粗心","分类归入错题本","针对错题模块做5道同类题"]}
+],weakPractice:"【薄弱附加】错题模块薄弱项补强"});
+d("6.17","模拟卷② 限时模考",{phase:3,week:7,timeEst:"50min"});
+d("6.18","模拟卷② 错题分析",{phase:3,week:7,timeEst:"40min"});
+d("6.19","模拟卷③ 限时模考",{phase:3,week:7,timeEst:"50min"});
+d("6.20","模拟卷③ 错题分析",{phase:3,week:7,timeEst:"40min"});
+d("6.21","休息日",{phase:3,week:7,rest:true});
+
+d("6.22","薄弱专项①：TOP1模块",{phase:3,week:8,timeEst:"45min",sections:[
+  {h:"TOP1薄弱模块",items:["根据前7周错题数据选出最薄弱的知识点","上午：复习该模块全部知识+模板默写","下午：15道专项选择题+1道第15题"]}
+]});
+d("6.23","薄弱专项① 继续",{phase:3,week:8,timeEst:"45min",sections:[
+  {h:"巩固",items:["再做10道选择题确保真掌握了","用不同的变式检验是否真的懂原理"]}
+]});
+d("6.24","薄弱专项②：TOP2模块",{phase:3,week:8,timeEst:"45min"});
+d("6.25","薄弱专项② 继续",{phase:3,week:8,timeEst:"45min"});
+d("6.26","模拟卷④ 各地市模考",{phase:3,week:8,timeEst:"50min"});
+d("6.27","模拟卷⑤ 各地市模考",{phase:3,week:8,timeEst:"50min"});
+d("6.28","休息日",{phase:3,week:8,rest:true});
+
+// ---- PHASE 4: 查漏补缺 (Days 57-65, 6.29-7.7) ----
+d("6.29","轻量保持 Day1",{phase:4,week:9,timeEst:"30min",sections:[{h:"今日任务",items:["选择题15题（限时15分钟）","第15题1道","只看错题本"]}]});
+d("6.30","轻量保持 Day2",{phase:4,week:9,timeEst:"30min",sections:[
+  {h:"今日任务",items:["选择题15题（限时15分钟）","第15题1道","只看错题本，不看新题"]}
+]});
+d("7.1","轻量保持 Day3",{phase:4,week:9,timeEst:"30min",sections:[
+  {h:"今日任务",items:["选择题15题（限时15分钟）","快速浏览Python一本通错题"]}
+]});
+d("7.2","轻量保持 Day4",{phase:4,week:9,timeEst:"30min",sections:[
+  {h:"今日任务",items:["选择题15题（限时15分钟）","第15题1道（选之前做错过的类型）"]}
+]});
+d("7.3","回归基础 Day1",{phase:4,week:9,timeEst:"25min",sections:[{h:"默写清单",items:["循环队列4个公式","二叉树下标关系","check()函数完整代码","二分最优解模板","冒泡优化模板"]}]});
+d("7.4","回归基础 Day2",{phase:4,week:9,timeEst:"25min",sections:[
+  {h:"默写清单",items:["循环队列4个公式","二叉树下标关系","check()函数完整代码","二分最优解模板","冒泡优化模板"]}
+]});
+d("7.5","回归基础 Day3",{phase:4,week:9,timeEst:"25min",sections:[
+  {h:"默写清单",items:["循环队列4个公式","二叉树下标关系","check()函数完整代码","二分最优解模板","冒泡优化模板"]}
+]});
+d("7.6","回归基础 Day4",{phase:4,week:9,timeEst:"25min",sections:[
+  {h:"默写清单",items:["循环队列4个公式","二叉树下标关系","check()函数完整代码","二分最优解模板","冒泡优化模板"]}
+]});
+d("7.7","考前1天",{phase:4,week:9,timeEst:"10min",sections:[{h:"只看",items:["8个高频陷阱类型快速过一遍","确保睡眠"]}]});
+
+// ===== RENDER =====
+const PHASES = [
+  {n:1,label:"基础巩固",period:"5.4-5.24",color:"var(--phase1)"},
+  {n:2,label:"强化训练",period:"5.25-6.14",color:"var(--phase2)"},
+  {n:3,label:"冲刺模拟",period:"6.15-6.28",color:"var(--phase3)"},
+  {n:4,label:"查漏补缺",period:"6.29-7.7",color:"var(--phase4)"}
+];
+
+// Group days by phase and week
+const groups = {};
+DAYS.forEach(d => {
+  const key = `${d.phase}-${d.week}`;
+  if (!groups[key]) groups[key] = {phase:d.phase, week:d.week, days:[]};
+  groups[key].days.push(d);
+});
+
+const sidebar = document.getElementById('day-list');
+const contentDiv = document.getElementById('content');
+const emptyState = document.getElementById('empty-state');
+const barFill = document.getElementById('barFill');
+const progDone = document.getElementById('progDone');
+
+function getDone() {
+  const done = {};
+  try { const s = localStorage.getItem('tech65done'); if(s) Object.assign(done, JSON.parse(s)); } catch(e){}
+  return done;
+}
+function saveDone(done) { localStorage.setItem('tech65done', JSON.stringify(done)); }
+function updateProgress() {
+  const done = getDone();
+  const total = DAYS.filter(d => !d.isRest).length;
+  const completed = DAYS.filter(d => !d.isRest && done[d.dayNum]).length;
+  const pct = total > 0 ? (completed/total*100) : 0;
+  barFill.style.width = pct + '%';
+  progDone.textContent = completed + '/' + total;
+}
+function toggleDay(n) {
+  const done = getDone();
+  done[n] = !done[n];
+  saveDone(done);
+  renderSidebar();
+  updateProgress();
+  // refresh current detail checkboxes
+  const cb = document.getElementById('chk-'+n);
+  if (cb) cb.checked = done[n];
+}
+
+function renderSidebar() {
+  const done = getDone();
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const todayStr = `${today.getMonth()+1}.${today.getDate()}`;
+  document.getElementById('todayBadge').textContent = '今日：' + todayStr;
+
+  sidebar.innerHTML = '';
+  const sorted = Object.keys(groups).sort((a,b)=> {
+    const [pa,wa] = a.split('-').map(Number);
+    const [pb,wb] = b.split('-').map(Number);
+    return pa!==pb ? pa-pb : wa-wb;
+  });
+
+  sorted.forEach(key => {
+    const g = groups[key];
+    const phase = PHASES[g.phase-1];
+    const ph = document.createElement('div');
+    ph.className = 'phase-group';
+
+    // Phase header (only first week of each phase)
+    const isFirstWeek = g.week === Math.min(...sorted.filter(k=>k.startsWith(g.phase+'-')).map(k=>Number(k.split('-')[1])));
+    if (isFirstWeek) {
+      const phHeader = document.createElement('div');
+      phHeader.className = 'phase-header';
+      phHeader.dataset.phase = g.phase;
+      const stored = localStorage.getItem('tech_phase_'+g.phase);
+      const defOpen = g.phase <= 2 ? '1' : '0';
+      const open = stored !== null ? stored : defOpen;
+      phHeader.innerHTML = `<span class="arrow ${open==='1'?'open':''}">▶</span>阶段${phase.n} <span class="tag" style="background:${phase.color}">${phase.label}</span><span class="days-range">${phase.period}</span>`;
+      phHeader.onclick = () => {
+        const a = phHeader.querySelector('.arrow');
+        const cur = a.classList.toggle('open');
+        localStorage.setItem('tech_phase_'+g.phase, cur ? '1' : '0');
+        const wg = ph.querySelectorAll('.week-group');
+        wg.forEach(w => w.style.display = cur ? '' : 'none');
+      };
+      ph.appendChild(phHeader);
+    }
+
+    // Week header
+    const wg = document.createElement('div');
+    wg.className = 'week-group';
+    const allWeeks = [...new Set(Object.values(groups).filter(x=>x.phase===g.phase).map(x=>x.week))];
+    const wStored = localStorage.getItem('tech_phase_'+g.phase);
+    const wOpen = wStored !== null ? wStored : (g.phase <= 2 ? '1' : '0');
+    wg.style.display = wOpen==='1' ? '' : 'none';
+
+    const wh = document.createElement('div');
+    wh.className = 'week-header';
+    const wIdx = allWeeks.indexOf(g.week);
+    wh.innerHTML = `<span class="arrow open">▶</span>第${wIdx+1}周 (${g.days[0].dateStr}-${g.days[g.days.length-1].dateStr})`;
+    wh.onclick = () => {
+      const a = wh.querySelector('.arrow');
+      a.classList.toggle('open');
+      const dd = wh.nextElementSibling;
+      if (dd) dd.style.display = a.classList.contains('open') ? '' : 'none';
+    };
+    wg.appendChild(wh);
+
+    // Days
+    const dayList = document.createElement('div');
+    g.days.forEach(dd => {
+      const di = document.createElement('div');
+      di.className = 'day-item' + (dd.isRest ? ' is-rest' : '');
+      const isToday = dd.dateStr === todayStr;
+      if (isToday) di.classList.add('is-today');
+
+      const chk = document.createElement('div');
+      chk.className = 'check' + (done[dd.dayNum] ? ' done' : '');
+      if (done[dd.dayNum]) chk.textContent = '✓';
+      chk.onclick = (e) => { e.stopPropagation(); toggleDay(dd.dayNum); };
+      di.appendChild(chk);
+
+      const dt = document.createElement('span');
+      dt.className = 'date';
+      dt.textContent = dd.dateStr;
+      di.appendChild(dt);
+
+      const ti = document.createElement('span');
+      ti.className = 'title';
+      ti.textContent = dd.isRest ? '🛌 休息' : dd.title;
+      di.appendChild(ti);
+
+      di.onclick = () => showDay(dd.dayNum);
+      dayList.appendChild(di);
+    });
+    wg.appendChild(dayList);
+    ph.appendChild(wg);
+    sidebar.appendChild(ph);
+  });
+
+  updateProgress();
+}
+
+function showDay(n) {
+  const dd = DAYS[n-1];
+  if (!dd) return;
+  emptyState.style.display = 'none';
+  contentDiv.style.display = '';
+
+  const done = getDone();
+  const phase = PHASES[dd.phase-1];
+
+  let html = `<div class="day-detail">`;
+  html += `<div class="detail-header">
+    <div class="meta">
+      <span class="phase-badge" style="background:${phase.color}">阶段${dd.phase}</span>
+      <span>第${dd.dayNum}天 · 整体第${dd.week}周</span>
+      <span style="font-size:12px;color:var(--text-light)">${dd.dateStr}</span>
+    </div>
+    <h2>${dd.isRest ? '🛌 休息日' : dd.title}</h2>`;
+
+  if (dd.timeEst) html += `<div class="time-est">⏱ 预计 ${dd.timeEst}</div>`;
+  html += `<label style="margin-top:8px;display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+    <input type="checkbox" id="chk-${dd.dayNum}" ${done[dd.dayNum]?'checked':''} onchange="toggleDay(${dd.dayNum})"> 标记为已完成
+  </label>`;
+  html += `</div>`;
+
+  if (dd.sections && dd.sections.length) {
+    dd.sections.forEach(s => {
+      html += `<div class="detail-section"><h3>📌 ${s.h}</h3><ul>`;
+      s.items.forEach(item => {
+        const isTrap = item.startsWith('⚠️');
+        const isImp = item.startsWith('▶') || item.includes('⚠️');
+        html += `<li>${item}</li>`;
+      });
+      html += `</ul></div>`;
+    });
+  }
+
+  if (dd.templates && dd.templates.length) {
+    html += `<div class="detail-section"><h3>📋 代码模板（复习）</h3><div class="code-ref">`;
+    dd.templates.forEach(t => {
+      html += `<a onclick="alert('请在对话中向AI发起此模板练习')">${t}</a>`;
+    });
+    html += `</div></div>`;
+  }
+
+  if (dd.weakPractice) {
+    html += `<div class="weak-practice"><h4>🎯 薄弱项附加</h4><div style="font-size:13px;margin-top:4px">${dd.weakPractice.replace(/\n/g,'<br>')}</div></div>`;
+  }
+
+  if (dd.traps && dd.traps.length) {
+    html += `<div class="detail-section"><h3>⚠️ 陷阱提醒</h3><ul>`;
+    dd.traps.forEach(t => html += `<li><span class="tag-trap">陷阱</span> ${t}</li>`);
+    html += `</ul></div>`;
+  }
+
+  html += `</div>`;
+  contentDiv.innerHTML = html;
+}
+
+// Init
+renderSidebar();
+// Show today
+const today = new Date();
+const todayStr = `${today.getMonth()+1}.${today.getDate()}`;
+const idx = DAYS.findIndex(d => d.dateStr === todayStr);
+if (idx >= 0) showDay(idx+1);
+// else showDay(1);
+</script>
+<!-- ===== 批注工具（六脉神笔）===== -->
+<button id="annotToggle" onclick="toggleAnnotation()" title="批注工具"><span class="icon">&#x1F58A;</span></button>
+<canvas id="annotCanvas"></canvas>
+<div id="annotToolbar">
+  <div class="annot-row">
+    <div class="annot-group">
+      <button class="annot-clr active" data-c="#ff4444" style="background:#ff4444" onclick="setAnnotColor('#ff4444')"></button>
+      <button class="annot-clr" data-c="#4ade80" style="background:#4ade80" onclick="setAnnotColor('#4ade80')"></button>
+      <button class="annot-clr" data-c="#60a5fa" style="background:#60a5fa" onclick="setAnnotColor('#60a5fa')"></button>
+      <button class="annot-clr" data-c="#fbbf24" style="background:#fbbf24" onclick="setAnnotColor('#fbbf24')"></button>
+      <button class="annot-clr" data-c="#c084fc" style="background:#c084fc" onclick="setAnnotColor('#c084fc')"></button>
+      <button class="annot-clr" data-c="#fb923c" style="background:#fb923c" onclick="setAnnotColor('#fb923c')"></button>
+      <button class="annot-clr" data-c="#000" style="background:#000" onclick="setAnnotColor('#000')"></button>
+      <button class="annot-clr" data-c="#fff" style="background:#fff" onclick="setAnnotColor('#fff')"></button>
+    </div>
+    <div class="annot-group">
+      <button class="annot-sz" onclick="setAnnotSize(2)">─</button>
+      <button class="annot-sz active" onclick="setAnnotSize(5)">━</button>
+      <button class="annot-sz" onclick="setAnnotSize(10)">━</button>
+    </div>
+    <div class="annot-group">
+      <button class="annot-mode active" onclick="setAnnotMode('pen')" id="mPen">&#x1F58A;</button>
+      <button class="annot-mode" onclick="setAnnotMode('highlighter')" id="mHL">&#x1F58D;</button>
+      <button class="annot-mode" onclick="setAnnotMode('eraser')" id="mErase">&#x1F9F9;</button>
+    </div>
+    <div class="annot-group" style="border-right:none">
+      <button class="annot-tb" onclick="undoAnnotation()" title="撤销 Ctrl+Z">&#x21A9;</button>
+      <button class="annot-tb danger" onclick="showClearDialog()">&#x1F5D1;</button>
+      <button class="annot-tb primary" onclick="toggleAnnotation()">&#x2715;</button>
+    </div>
+  </div>
+  <div class="annot-row" style="justify-content:center">
+    <span class="annot-status" id="annotStatus">红 · 中 · 笔模式</span>
+  </div>
+</div>
+<div class="annot-modal" id="annotModal">
+  <div class="annot-modal-box">
+    <h3 id="annotModalTitle">确认</h3>
+    <p id="annotModalMsg">确定要清除所有批注吗？</p>
+    <div class="annot-modal-btns">
+      <button onclick="closeModal()">取消</button>
+      <button class="danger" id="annotModalBtn" onclick="confirmClear()">清除</button>
+    </div>
+  </div>
+</div>
+<script>
+// ======== 批注工具（六脉神笔）========
+var aActive=false,aDrawing=false,aDirty=false,aColor='#ff4444',aSize=5,aMode='pen';
+var aCtx=null,aCanvas=null,aHistory=[];
+var CLR={'#ff4444':'红','#4ade80':'绿','#60a5fa':'蓝','#fbbf24':'黄','#c084fc':'紫','#fb923c':'橙','#000':'黑','#fff':'白'};
+var SZ={2:'细',5:'中',10:'粗'};
+var pLX=null,pLY=null,pLW=null,pLT=null;
+
+function initAnnotation(){
+  aCanvas=document.getElementById('annotCanvas');
+  aCtx=aCanvas.getContext('2d');
+  resizeAnnotCanvas();
+  window.addEventListener('resize',function(){setTimeout(resizeAnnotCanvas,150)});
+  aCanvas.addEventListener('mousedown',aStart);
+  aCanvas.addEventListener('mousemove',aMove);
+  aCanvas.addEventListener('mouseup',aEnd);
+  aCanvas.addEventListener('mouseleave',aEnd);
+  aCanvas.addEventListener('touchstart',function(e){
+    e.preventDefault();var t=e.touches[0];if(t)aStart({clientX:t.clientX,clientY:t.clientY});
+  });
+  aCanvas.addEventListener('touchmove',function(e){
+    e.preventDefault();var t=e.touches[0];if(t)aMove({clientX:t.clientX,clientY:t.clientY});
+  });
+  aCanvas.addEventListener('touchend',function(){aEnd()});
+  document.addEventListener('keydown',function(e){
+    if(!aActive)return;
+    if(e.ctrlKey&&e.key==='z'){e.preventDefault();undoAnnotation()}
+    if(e.key==='Escape'){toggleAnnotation()}
+  });
+  window.addEventListener('beforeunload',function(e){
+    if(aDirty){e.preventDefault();e.returnValue=''}
+  });
+}
+
+function resizeAnnotCanvas(){
+  var dw=Math.max(document.documentElement.scrollWidth,document.body.scrollWidth,window.innerWidth);
+  var dh=Math.max(document.documentElement.scrollHeight,document.body.scrollHeight,window.innerHeight);
+  aCanvas.width=dw;
+  aCanvas.height=dh;
+  if(aHistory.length>0){
+    try{aCtx.putImageData(aHistory[aHistory.length-1],0,0);}
+    catch(e){aHistory=[];aDirty=false}
+  }
+}
+
+function toggleAnnotation(){
+  if(!aCanvas)return;
+  aActive=!aActive;
+  var _c=document.getElementById('annotCanvas'),_t=document.getElementById('annotToolbar'),_b=document.getElementById('annotToggle');
+  if(aActive){_c.classList.add('active');_t.classList.add('active');_b.classList.add('active')}
+  else{_c.classList.remove('active');_t.classList.remove('active');_b.classList.remove('active')}
+  if(!aActive){aEnd()}
+}
+
+function aPos(e){
+  var r=aCanvas.getBoundingClientRect();
+  return {x:e.clientX-r.left,y:e.clientY-r.top};
+}
+
+function saveSnapshot(){
+  if(aHistory.length>=30)aHistory.shift();
+  aHistory.push(aCtx.getImageData(0,0,aCanvas.width,aCanvas.height));
+}
+
+function undoAnnotation(){
+  if(aHistory.length===0)return;
+  aHistory.pop();
+  if(aHistory.length>0){
+    aCtx.putImageData(aHistory[aHistory.length-1],0,0);
+  }else{
+    aCtx.clearRect(0,0,aCanvas.width,aCanvas.height);
+  }
+}
+
+function setAnnotColor(c){
+  aColor=c;
+  setAnnotMode('pen');
+  var clrs=document.querySelectorAll('.annot-clr');
+  for(var i=0;i<clrs.length;i++){
+    if(clrs[i].getAttribute('data-c')===c){clrs[i].classList.add('active')}else{clrs[i].classList.remove('active')}
+  }
+  updateStatus();
+}
+
+function setAnnotSize(s){
+  aSize=s;
+  var szs=document.querySelectorAll('.annot-sz');
+  for(var i=0;i<szs.length;i++){
+    var n=parseInt(szs[i].getAttribute('onclick').match(/\d+/)[0]);
+    if(n===s){szs[i].classList.add('active')}else{szs[i].classList.remove('active')}
+  }
+  updateStatus();
+}
+
+function setAnnotMode(m){
+  aMode=m;
+  if(aCanvas){
+    if(m==='eraser'){aCanvas.classList.add('mode-eraser')}else{aCanvas.classList.remove('mode-eraser')}
+  }
+  var modes=['pen','highlighter','eraser'];
+  for(var mi=0;mi<modes.length;mi++){
+    var mm=modes[mi];
+    var id=mm==='pen'?'mPen':mm==='highlighter'?'mHL':'mErase';
+    if(mm===m){document.getElementById(id).classList.add('active')}else{document.getElementById(id).classList.remove('active')}
+  }
+  updateStatus();
+}
+
+function updateStatus(){
+  var el=document.getElementById('annotStatus');
+  if(!el)return;
+  var cn=CLR[aColor]||aColor,sn=SZ[aSize]||aSize;
+  var mn=aMode==='pen'?'笔':aMode==='highlighter'?'荧光':'擦';
+  el.textContent=cn+' · '+sn+' · '+mn+'模式';
+}
+
+// ======== 绘图核心 ========
+function drawPenSeg(x1,y1,w1,x2,y2,w2){
+  var dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
+  if(len<0.5){
+    aCtx.beginPath();aCtx.arc(x1,y1,w1/2,0,Math.PI*2);aCtx.fill();return;
+  }
+  var ang=Math.atan2(dy,dx),perp=ang+Math.PI/2;
+  var cos=Math.cos(perp),sin=Math.sin(perp);
+  var h1=w1/2,h2=w2/2;
+  aCtx.beginPath();
+  aCtx.moveTo(x1+cos*h1,y1+sin*h1);
+  aCtx.lineTo(x1-cos*h1,y1-sin*h1);
+  aCtx.lineTo(x2-cos*h2,y2-sin*h2);
+  aCtx.lineTo(x2+cos*h2,y2+sin*h2);
+  aCtx.closePath();aCtx.fill();
+}
+
+function aStart(e){
+  if(!aActive)return;
+  aDrawing=true;
+  var p=aPos(e);
+  if(aMode==='pen'){
+    pLX=p.x;pLY=p.y;pLW=Math.max(1,aSize*0.15);pLT=Date.now();
+    aCtx.save();aCtx.fillStyle=aColor;
+    aCtx.beginPath();aCtx.arc(p.x,p.y,pLW*0.3,0,Math.PI*2);aCtx.fill();
+    aCtx.restore();
+  }else{
+    aCtx.beginPath();aCtx.moveTo(p.x,p.y);
+  }
+}
+
+function aMove(e){
+  if(!aDrawing||!aActive)return;
+  aDirty=true;
+  var p=aPos(e);
+  if(aMode==='eraser'){
+    aCtx.globalCompositeOperation='destination-out';
+    aCtx.strokeStyle='rgba(0,0,0,1)';aCtx.lineWidth=aSize*6;
+    aCtx.lineCap='round';aCtx.lineTo(p.x,p.y);aCtx.stroke();
+    return;
+  }
+  if(aMode==='highlighter'){
+    aCtx.globalCompositeOperation='multiply';
+    aCtx.strokeStyle=aColor;aCtx.lineWidth=aSize*3;
+    aCtx.globalAlpha=0.3;aCtx.lineCap='round';
+    aCtx.lineTo(p.x,p.y);aCtx.stroke();
+    aCtx.globalAlpha=1.0;aCtx.globalCompositeOperation='source-over';return;
+  }
+  // pen: speed-based variable width
+  var now=Date.now(),dt=now-pLT;
+  var dx=p.x-pLX,dy=p.y-pLY,dist=Math.sqrt(dx*dx+dy*dy);
+  if(dist<0.5)return;
+  var spd=dt>0?dist/dt:0;
+  var maxW=aSize,minW=Math.max(1,aSize*0.2);
+  var w=maxW-Math.min(spd/0.4,1)*(maxW-minW);
+  w=Math.max(minW,Math.min(maxW,w));
+  w=pLW*0.4+w*0.6;
+  aCtx.save();aCtx.fillStyle=aColor;
+  aCtx.globalCompositeOperation='source-over';
+  drawPenSeg(pLX,pLY,pLW,p.x,p.y,w);
+  aCtx.restore();
+  pLX=p.x;pLY=p.y;pLW=w;pLT=now;
+}
+
+function aEnd(){
+  if(!aDrawing)return;
+  aDrawing=false;
+  if(aMode==='pen'){
+    if(pLW!==null&&pLW>0.3){
+      aCtx.save();aCtx.fillStyle=aColor;
+      aCtx.beginPath();aCtx.arc(pLX,pLY,Math.max(0.5,pLW*0.08),0,Math.PI*2);aCtx.fill();
+      aCtx.restore();
+    }
+    pLX=pLY=pLW=pLT=null;
+  }
+  aCtx.globalCompositeOperation='source-over';aCtx.globalAlpha=1.0;
+  if(aDirty)saveSnapshot();
+}
+
+// ======== 确认对话框 ========
+function showClearDialog(){
+  if(!aDirty)return;
+  document.getElementById('annotModal').classList.add('active');
+}
+function closeModal(){document.getElementById('annotModal').classList.remove('active')}
+function confirmClear(){
+  aCtx.clearRect(0,0,aCanvas.width,aCanvas.height);
+  aHistory=[];aDirty=false;
+  closeModal();
+}
+(function(){
+  try{initAnnotation()}catch(e){
+    console.warn('批注 init error:',e);
+    document.getElementById('annotToggle').style.opacity='0.3';
+    document.getElementById('annotToggle').title='批注工具初始化失败，请刷新页面重试';
+    setTimeout(function(){
+      try{initAnnotation()}catch(e2){}
+    },800);
+  }
+})();
+</script>
+</body>
+</html>
