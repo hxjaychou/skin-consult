@@ -161,8 +161,8 @@ textarea { min-height: 90px; resize: vertical; }
   nav .links a { font-size: 13px; padding: 6px 8px; }
   nav .nav-secondary { padding: 6px 8px; gap: 6px; }
   nav .nav-secondary a { font-size: 12px; padding: 5px 12px; }
-  section { padding: 120px 12px 24px; }
-  section#my { padding: 120px 12px 24px; max-width: 100%; }
+  section { padding: 110px 12px 24px; }
+  section#my { padding: 110px 12px 24px; max-width: 100%; }
   h1 { font-size: 22px; }
   h2 { font-size: 17px; }
   .card { padding: 16px; }
@@ -177,7 +177,7 @@ textarea { min-height: 90px; resize: vertical; }
   .warn-card { padding: 14px; }
   #my-daily .d-type-btn { padding: 12px; }
   #my-daily textarea { min-height: 160px; font-size: 12px; }
-  .my-panel iframe { height: 70vh; }
+  .my-panel iframe { height: 60vh; }
 }
 
 /* 手机横屏 481–768px (或竖屏平板) */
@@ -185,38 +185,41 @@ textarea { min-height: 90px; resize: vertical; }
   nav .nav-top { padding: 0 16px; }
   nav .links a { font-size: 13px; }
   nav .nav-secondary a { font-size: 13px; padding: 6px 14px; }
-  section { padding: 120px 18px 36px; }
-  section#my { padding: 120px 18px 36px; max-width: 100%; }
+  section { padding: 110px 16px 32px; }
+  section#my { padding: 110px 16px 32px; max-width: 100%; }
   h1 { font-size: 26px; }
   .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .pcard { padding: 14px; }
-  .my-panel iframe { height: 75vh; }
+  .my-panel iframe { height: 65vh; }
 }
 
 /* 平板横屏 769–1024px */
 @media (min-width: 769px) and (max-width: 1024px) {
-  section { padding: 76px 32px 40px; max-width: 800px; }
+  section { padding: 80px 24px 40px; max-width: 800px; }
   h1 { font-size: 34px; }
   h2 { font-size: 24px; }
   .grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
-  .card { padding: 32px; }
+  .card { padding: 28px; }
+  .my-panel iframe { height: 70vh; }
 }
 
 /* 桌面 1025–1440px */
 @media (min-width: 1025px) and (max-width: 1440px) {
-  section { max-width: 900px; padding: 80px 40px 48px; }
+  section { max-width: 900px; padding: 80px 32px 48px; }
   h1 { font-size: 38px; }
   .grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .my-panel iframe { height: 75vh; }
 }
 
 /* 超宽屏 ≥1441px */
 @media (min-width: 1441px) {
-  section { max-width: 1100px; padding: 80px 48px 56px; }
+  section { max-width: 1100px; padding: 80px 40px 56px; }
   h1 { font-size: 44px; }
   h2 { font-size: 28px; }
   .grid { grid-template-columns: repeat(4, 1fr); gap: 18px; }
   .pcard .name { font-size: 15px; }
   .pcard .desc { font-size: 13px; }
+  .my-panel iframe { height: 80vh; }
 }
 
 /* 暗色模式适配 */
