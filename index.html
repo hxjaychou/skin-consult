@@ -161,11 +161,11 @@ textarea { min-height: 90px; resize: vertical; }
   nav .links a { font-size: 13px; padding: 6px 8px; }
   nav .nav-secondary { padding: 6px 8px; gap: 6px; }
   nav .nav-secondary a { font-size: 12px; padding: 5px 12px; }
-  section { padding: 130px 12px 24px; }
-  section#my { padding: 130px 12px 24px; max-width: 100%; }
+  section { padding: 100px 12px 24px; }
+  section#my { padding: 100px 12px 24px; max-width: 100%; }
   h1 { font-size: 22px; }
-  h2 { font-size: 17px; }
-  .card { padding: 16px; }
+  h2 { font-size: 17px; margin-bottom: 12px; }
+  .card { padding: 16px; margin-bottom: 16px; }
   .grid { grid-template-columns: 1fr; gap: 10px; }
   .pcard { padding: 14px; }
   .pcard .name { font-size: 13px; }
@@ -178,6 +178,7 @@ textarea { min-height: 90px; resize: vertical; }
   #my-daily .d-type-btn { padding: 12px; }
   #my-daily textarea { min-height: 160px; font-size: 12px; }
   .my-panel iframe { height: 60vh; }
+  .my-panel { padding-top: 0 !important; }
 }
 
 /* 手机横屏 481–768px (或竖屏平板) */
@@ -185,8 +186,8 @@ textarea { min-height: 90px; resize: vertical; }
   nav .nav-top { padding: 0 16px; }
   nav .links a { font-size: 13px; }
   nav .nav-secondary a { font-size: 13px; padding: 6px 14px; }
-  section { padding: 130px 16px 32px; }
-  section#my { padding: 130px 16px 32px; max-width: 100%; }
+  section { padding: 100px 16px 32px; }
+  section#my { padding: 100px 16px 32px; max-width: 100%; }
   h1 { font-size: 26px; }
   .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .pcard { padding: 14px; }
@@ -969,7 +970,8 @@ function adjustSectionPadding() {
   requestAnimationFrame(() => {
     const nav = document.querySelector('nav');
     const navH = nav ? nav.offsetHeight : 80;
-    const gap = 24;
+    const isMobile = window.innerWidth <= 768;
+    const gap = isMobile ? 12 : 24;
     const pt = (navH + gap) + 'px';
     document.querySelectorAll('section').forEach(s => { s.style.paddingTop = pt; });
   });
