@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>浙江信息技术选考高效备考训练</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --paper: #ffffff;
+      --ink: #172033;
+      --muted: #667085;
+      --line: #dce3ee;
+      --blue: #2457d6;
+      --blue-soft: #edf3ff;
+      --green: #138a5b;
+      --green-soft: #eaf8f2;
+      --orange: #c86712;
+      --orange-soft: #fff3e7;
+      --red: #c53b3b;
+      --shadow: 0 12px 32px rgba(24, 39, 75, .08);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+    header {
+      color: #fff;
+      background:
+        radial-gradient(circle at 85% 15%, rgba(255,255,255,.2), transparent 22rem),
+        linear-gradient(135deg, #173b9c, #3373e8);
+      padding: 54px 24px 48px;
+    }
+    .hero, main { max-width: 1160px; margin: auto; }
+    h1 { margin: 0 0 10px; font-size: clamp(30px, 5vw, 52px); line-height: 1.18; }
+    .subtitle { max-width: 780px; margin: 0; font-size: 18px; opacity: .9; }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .hero-tags span {
+      padding: 6px 12px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+    }
+    main { padding: 28px 20px 80px; }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -1px 0 24px;
+      padding: 12px;
+      overflow-x: auto;
+      white-space: nowrap;
+      background: rgba(244,247,251,.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    nav a {
+      display: inline-block;
+      margin-right: 8px;
+      padding: 7px 12px;
+      color: var(--blue);
+      text-decoration: none;
+      border-radius: 8px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+    }
+    section {
+      margin: 24px 0;
+      padding: 26px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+    h2 { margin: 0 0 18px; font-size: 27px; }
+    h3 { margin: 0 0 10px; font-size: 20px; }
+    p { margin: 8px 0; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .metric, .template {
+      padding: 18px;
+      border-radius: 14px;
+      background: var(--blue-soft);
+      border: 1px solid #d8e4ff;
+    }
+    .metric strong { display: block; font-size: 26px; color: var(--blue); }
+    .template { background: #f8fafc; border-color: var(--line); }
+    .day {
+      scroll-margin-top: 74px;
+      margin: 18px 0;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .day-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      background: linear-gradient(90deg, #f7f9ff, #fff);
+    }
+    .day-head input { width: 21px; height: 21px; accent-color: var(--green); }
+    .day-title { flex: 1; }
+    .day-title small { display: block; color: var(--muted); }
+    .badge {
+      flex: none;
+      padding: 4px 9px;
+      color: var(--green);
+      background: var(--green-soft);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .day-body { padding: 4px 20px 20px; }
+    .papers { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .papers a {
+      color: var(--blue);
+      text-decoration: none;
+      padding: 7px 10px;
+      border: 1px solid #cfdafe;
+      border-radius: 9px;
+      background: var(--blue-soft);
+    }
+    .exercise {
+      margin: 14px 0;
+      padding: 16px;
+      border-left: 4px solid var(--orange);
+      background: var(--orange-soft);
+      border-radius: 4px 12px 12px 4px;
+    }
+    .check {
+      margin: 14px 0;
+      padding: 13px 16px;
+      border-left: 4px solid var(--green);
+      background: var(--green-soft);
+      border-radius: 4px 12px 12px 4px;
+    }
+    details {
+      margin: 12px 0;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fafcff;
+    }
+    summary { cursor: pointer; padding: 11px 14px; font-weight: 700; color: var(--blue); }
+    details > div { padding: 0 14px 14px; }
+    pre {
+      overflow-x: auto;
+      margin: 10px 0;
+      padding: 14px;
+      color: #e8eefc;
+      background: #172033;
+      border-radius: 10px;
+      font: 14px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    th, td { padding: 10px; text-align: left; border: 1px solid var(--line); }
+    th { background: #f5f7fb; }
+    .score-table input {
+      width: 72px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+    .progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    progress { width: 100%; height: 18px; accent-color: var(--green); }
+    .compact td:first-child { white-space: nowrap; font-weight: 700; }
+    footer { color: var(--muted); text-align: center; padding: 24px; }
+    @media (max-width: 800px) {
+      .grid { grid-template-columns: 1fr; }
+      section { padding: 18px; }
+      .day-head { align-items: flex-start; }
+      .badge { display: none; }
+    }
+    @media print {
+      body { background: #fff; font-size: 12px; }
+      header { color: #000; background: none; padding: 20px 0; }
+      nav, .progress-wrap { display: none; }
+      main { padding: 0; }
+      section, .day { box-shadow: none; break-inside: avoid; }
+      details > div { display: block; }
+      a { color: #000 !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <h1>浙江信息技术选考<br>高效备考训练</h1>
+      <p class="subtitle">用 2023.1—2025.6 六套真题反推命题规律。每一天都有指定题目、限时、解题动作和过关标准，只训练信息技术。</p>
+      <div class="hero-tags">
+        <span>14 天标准版</span>
+        <span>7 天压缩版</span>
+        <span>真题直达</span>
+        <span>进度自动保存</span>
+      </div>
+    </div>
+  </header>
+
+  <nav>
+    <a href="#strategy">得分策略</a>
+    <a href="#templates">草稿模板</a>
+    <a href="#plan">14 天计划</a>
+    <a href="#fast">7 天压缩</a>
+    <a href="#exam">考场执行</a>
+  </nav>
+
+  <main>
+    <section id="strategy">
+      <h2>先练最值钱的分</h2>
+      <div class="grid">
+        <div class="metric"><strong>10—12 分</strong>1—6 题：概念与系统</div>
+        <div class="metric"><strong>8—10 分</strong>7—12 题：程序与结构</div>
+        <div class="metric"><strong>16—22 分</strong>第 13—15 题可争取分</div>
+      </div>
+      <p>训练顺序：基础概念 → 数据结构 → 第 13 题 → 第 14 题 → 常见程序 → 第 15 题局部得分。</p>
+      <div class="progress-wrap">
+        <strong>完成进度</strong>
+        <progress id="progress" max="15" value="0"></progress>
+        <span id="progressText">0/15</span>
+      </div>
+      <details>
+        <summary>错因编码</summary>
+        <div><b>K</b> 知识点不知道；<b>R</b> 题意读错；<b>T</b> 程序追踪错；<b>B</b> 边界遗漏；<b>W</b> 书写或计算失误。</div>
+      </details>
+    </section>
+
+    <section id="templates">
+      <h2>五张必备草稿</h2>
+      <div class="grid">
+        <div class="template"><h3>系统数据流</h3><pre>传感器 → 智能终端 → 网络
+       → 服务器 → 数据库
+执行器 ← 智能终端 ← 控制指令</pre></div>
+        <div class="template"><h3>程序追踪</h3><pre>轮次 | i/j | 条件 | 关键变量
+  0  |     |      |
+  1  |     |      |</pre></div>
+        <div class="template"><h3>树的遍历</h3><pre>前序：根 左 右
+中序：左 根 右
+后序：左 右 根</pre></div>
+        <div class="template"><h3>Pandas 操作链</h3><pre>筛选 → 分组 → 统计
+     → 排序 → 再筛选 → 绘图</pre></div>
+        <div class="template"><h3>综合算法</h3><pre>输入 → 状态 → 条件
+     → 更新 → 输出 → 边界</pre></div>
+      </div>
+    </section>
+
+    <section id="plan">
+      <h2>14 天标准训练</h2>
+      <p>每天约 120 分钟：旧错题 20 分钟、专题 50 分钟、限时训练 40 分钟、记录 10 分钟。</p>
+
+      <article class="day" id="day0">
+        <div class="day-head"><input type="checkbox" data-day="0"><div class="day-title"><h3>第 0 天：摸底</h3><small>知道分丢在哪里，而不是凭感觉复习</small></div><span class="badge">45 分钟</span></div>
+        <div class="day-body">
+          <div class="papers"><a href="../真题完整版/2025.6真题/25.6信息技术.pdf" target="_blank">打开 2025.6 信息技术卷</a></div>
+          <p>不查资料完成整卷，每道不确定题标记“？”。分别统计概念题、程序题、第 13、14、15 题得分。</p>
+          <table class="score-table"><tr><th>模块</th><th>得分</th><th>主要错因</th></tr>
+            <tr><td>1—6 题</td><td><input data-save="score-0-a"></td><td><input data-save="reason-0-a"></td></tr>
+            <tr><td>7—12 题</td><td><input data-save="score-0-b"></td><td><input data-save="reason-0-b"></td></tr>
+            <tr><td>13—15 题</td><td><input data-save="score-0-c"></td><td><input data-save="reason-0-c"></td></tr>
+          </table>
+          <div class="check">40 分以上练速度与第 15 题；32—39 分补追踪与数据分析；24—31 分先守住 1—9、13、14 题。</div>
+        </div>
+      </article>
+
+      <article class="day" id="day1">
+        <div class="day-head"><input type="checkbox" data-day="1"><div class="day-title"><h3>第 1 天：数据、信息与安全</h3><small>消灭概念性失分</small></div><span class="badge">10 题</span></div>
+        <div class="day-body">
+          <div class="papers">
+            <a href="../真题完整版/2023.1真题/23.1技术全卷.pdf#page=2" target="_blank">2023.1 第 4—6 题</a>
+            <a href="../真题完整版/2024.1真题/24.1信息技术.pdf#page=1" target="_blank">2024.1 第 1—2 题</a>
+            <a href="../真题完整版/2024.6真题/24.6信息技术.pdf#page=1" target="_blank">2024.6 第 1—4 题</a>
+            <a href="../真题完整版/2025.6真题/25.6信息技术.pdf#page=1" target="_blank">2025.6 第 1—2 题</a>
+          </div>
+          <div class="exercise"><b>具体练习：</b>2023.1 第 4 题。逐项解释权限、关闭防火墙、升级杀毒软件和备份分别影响什么风险。不要只写选项字母。</div>
+          <details><summary>解题切口</summary><div>圈出“只能、一定、无需、所有、确保”等词；将错误选项改写正确，并判断它属于绝对化、范围扩大、概念偷换还是因果倒置。</div></details>
+          <div class="check">过关：正确率 ≥ 90%，平均每题 ≤ 45 秒。</div>
+        </div>
+      </article>
+
+      <article class="day" id="day2">
+        <div class="day-head"><input type="checkbox" data-day="2"><div class="day-title"><h3>第 2 天：系统、网络与 AI</h3><small>把长材料还原成设备和数据流</small></div><span class="badge">系统图</span></div>
+        <div class="day-body">
+          <div class="papers">
+            <a href="../真题完整版/2024.1真题/24.1信息技术.pdf#page=1" target="_blank">2024.1 第 3—6 题</a>
+            <a href="../真题完整版/2025.1真题/25.1选考技术试题.pdf#page=2" target="_blank">2025.1 第 5—6 题</a>
+            <a href="../真题完整版/2025.6真题/25.6信息技术.pdf#page=1" target="_blank">2025.6 第 3—7 题</a>
+          </div>
+          <div class="exercise"><b>具体练习：</b>2025.6 公交系统。给北斗、4G/5G、音频、NFC、摄像头、服务器分别标注“采集、定位、识别、传输、处理、存储、展示”。</div>
+          <details><summary>解题切口</summary><div>每遇到系统材料，60 秒内画数据流；人工智能题检查训练数据、模型训练、推理应用以及选项是否绝对化。</div></details>
+          <div class="check">过关：1 分钟内画对系统结构，相关题正确率 ≥ 85%。</div>
+        </div>
+      </article>
+
+      <article class="day" id="day3">
+        <div class="day-head"><input type="checkbox" data-day="3"><div class="day-title"><h3>第 3 天：流程图与追踪</h3><small>一轮一行，拒绝脑内运行</small></div><span class="badge">追踪表</span></div>
+        <div class="day-body">
+          <div class="papers">
+            <a href="../真题完整版/2023.1真题/23.1技术全卷.pdf#page=2" target="_blank">2023.1 第 7、10—12 题</a>
+            <a href="../真题完整版/2024.6真题/24.6信息技术.pdf#page=2" target="_blank">2024.6 第 7、10—12 题</a>
+            <a href="../真题完整版/2025.1真题/25.1选考技术试题.pdf#page=2" target="_blank">2025.1 第 7、10—12 题</a>
+          </div>
+          <div class="exercise"><b>具体练习：</b>2023.1 第 7 题。为每个输入记录执行前后的 y 和 k，分支判断必须写 Y/N。</div>
+          <details><summary>追踪表样式</summary><div><pre>输入 x | 执行前 y | 执行后 y | k 是否变化
+  10   |     0    |     0    | 是
+   7   |     0    |     7    | 否</pre></div></details>
+          <div class="check">过关：15 行以内程序，3 分钟内得出结果。</div>
+        </div>
+      </article>
+
+      <article class="day" id="day4">
+        <div class="day-head"><input type="checkbox" data-day="4"><div class="day-title"><h3>第 4 天：栈、队列与树</h3><small>所有状态必须落在纸上</small></div><span class="badge">高频必考</span></div>
+        <div class="day-body">
+          <div class="papers">
+            <a href="../真题完整版/2023.1真题/23.1技术全卷.pdf#page=2" target="_blank">2023.1 第 8—9 题</a>
+            <a href="../真题完整版/2023.6真题/23.6信息技术.pdf#page=2" target="_blank">2023.6 第 8—9 题</a>
+            <a href="../真题完整版/2024.6真题/24.6信息技术.pdf#page=2" target="_blank">2024.6 第 8—9 题</a>
+            <a href="../真题完整版/2025.6真题/25.6信息技术.pdf#page=2" target="_blank">2025.6 第 8—9 题</a>
+          </div>
+          <div class="exercise"><b>具体练习：</b>2025.6 第 9 题。队列初始 A、B、C、D、E，每次出队后立即记录“输出”或“重新入队”。</div>
+          <details><summary>固定动作</summary><div>栈竖画并标栈顶；队列横画并标队首、队尾；树在节点旁写访问序号。每次操作后画新状态。</div></details>
+          <div class="check">过关：连续 10 题至少对 9 题，每题 ≤ 90 秒。</div>
+        </div>
+      </article>
+
+      <article class="day" id="day5">
+        <div class="day-head"><input type="checkbox" data-day="5"><div class="day-title"><h3>第 5 天：排序、查找与递归</h3><small>先写边界，再写业务条件</small></div><span class="badge">边界训练</span></div>
+        <div class="day-body">
+          <div class="papers">
+            <a href="../真题完整版/2023.1真题/23.1技术全卷.pdf#page=2" target="_blank">2023.1 第 10—12 题</a>
+            <a href="../真题完整版/2024.1真题/24.1信息技术.pdf#page=2" target="_blank">2024.1 第 9—12 题</a>
+            <a href="../真题完整版/2025.1真题/25.1选考技术试题.pdf#page=2" target="_blank">2025.1 第 10—12 题</a>
+          </div>
+          <div class="exercise"><b>具体练习：</b>2025.1 第 10 题。有序数组元素加 1 后向后移动，先独立写出“未越界”和“仍需移动”两个条件，再看选项。</div>
+          <details><summary>递归题提示</summary><div>分别统计调用次数和返回值。画调用树，不要把“调用了几次”当成“结果是多少”。</div></details>
+          <div class="check">过关：能解释循环为何停止，并主动检查首尾下标。</div>
+        </div>
+      </article>
+
+      <article class="day" id="day6">
+        <div class="day-head"><input type="checkbox" data-day="6"><div class="day-title"><h3>第 6 天：第 13 题状态控制</h3><small>先把自然语言改写成规则</small></div><span class="badge">目标 70%</span></div>
+        <div class="day-body">
+          <div class="papers">
+            <a href="../真题完整版/2023.1真题/23.1技术全卷.pdf#page=3" target="_blank">2023.1 第 13 题</a>
+            <a href="../真题完整版/2023.6真题/23.6信息技术.pdf#page=3" target="_blank">2023.6 第 13 题</a>
+            <a href="../真题完整版/2024.1真题/24.1信息技术.pdf#page=3" target="_blank">2024.1 第 13 题</a>
+            <a href="../真题完整版/2024.6真题/24.6信息技术.pdf#page=3" target="_blank">2024.6 第 13 题</a>
+          </div>
+          <div class="exercise"><b>具体练习：</b>2024.6 红绿灯监控。先写四条规则：同亮、同灭、红灯超时、绿灯超时，再找代码中的状态变量和计时变量。</div>
+          <details><summary>三组测试数据</summary><div>正常状态、异常状态、恰好等于阈值。重点检查 &lt;、&lt;=、&gt;、&gt;=。</div></details>
+          <div class="check">过关：第 13 题得分达到题目总分的 70%。</div>
+        </div>
+      </article>
+
+      <article class="day" id="day7">
+        <div class="day-head"><input type="checkbox" data-day="7"><div class="day-title"><h3>第 7 天：系统排错</h3><small>沿数据流逐段定位</small></div><span class="badge">第 13 题</span></div>
+        <div class="day-body">
+          <div class="papers">
+            <a href="../真题完整版/2025.1真题/25.1选考技术试题.pdf#page=3" target="_blank">2025.1 第 13 题</a>
+            <a href="../真题完整版/2025.6真题/25.6信息技术.pdf#page=3" target="_blank">2025.6 第 13 题</a>
+          </div>
+          <div class="exercise"><b>具体练习：</b>2025.6 水质监测。先写“传感器 → 智能终端 → 服务器 → 数据库”，再逐段检查采集、处理、网络、服务器和数据库。</div>
+          <details><summary>排错顺序</summary><div>采集端 → 智能终端 → 网络 → 服务器程序 → 数据库 → 页面查询或缓存。</div></details>
+          <div class="check">过关：能够说明每种故障会在哪个环节中断数据流。</div>
+        </div>
+      </article>
+
+      <article class="day" id="day8">
+        <div class="day-head"><input type="checkbox" data-day="8"><div class="day-title"><h3>第 8 天：Pandas 基础</h3><small>把文字需求翻译成操作链</small></div><span class="badge">第 14 题</span></div>
+        <div class="day-body">
+          <div class="papers">
+            <a href="../真题完整版/2023.1真题/23.1技术全卷.pdf#page=4" target="_blank">2023.1 第 14 题</a>
+            <a href="../真题完整版/2023.6真题/23.6信息技术.pdf#page=4" target="_blank">2023.6 第 14 题</a>
+            <a href="../真题完整版/2024.1真题/24.1信息技术.pdf#page=4" target="_blank">2024.1 第 14 题</a>
+          </div>
+          <div class="exercise"><b>具体练习：</b>2023.1 PM2.5：读取每天 CSV → 筛选 PM2.5 → 求城市 A 日平均 → 累加月数据 → 求月平均 → 绘图。</div>
+          <details><summary>空格分类</summary><div>每个空先标记为筛选、循环次数、累加、统计结果或绘图数据，之后再填写代码。</div></details>
+          <div class="check">过关：读完需求 30 秒内说出完整处理顺序。</div>
+        </div>
+      </article>
+
+      <article class="day" id="day9">
+        <div class="day-head"><input type="checkbox" data-day="9"><div class="day-title"><h3>第 9 天：筛选、分组与排序</h3><small>确认每一步使用哪个 DataFrame</small></div><span class="badge">目标 7 分</span></div>
+        <div class="day-body">
+          <div class="papers">
+            <a href="../真题完整版/2024.6真题/24.6信息技术.pdf#page=4" target="_blank">2024.6 第 14 题</a>
+            <a href="../真题完整版/2025.1真题/25.1选考技术试题.pdf#page=4" target="_blank">2025.1 第 14 题</a>
+            <a href="../真题完整版/2025.6真题/25.6信息技术.pdf#page=4" target="_blank">2025.6 第 14 题</a>
+          </div>
+          <div class="exercise"><b>具体练习：</b>2025.1 温度监测：筛选 3 月 → 按监测点分组求差值平均 → 降序 → 取最高监测点 → 绘制实测温度。</div>
+          <details><summary>高频错误</summary><div>在原始 df 上排序；忘记再次筛选目标监测点；把 ascending=False 当升序；分组列和统计列写反。</div></details>
+          <div class="check">过关：第 14 题稳定得到 7 分以上。</div>
+        </div>
+      </article>
+
+      <article class="day" id="day10">
+        <div class="day-head"><input type="checkbox" data-day="10"><div class="day-title"><h3>第 10 天：读懂陌生算法</h3><small>长代码先切成多个功能块</small></div><span class="badge">第 15 题</span></div>
+        <div class="day-body">
+          <div class="papers">
+            <a href="../真题完整版/2023.1真题/23.1技术全卷.pdf#page=5" target="_blank">2023.1 第 15 题</a>
+            <a href="../真题完整版/2023.6真题/23.6信息技术.pdf#page=5" target="_blank">2023.6 第 15 题</a>
+          </div>
+          <div class="exercise"><b>具体练习：</b>2023.1 检测设备调度。拆成数据合并、按优先级入队、设备选择、时间推进、等待时间累计五块。</div>
+          <details><summary>变量翻译</summary><div>为送达时间、检测时长、优先级、当前时间、等待人数和总等待时间分别标注变量及下标。</div></details>
+          <div class="check">过关：能把 15 行以上程序拆成 4—6 个功能块。</div>
+        </div>
+      </article>
+
+      <article class="day" id="day11">
+        <div class="day-head"><input type="checkbox" data-day="11"><div class="day-title"><h3>第 11 天：链表、分组与区间</h3><small>理解循环方向和字段含义</small></div><span class="badge">第 15 题</span></div>
+        <div class="day-body">
+          <div class="papers">
+            <a href="../真题完整版/2024.1真题/24.1信息技术.pdf#page=5" target="_blank">2024.1 第 15 题</a>
+            <a href="../真题完整版/2024.6真题/24.6信息技术.pdf#page=5" target="_blank">2024.6 第 15 题</a>
+          </div>
+          <div class="exercise"><b>具体练习：</b>2024.6 数据加密。先用四个数据手算变换与重排，再解释为什么移动数据时要从后向前。</div>
+          <details><summary>判断循环方向</summary><div>问自己：若从前向后写入，会不会覆盖尚未读取的原数据？如果会，必须从后向前。</div></details>
+          <div class="check">过关：能解释链表或区间记录中每个字段表示什么。</div>
+        </div>
+      </article>
+
+      <article class="day" id="day12">
+        <div class="day-head"><input type="checkbox" data-day="12"><div class="day-title"><h3>第 12 天：二分、队列与选拔</h3><small>先拿样例、追踪和纠错分</small></div><span class="badge">保 4—6 分</span></div>
+        <div class="day-body">
+          <div class="papers">
+            <a href="../真题完整版/2025.1真题/25.1选考技术试题.pdf#page=5" target="_blank">2025.1 第 15 题</a>
+            <a href="../真题完整版/2025.6真题/25.6信息技术.pdf#page=5" target="_blank">2025.6 第 15 题</a>
+          </div>
+          <div class="exercise"><b>具体练习：</b>2025.1 选手挑选。拆成校内名次、直接入选、候选队列、同分处理和顺序输出。</div>
+          <details><summary>二分查找检查</summary><div>先确认升序或降序；再决定目标较小时移动 left 还是 right；找到一个相同值后判断是否还需寻找同分元素。</div></details>
+          <div class="check">过关：第 15 题不整题放弃，稳定拿到 4—6 分。</div>
+        </div>
+      </article>
+
+      <article class="day" id="day13">
+        <div class="day-head"><input type="checkbox" data-day="13"><div class="day-title"><h3>第 13 天：第一次模拟</h3><small>执行固定时间分配</small></div><span class="badge">45 分钟</span></div>
+        <div class="day-body">
+          <div class="papers"><a href="../真题完整版/2024.6真题/24.6信息技术.pdf" target="_blank">打开 2024.6 信息技术卷</a></div>
+          <table><tr><th>部分</th><th>时间</th></tr><tr><td>1—6</td><td>5 分钟</td></tr><tr><td>7—12</td><td>10 分钟</td></tr><tr><td>第 13 题</td><td>7 分钟</td></tr><tr><td>第 14 题</td><td>9 分钟</td></tr><tr><td>第 15 题</td><td>11 分钟</td></tr><tr><td>检查</td><td>3 分钟</td></tr></table>
+          <div class="check">卡住超过 2 分钟先跳。完成后只统计最主要的两类错因。</div>
+        </div>
+      </article>
+
+      <article class="day" id="day14">
+        <div class="day-head"><input type="checkbox" data-day="14"><div class="day-title"><h3>第 14 天：回炉测试</h3><small>重做摸底卷，检查能力是否转化为分数</small></div><span class="badge">目标 +5 分</span></div>
+        <div class="day-body">
+          <div class="papers"><a href="../真题完整版/2025.6真题/25.6信息技术.pdf" target="_blank">重新打开 2025.6 信息技术卷</a></div>
+          <ul><li>总分提高至少 5 分。</li><li>选择题不超过 15 分钟。</li><li>第 14 题达到 7 分以上。</li><li>第 15 题不再整题放弃。</li><li>同类错误不重复出现两次。</li></ul>
+          <table class="score-table"><tr><th>第 0 天总分</th><th>第 14 天总分</th><th>提高</th></tr><tr><td><input data-save="score-first"></td><td><input data-save="score-last"></td><td><input data-save="score-growth"></td></tr></table>
+        </div>
+      </article>
+    </section>
+
+    <section id="fast">
+      <h2>7 天压缩版</h2>
+      <table class="compact">
+        <tr><th>天数</th><th>训练内容</th></tr>
+        <tr><td>第 1 天</td><td>概念、信息系统、网络与 AI：完成标准版第 1—2 天。</td></tr>
+        <tr><td>第 2 天</td><td>流程图、栈、队列、树、排序和查找：完成第 3—5 天核心题。</td></tr>
+        <tr><td>第 3 天</td><td>第 13 题：2023.1、2024.6、2025.6。</td></tr>
+        <tr><td>第 4 天</td><td>第 14 题：2023.1、2025.1、2025.6。</td></tr>
+        <tr><td>第 5 天</td><td>第 15 题保分：只练样例、追踪、纠错与简单填空。</td></tr>
+        <tr><td>第 6 天</td><td>2024.6 限时模拟并修正错题。</td></tr>
+        <tr><td>第 7 天</td><td>2025.6 限时模拟，重做全部错题。</td></tr>
+      </table>
+    </section>
+
+    <section id="exam">
+      <h2>考场执行清单</h2>
+      <div class="grid">
+        <div class="template"><h3>选择题</h3><p>概念题排除绝对化；程序题画表；栈、队列、树画状态。</p></div>
+        <div class="template"><h3>第 13 题</h3><p>先写数据流或控制规则，再填代码，最后检查临界值。</p></div>
+        <div class="template"><h3>第 14 题</h3><p>先写“筛选→分组→统计→排序→绘图”，确认每一步的数据对象。</p></div>
+        <div class="template"><h3>第 15 题</h3><p>先拿独立小问，给变量写中文含义，复杂空格最后处理。</p></div>
+      </div>
+      <div class="exercise"><b>最终原则：</b>命题人用陌生场景包装熟悉结构。你要做的是把场景还原成数据、状态、条件、循环和边界。</div>
+    </section>
+  </main>
+
+  <footer>本训练页只使用项目中现有的信息技术真题，忽略通用技术部分。</footer>
+
+  <script>
+    const boxes = [...document.querySelectorAll('[data-day]')];
+    const progress = document.getElementById('progress');
+    const progressText = document.getElementById('progressText');
+
+    function refreshProgress() {
+      const done = boxes.filter(box => box.checked).length;
+      progress.value = done;
+      progressText.textContent = `${done}/${boxes.length}`;
+    }
+
+    boxes.forEach(box => {
+      const key = `zj-it-day-${box.dataset.day}`;
+      box.checked = localStorage.getItem(key) === '1';
+      box.addEventListener('change', () => {
+        localStorage.setItem(key, box.checked ? '1' : '0');
+        refreshProgress();
+      });
+    });
+
+    document.querySelectorAll('[data-save]').forEach(input => {
+      const key = `zj-it-${input.dataset.save}`;
+      input.value = localStorage.getItem(key) || '';
+      input.addEventListener('input', () => localStorage.setItem(key, input.value));
+    });
+
+    refreshProgress();
+  </script>
+</body>
+</html>
