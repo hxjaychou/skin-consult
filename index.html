@@ -236,6 +236,7 @@ textarea { min-height: 90px; resize: vertical; }
     <a href="#" onclick="showMyTab(event,'my-plan')" class="my-nav-item">刷题计划</a>
     <a href="#" onclick="showMyTab(event,'my-reading')" class="my-nav-item">读书笔记</a>
     <a href="#" onclick="showMyTab(event,'my-growth')" class="my-nav-item">伴我成长</a>
+    <a href="#" onclick="showMyTab(event,'my-booklist')" class="my-nav-item">小山书单</a>
     <a href="#" onclick="backToMain()" style="color:#c0392b;">返回</a>
   </div>
 </nav>
@@ -758,6 +759,15 @@ textarea { min-height: 90px; resize: vertical; }
       <iframe id="gr-result-frame" style="width:100%;border:1px solid var(--border);background:#fff;min-height:600px;"></iframe>
     </div>
   </div><!-- /my-growth -->
+
+  <!-- 子板块：小山书单 -->
+  <div id="my-booklist" class="my-panel" style="display:none;">
+    <h2 style="font-size:22px;font-weight:700;color:var(--primary);margin-bottom:8px;">小山书单打卡进度</h2>
+    <p style="color:var(--muted);margin-bottom:24px;font-size:14px;">大山老师百年孤独共读课程打卡进度</p>
+    <div class="card" style="background:#fff;padding:0;overflow:hidden;">
+      <iframe src="小山书单_打卡进度.html" style="width:100%;height:80vh;border:none;"></iframe>
+    </div>
+  </div>
 
   <!-- 子板块：脱密工具 -->
   <div id="my-desens" class="my-panel" style="display:none;">
