@@ -2098,21 +2098,6 @@ function simpleHash(str) {
 }
 </script>
 
-<!-- DEBUG: find overflowing elements on mobile -->
-<script>
-(function(){
-  if(window.innerWidth > 500) return;
-  var vw = document.documentElement.clientWidth;
-  document.querySelectorAll('*').forEach(function(el){
-    var r = el.getBoundingClientRect();
-    if(r.right > vw + 2 || r.left < -2) {
-      el.style.outline = '3px solid red';
-      el.style.outlineOffset = '-1px';
-      console.log('OVERFLOW:', el.tagName, el.id||el.className, 'right='+Math.round(r.right), 'left='+Math.round(r.left), 'width='+Math.round(r.width));
-    }
-  });
-})();
-</script>
 
 </body>
 </html>
