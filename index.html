@@ -42,9 +42,9 @@ nav .nav-secondary a.active { background: var(--primary); color: #fff; }
 /* ---- Section ---- */
 section { display: none; min-height: 100vh; padding-top: 100px; padding-left: 20px; padding-right: 20px; padding-bottom: 40px; max-width: 720px; margin: 0 auto; overflow-x: hidden; box-sizing: border-box; }
 section#home { display: flex; flex-direction: column; }
-section#my { width: 100%; max-width: 100%; padding-top: 100px; overflow-x: hidden; box-sizing: border-box; }
-.my-panel { max-width: 100%; overflow-x: hidden; box-sizing: border-box; }
-.my-panel iframe { max-width: 100%; }
+section#my { width: 100%; max-width: 100vw; padding-top: 100px; padding-left: 0; padding-right: 0; overflow-x: hidden; box-sizing: border-box; }
+.my-panel { width: 100%; max-width: 100%; overflow-x: hidden; box-sizing: border-box; padding: 0 20px; }
+.my-panel iframe { max-width: 100%; width: 100%; }
 .my-panel * { box-sizing: border-box; }
 
 /* ---- Typography ---- */
@@ -167,7 +167,8 @@ textarea { min-height: 90px; resize: vertical; }
   nav .nav-secondary { padding: 6px 8px; gap: 6px; }
   nav .nav-secondary a { font-size: 12px; padding: 5px 12px; }
   section { padding-top: 90px; padding-left: 12px; padding-right: 12px; padding-bottom: 24px; }
-  section#my { padding-top: 90px; padding-left: 12px; padding-right: 12px; padding-bottom: 24px; max-width: 100%; }
+  section#my { padding-top: 90px; padding-left: 12px; padding-right: 12px; padding-bottom: 24px; max-width: 100vw; }
+  .my-panel { padding: 0 12px; }
   h1 { font-size: 22px; }
   h2 { font-size: 17px; margin-bottom: 12px; }
   .card { padding: 16px; margin-bottom: 16px; }
@@ -191,7 +192,7 @@ textarea { min-height: 90px; resize: vertical; }
   nav .links a { font-size: 13px; }
   nav .nav-secondary a { font-size: 13px; padding: 6px 14px; }
   section { padding-top: 90px; padding-left: 16px; padding-right: 16px; padding-bottom: 32px; }
-  section#my { padding-top: 90px; padding-left: 16px; padding-right: 16px; padding-bottom: 32px; max-width: 100%; }
+  section#my { padding-top: 90px; padding-left: 16px; padding-right: 16px; padding-bottom: 32px; max-width: 100vw; }
   h1 { font-size: 26px; }
   .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .pcard { padding: 14px; }
