@@ -6,7 +6,8 @@
 <title>皮肤健康咨询 · 从头发丝到脚底板</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { overflow-x: hidden; width: 100%; max-width: 100vw; }
+html { overflow-x: hidden; width: 100%; max-width: 100vw; }
+body { overflow-x: hidden; width: 100%; max-width: 100vw; }
 :root {
   --primary: #2d6a4f;
   --primary-light: #40916c;
@@ -2096,6 +2097,31 @@ function simpleHash(str) {
   }
   return 'h_' + Math.abs(hash).toString(36);
 }
+</script>
+<script>
+// 强制防止水平溢出
+(function(){
+  function clamp(){
+    var vw = document.documentElement.clientWidth;
+    document.body.style.maxWidth = vw + 'px';
+    document.documentElement.style.maxWidth = vw + 'px';
+    // 找出所有溢出的元素
+    document.querySelectorAll('*').forEach(function(el){
+      if(el.scrollWidth > vw + 2) {
+        el.style.maxWidth = '100vw';
+        el.style.overflowX = 'hidden';
+      }
+    });
+  }
+  if(document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', clamp);
+  } else {
+    clamp();
+  }
+  // 延迟再跑一次，处理动态内容
+  setTimeout(clamp, 500);
+  setTimeout(clamp, 2000);
+})();
 </script>
 
 
