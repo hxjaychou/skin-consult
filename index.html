@@ -130,6 +130,18 @@ textarea { min-height: 90px; resize: vertical; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ---- 折叠面板 ---- */
+.accordion { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; }
+.accordion-header { padding: 18px 24px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: var(--transition); }
+.accordion-header:hover { background: #f8f9fa; }
+.accordion-header h3 { margin: 0; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+.accordion-header .icon { width: 6px; height: 6px; border-radius: 50%; background: #e94560; }
+.accordion-header .arrow { transition: transform 0.3s ease; font-size: 12px; color: var(--muted); }
+.accordion-header.active .arrow { transform: rotate(180deg); }
+.accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+.accordion-body.open { max-height: 2000px; }
+.accordion-content { padding: 0 24px 24px; }
+
 /* ---- Scrollbar ---- */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -420,86 +432,94 @@ textarea { min-height: 90px; resize: vertical; }
 <section id="tools">
   <h2>实用工具</h2>
 
-  <!-- 脱密工具 -->
-  <div class="card">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
-      <div style="width:6px;height:6px;border-radius:50%;background:#e94560;"></div>
-      <h3 style="margin:0;font-size:18px;">文本脱密工具</h3>
+  <!-- 脱密工具 - 折叠面板 -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion('desens')">
+      <h3><span class="icon"></span>文本脱密工具</h3>
+      <span class="arrow">▼</span>
     </div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">关键词自动替换为标记符号，身份证/手机号/邮箱自动识别脱敏</p>
+    <div class="accordion-body" id="desens-body">
+      <div class="accordion-content">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">关键词自动替换为标记符号，身份证/手机号/邮箱自动识别脱敏</p>
 
-    <!-- 映射表 -->
-    <div style="margin-bottom:16px;">
-      <div style="font-size:14px;font-weight:600;margin-bottom:8px;">关键词映射表</div>
-      <div id="desens-map-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;"></div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <input id="desens-keyword" placeholder="关键词（如：浙江省教育厅）" style="flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;">
-        <input id="desens-replace" placeholder="代号（如：ORG01）" style="width:120px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;">
-        <button class="btn" style="width:auto;padding:8px 16px;font-size:13px;" onclick="addDesensMapping()">添加</button>
+        <!-- 映射表 -->
+        <div style="margin-bottom:16px;">
+          <div style="font-size:14px;font-weight:600;margin-bottom:8px;">关键词映射表</div>
+          <div id="desens-map-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;"></div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input id="desens-keyword" placeholder="关键词（如：浙江省教育厅）" style="flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;">
+            <input id="desens-replace" placeholder="代号（如：ORG01）" style="width:120px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;">
+            <button class="btn" style="width:auto;padding:8px 16px;font-size:13px;" onclick="addDesensMapping()">添加</button>
+          </div>
+        </div>
+
+        <!-- 内置规则 -->
+        <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">
+          内置自动识别：
+          <span style="display:inline-block;background:#f0f0f0;border-radius:4px;padding:2px 6px;margin:2px 4px;">身份证号 → [ID_CARD]</span>
+          <span style="display:inline-block;background:#f0f0f0;border-radius:4px;padding:2px 6px;margin:2px 4px;">手机号 → [PHONE]</span>
+          <span style="display:inline-block;background:#f0f0f0;border-radius:4px;padding:2px 6px;margin:2px 4px;">邮箱 → [EMAIL]</span>
+        </div>
+
+        <!-- 输入 -->
+        <textarea id="desens-input" placeholder="在此粘贴文本，或将 .txt / .md 文件拖入此区域..." style="width:100%;min-height:150px;border:1.5px solid var(--border);border-radius:10px;padding:14px;font-size:14px;line-height:1.7;resize:vertical;font-family:inherit;margin-bottom:12px;"></textarea>
+
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button class="btn" style="width:auto;padding:10px 20px;font-size:14px;" onclick="doDesensitize()">脱敏</button>
+          <button class="btn btn-outline" style="width:auto;padding:10px 20px;font-size:14px;" onclick="clearDesens()">清空</button>
+          <button class="btn btn-outline" style="width:auto;padding:10px 20px;font-size:14px;" onclick="downloadDesensResult()">下载结果</button>
+          <span id="desens-stats" style="font-size:12px;color:var(--muted);margin-left:auto;"></span>
+        </div>
+
+        <!-- 输出 -->
+        <div id="desens-output" style="width:100%;min-height:100px;border:1px solid #e0e0e0;border-radius:10px;padding:14px;font-size:14px;line-height:1.7;background:#fafafa;white-space:pre-wrap;word-break:break-all;max-height:400px;overflow-y:auto;margin-top:16px;color:var(--muted);">脱敏结果将显示在这里</div>
       </div>
     </div>
-
-    <!-- 内置规则 -->
-    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">
-      内置自动识别：
-      <span style="display:inline-block;background:#f0f0f0;border-radius:4px;padding:2px 6px;margin:2px 4px;">身份证号 → [ID_CARD]</span>
-      <span style="display:inline-block;background:#f0f0f0;border-radius:4px;padding:2px 6px;margin:2px 4px;">手机号 → [PHONE]</span>
-      <span style="display:inline-block;background:#f0f0f0;border-radius:4px;padding:2px 6px;margin:2px 4px;">邮箱 → [EMAIL]</span>
-    </div>
-
-    <!-- 输入 -->
-    <textarea id="desens-input" placeholder="在此粘贴文本，或将 .txt / .md 文件拖入此区域..." style="width:100%;min-height:150px;border:1.5px solid var(--border);border-radius:10px;padding:14px;font-size:14px;line-height:1.7;resize:vertical;font-family:inherit;margin-bottom:12px;"></textarea>
-
-    <div style="display:flex;gap:10px;align-items:center;">
-      <button class="btn" style="width:auto;padding:10px 20px;font-size:14px;" onclick="doDesensitize()">脱敏</button>
-      <button class="btn btn-outline" style="width:auto;padding:10px 20px;font-size:14px;" onclick="clearDesens()">清空</button>
-      <button class="btn btn-outline" style="width:auto;padding:10px 20px;font-size:14px;" onclick="downloadDesensResult()">下载结果</button>
-      <span id="desens-stats" style="font-size:12px;color:var(--muted);margin-left:auto;"></span>
-    </div>
-
-    <!-- 输出 -->
-    <div id="desens-output" style="width:100%;min-height:100px;border:1px solid #e0e0e0;border-radius:10px;padding:14px;font-size:14px;line-height:1.7;background:#fafafa;white-space:pre-wrap;word-break:break-all;max-height:400px;overflow-y:auto;margin-top:16px;color:var(--muted);">脱敏结果将显示在这里</div>
   </div>
 
-  <!-- 密码管理器（演示） -->
-  <div class="card">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
-      <div style="width:6px;height:6px;border-radius:50%;background:#e94560;"></div>
-      <h3 style="margin:0;font-size:18px;">密码管理器（演示）</h3>
+  <!-- 密码管理器（演示） - 折叠面板 -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion('passmgr')">
+      <h3><span class="icon"></span>密码管理器（演示）</h3>
+      <span class="arrow">▼</span>
     </div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">本地存储的密码管理工具，数据仅保存在浏览器中</p>
+    <div class="accordion-body" id="passmgr-body">
+      <div class="accordion-content">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">本地存储的密码管理工具，数据仅保存在浏览器中</p>
 
-    <!-- 登录/注册 -->
-    <div id="passmgr-login" style="text-align:center;padding:40px 20px;">
-      <div style="font-size:48px;margin-bottom:16px;">🔐</div>
-      <h3 style="margin-bottom:20px;">设置主密码</h3>
-      <input id="passmgr-master-pwd" type="password" placeholder="输入主密码（首次使用将自动注册）" style="max-width:300px;margin:0 auto 12px;display:block;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;text-align:center;">
-      <button class="btn" style="max-width:300px;margin:0 auto;display:block;" onclick="passmgrLogin()">解锁</button>
-    </div>
+        <!-- 登录/注册 -->
+        <div id="passmgr-login" style="text-align:center;padding:40px 20px;">
+          <div style="font-size:48px;margin-bottom:16px;">🔐</div>
+          <h3 style="margin-bottom:20px;">设置主密码</h3>
+          <input id="passmgr-master-pwd" type="password" placeholder="输入主密码（首次使用将自动注册）" style="max-width:300px;margin:0 auto 12px;display:block;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;text-align:center;">
+          <button class="btn" style="max-width:300px;margin:0 auto;display:block;" onclick="passmgrLogin()">解锁</button>
+        </div>
 
-    <!-- 主界面 -->
-    <div id="passmgr-main" style="display:none;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-        <h3 style="margin:0;">密码列表</h3>
-        <div style="display:flex;gap:8px;">
-          <button class="btn" style="width:auto;padding:8px 16px;font-size:13px;" onclick="showAddPass()">添加</button>
-          <button class="btn btn-outline" style="width:auto;padding:8px 16px;font-size:13px;" onclick="passmgrLogout()">锁定</button>
+        <!-- 主界面 -->
+        <div id="passmgr-main" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="margin:0;">密码列表</h3>
+            <div style="display:flex;gap:8px;">
+              <button class="btn" style="width:auto;padding:8px 16px;font-size:13px;" onclick="showAddPass()">添加</button>
+              <button class="btn btn-outline" style="width:auto;padding:8px 16px;font-size:13px;" onclick="passmgrLogout()">锁定</button>
+            </div>
+          </div>
+          <div id="passmgr-list"></div>
+        </div>
+
+        <!-- 添加/编辑表单 -->
+        <div id="passmgr-form" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="margin:0;" id="passmgr-form-title">添加密码</h3>
+            <button class="btn btn-outline" style="width:auto;padding:8px 16px;font-size:13px;" onclick="hideAddPass()">取消</button>
+          </div>
+          <input id="passmgr-site" placeholder="网站/应用名称" style="width:100%;margin-bottom:10px;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;">
+          <input id="passmgr-user" placeholder="用户名/邮箱" style="width:100%;margin-bottom:10px;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;">
+          <input id="passmgr-pass" type="password" placeholder="密码" style="width:100%;margin-bottom:10px;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;">
+          <textarea id="passmgr-note" placeholder="备注（可选）" style="width:100%;min-height:60px;margin-bottom:12px;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;resize:vertical;font-family:inherit;"></textarea>
+          <button class="btn" onclick="savePass()">保存</button>
         </div>
       </div>
-      <div id="passmgr-list"></div>
-    </div>
-
-    <!-- 添加/编辑表单 -->
-    <div id="passmgr-form" style="display:none;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-        <h3 style="margin:0;" id="passmgr-form-title">添加密码</h3>
-        <button class="btn btn-outline" style="width:auto;padding:8px 16px;font-size:13px;" onclick="hideAddPass()">取消</button>
-      </div>
-      <input id="passmgr-site" placeholder="网站/应用名称" style="width:100%;margin-bottom:10px;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;">
-      <input id="passmgr-user" placeholder="用户名/邮箱" style="width:100%;margin-bottom:10px;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;">
-      <input id="passmgr-pass" type="password" placeholder="密码" style="width:100%;margin-bottom:10px;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;">
-      <textarea id="passmgr-note" placeholder="备注（可选）" style="width:100%;min-height:60px;margin-bottom:12px;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;resize:vertical;font-family:inherit;"></textarea>
-      <button class="btn" onclick="savePass()">保存</button>
     </div>
   </div>
 </section>
@@ -1667,6 +1687,21 @@ window.saveDetail = function() {
   }
   load();
   closeModal();
+};
+
+// ===== 折叠面板 =====
+window.toggleAccordion = function(id) {
+  const body = document.getElementById(id + '-body');
+  const header = body.previousElementSibling;
+  const arrow = header.querySelector('.arrow');
+
+  if (body.classList.contains('open')) {
+    body.classList.remove('open');
+    header.classList.remove('active');
+  } else {
+    body.classList.add('open');
+    header.classList.add('active');
+  }
 };
 
 // ===== 脱密工具 =====
