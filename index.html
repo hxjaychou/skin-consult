@@ -2101,28 +2101,62 @@ function simpleHash(str) {
 }
 </script>
 <script>
-// 强制防止水平溢出
+// 彻底防止水平溢出 — 专注于 iframe 和动态内容
 (function(){
-  function clamp(){
-    var vw = document.documentElement.clientWidth;
-    document.body.style.maxWidth = vw + 'px';
-    document.documentElement.style.maxWidth = vw + 'px';
-    // 找出所有溢出的元素
-    document.querySelectorAll('*').forEach(function(el){
-      if(el.scrollWidth > vw + 2) {
-        el.style.maxWidth = '100vw';
+  var vw = document.documentElement.clientWidth;
+
+  // 1. 锁死 html 和 body
+  document.documentElement.style.maxWidth = vw + 'px';
+  document.documentElement.style.overflowX = 'hidden';
+  document.body.style.maxWidth = vw + 'px';
+  document.body.style.overflowX = 'hidden';
+
+  // 2. 递归修复所有溢出元素
+  function fixOverflow(root) {
+    root.querySelectorAll('*').forEach(function(el) {
+      // 跳过 iframe 内部（跨域无法访问）
+      if (el.tagName === 'IFRAME') {
+        // 强制 iframe 本身不超过父容器
+        el.style.maxWidth = '100%';
+        el.style.width = '100%';
+        el.style.display = 'block';
+        return;
+      }
+      // 检查元素是否超出视口
+      var rect = el.getBoundingClientRect();
+      if (rect.width > vw + 2) {
+        el.style.maxWidth = vw + 'px';
+        el.style.width = vw + 'px';
+        el.style.overflowX = 'hidden';
+      }
+      // 也检查 scrollWidth
+      if (el.scrollWidth > vw + 2) {
+        el.style.maxWidth = '100%';
         el.style.overflowX = 'hidden';
       }
     });
   }
-  if(document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', clamp);
-  } else {
-    clamp();
-  }
-  // 延迟再跑一次，处理动态内容
-  setTimeout(clamp, 500);
-  setTimeout(clamp, 2000);
+
+  // 3. 监听 DOM 变化（切换模块时触发）
+  var observer = new MutationObserver(function() {
+    requestAnimationFrame(function() { fixOverflow(document); });
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  // 4. 初始修复
+  fixOverflow(document);
+
+  // 5. 延迟修复（处理 iframe 加载完成后的情况）
+  setTimeout(function() { fixOverflow(document); }, 1000);
+  setTimeout(function() { fixOverflow(document); }, 3000);
+
+  // 6. 窗口大小变化时重新修复
+  window.addEventListener('resize', function() {
+    vw = document.documentElement.clientWidth;
+    document.documentElement.style.maxWidth = vw + 'px';
+    document.body.style.maxWidth = vw + 'px';
+    fixOverflow(document);
+  });
 })();
 </script>
 
