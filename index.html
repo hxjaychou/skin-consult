@@ -31,10 +31,11 @@ nav .links { display: flex; align-items: center; gap: 0; }
 nav .links a { text-decoration: none; color: var(--muted); font-size: 14px; padding: 6px 12px; border-bottom: 2px solid transparent; transition: var(--transition); white-space: nowrap; }
 nav .links a:hover, nav .links a.active { color: var(--primary); border-bottom-color: var(--primary); }
 /* 二级导航行 */
-nav .nav-secondary { display: none; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 12px 6px; gap: 0; border-top: 1px solid rgba(0,0,0,0.04); }
+nav .nav-secondary { display: none; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 8px 12px; gap: 8px; border-top: 1px solid rgba(0,0,0,0.04); }
 nav .nav-secondary::-webkit-scrollbar { display: none; }
-nav .nav-secondary a { white-space: nowrap; flex-shrink: 0; font-size: 13px; padding: 5px 10px; border-bottom: 2px solid transparent; text-decoration: none; color: var(--muted); transition: var(--transition); }
-nav .nav-secondary a:hover, nav .nav-secondary a.active { color: var(--primary); border-bottom-color: var(--primary); }
+nav .nav-secondary a { white-space: nowrap; flex-shrink: 0; font-size: 13px; padding: 6px 14px; border-radius: 20px; text-decoration: none; color: var(--muted); background: rgba(0,0,0,0.04); transition: var(--transition); }
+nav .nav-secondary a:hover { background: rgba(0,0,0,0.08); color: var(--text); }
+nav .nav-secondary a.active { background: var(--primary); color: #fff; }
 
 /* ---- Section ---- */
 section { display: none; min-height: 100vh; padding: 110px 20px 40px; max-width: 720px; margin: 0 auto; }
@@ -158,7 +159,8 @@ textarea { min-height: 90px; resize: vertical; }
   nav .nav-top { padding: 0 14px; height: 44px; }
   nav .brand { font-size: 14px; }
   nav .links a { font-size: 13px; padding: 6px 8px; }
-  nav .nav-secondary a { font-size: 12px; padding: 5px 8px; }
+  nav .nav-secondary { padding: 6px 8px; gap: 6px; }
+  nav .nav-secondary a { font-size: 12px; padding: 5px 12px; }
   section { padding: 110px 12px 24px; }
   section#my { padding: 110px 12px 24px; max-width: 100%; }
   h1 { font-size: 22px; }
@@ -182,7 +184,7 @@ textarea { min-height: 90px; resize: vertical; }
 @media (min-width: 481px) and (max-width: 768px) {
   nav .nav-top { padding: 0 16px; }
   nav .links a { font-size: 13px; }
-  nav .nav-secondary a { font-size: 13px; padding: 5px 10px; }
+  nav .nav-secondary a { font-size: 13px; padding: 6px 14px; }
   section { padding: 110px 18px 36px; }
   section#my { padding: 110px 18px 36px; max-width: 100%; }
   h1 { font-size: 26px; }
@@ -229,6 +231,10 @@ textarea { min-height: 90px; resize: vertical; }
   }
   nav { background: rgba(26,27,30,0.92); border-bottom-color: rgba(255,255,255,0.06); }
   nav .brand { color: #52b788; }
+  nav .nav-secondary { border-top-color: rgba(255,255,255,0.06); }
+  nav .nav-secondary a { background: rgba(255,255,255,0.08); color: #adb5bd; }
+  nav .nav-secondary a:hover { background: rgba(255,255,255,0.12); color: #e9ecef; }
+  nav .nav-secondary a.active { background: #40916c; color: #fff; }
   input, select, textarea { background: #2c2e33; border-color: #373a40; color: #e9ecef; }
   input:focus, select:focus, textarea:focus { border-color: #52b788; box-shadow: 0 0 0 3px rgba(82,183,136,0.15); }
   .modal { background: rgba(0,0,0,0.6); }
