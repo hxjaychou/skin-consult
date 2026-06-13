@@ -6,6 +6,7 @@
 <title>皮肤健康咨询 · 从头发丝到脚底板</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html { overflow-x: hidden; }
 :root {
   --primary: #2d6a4f;
   --primary-light: #40916c;
@@ -38,9 +39,11 @@ nav .nav-secondary a:hover { background: rgba(0,0,0,0.08); color: var(--text); }
 nav .nav-secondary a.active { background: var(--primary); color: #fff; }
 
 /* ---- Section ---- */
-section { display: none; min-height: 100vh; padding-top: 100px; padding-left: 20px; padding-right: 20px; padding-bottom: 40px; max-width: 720px; margin: 0 auto; overflow-x: hidden; }
+section { display: none; min-height: 100vh; padding-top: 100px; padding-left: 20px; padding-right: 20px; padding-bottom: 40px; max-width: 720px; margin: 0 auto; overflow-x: hidden; box-sizing: border-box; }
 section#home { display: flex; flex-direction: column; }
-section#my { max-width: 100%; padding-top: 100px; overflow-x: hidden; }
+section#my { max-width: 100%; padding-top: 100px; overflow-x: hidden; box-sizing: border-box; }
+.my-panel { max-width: 100%; overflow-x: hidden; box-sizing: border-box; }
+.my-panel iframe { max-width: 100%; }
 
 /* ---- Typography ---- */
 h1 { font-size: 32px; font-weight: 800; color: var(--primary); margin-bottom: 12px; letter-spacing: -0.5px; }
