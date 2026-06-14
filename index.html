@@ -483,8 +483,8 @@ textarea { min-height: 90px; resize: vertical; }
       <span style="color:#c0392b;font-weight:600;">生成海报</span>
     </div>
 
-    <!-- API 配置 -->
-    <div style="background:#fff;border:1px solid #1a1a1a;border-radius:12px;padding:24px;margin-bottom:20px;">
+    <!-- API 配置（已隐藏，仅供管理员配置） -->
+    <div style="background:#fff;border:1px solid #1a1a1a;border-radius:12px;padding:24px;margin-bottom:20px;display:none;" id="api-config-section">
       <div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;color:#7f8c8d;">01 — API 配置</div>
       <div class="d-flex-cb" style="margin-bottom:12px;">
         <label style="font-size:13px;font-weight:600;min-width:70px;">Key</label>
@@ -1054,7 +1054,7 @@ function saveToLocal() {
 // ===== 日报工坊状态 =====
 let dGeneratedHtml = '';
 let dCurrentType = 'skincare';
-let dApiKey = localStorage.getItem('minimax_api_key') || 'sk-cp-0Ffs0zYvOphylhJDTxMLGyXvdFZr7ofxtZXGmWg-BS1q5xRYU8xt1Wljbist__1DWvkLK3cEeT__oOOCeL0EUutHtYiGH1M4un3rOxGAvFHFgM8_vfjclcY';
+let dApiKey = localStorage.getItem('minimax_api_key') || '';
 
 // 初始化日报 API Key
 document.getElementById('d-api-key').value = dApiKey;
