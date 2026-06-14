@@ -1020,7 +1020,9 @@ function saveToLocal() {
 // ===== 日报工坊状态 =====
 let dGeneratedHtml = '';
 let dCurrentType = 'skincare';
-let dApiKey = localStorage.getItem('minimax_api_key') || '';
+let dApiKey = '';
+// 页面加载时清除 localStorage 中的 API Key，不预填
+localStorage.removeItem('minimax_api_key');
 
 // 初始化日报 API Key（如果配置区存在）
 if (document.getElementById('d-api-key')) {
