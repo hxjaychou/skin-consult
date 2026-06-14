@@ -1,0 +1,21 @@
+{
+  "name": "skin-consult",
+  "version": "1.0.0",
+  "description": "> 从头发丝到脚底板的皮肤健康咨询平台",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hxjaychou/skin-consult.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hxjaychou/skin-consult/issues"
+  },
+  "homepage": "https://github.com/hxjaychou/skin-consult#readme"
+}

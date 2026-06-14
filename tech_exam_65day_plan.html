@@ -12,7 +12,7 @@
   --accent: #b8860b; --accent-light: #f0e6c8; --done: #4caf50; --today: #ff6b35;
   --phase1: #5b8def; --phase2: #e8a838; --phase3: #e06040; --phase4: #4a9e6f;
 }
-body { font-family: -apple-system, "Microsoft YaHei", "PingFang SC", sans-serif; display: flex; height: 100vh; background: var(--bg); color: var(--text); overflow: hidden; max-width: 100vw; }
+body { font-family: -apple-system, "Microsoft YaHei", "PingFang SC", sans-serif; display: flex; height: 100vh; background: var(--bg); color: var(--text); overflow: hidden; max-width: 100vw; width: 100%; }
 
 /* SIDEBAR */
 #sidebar { width: 280px; min-width: 280px; background: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; overflow: hidden; }
@@ -55,7 +55,7 @@ body { font-family: -apple-system, "Microsoft YaHei", "PingFang SC", sans-serif;
 #main::-webkit-scrollbar { width: 6px; }
 #main::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
 
-.day-detail { max-width: 800px; margin: 0 auto; animation: fadeIn .25s; }
+.day-detail { max-width: 800px; margin: 0 auto; animation: fadeIn .25s; width: 100%; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
 .detail-header { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid var(--border); }
