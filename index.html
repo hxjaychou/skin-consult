@@ -996,10 +996,14 @@ let dGeneratedHtml = '';
 let dCurrentType = 'skincare';
 let dApiKey = localStorage.getItem('minimax_api_key') || '';
 
-// 初始化日报 API Key
-document.getElementById('d-api-key').value = dApiKey;
-document.getElementById('d-api-status').textContent = '已设置 ✓';
-document.getElementById('d-api-status').style.color = '#27ae60';
+// 初始化日报 API Key（如果配置区存在）
+if (document.getElementById('d-api-key')) {
+  document.getElementById('d-api-key').value = dApiKey;
+}
+if (document.getElementById('d-api-status')) {
+  document.getElementById('d-api-status').textContent = '已设置 ✓';
+  document.getElementById('d-api-status').style.color = '#27ae60';
+}
 
 // 保存 API Key
 window.saveDailyApiKey = function() {
