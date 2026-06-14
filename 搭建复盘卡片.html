@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>皮肤健康咨询网站搭建复盘</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif; background: #F0F3F7; color: #E8ECF1; line-height: 1.7; }
+.wrap { max-width: 420px; margin: 0 auto; padding: 0 0 40px; }
+
+/* ---- Hero Zone ---- */
+.hero { background: linear-gradient(135deg, #0D1B2A 0%, #1B2838 100%); padding: 48px 28px 40px; }
+.hero .tag { display: inline-block; font-size: 12px; color: #F77F00; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 16px; }
+.hero h1 { font-size: 36px; font-weight: 800; color: #fff; line-height: 1.3; margin-bottom: 12px; }
+.hero h1 em { color: #F77F00; font-style: normal; }
+.hero .sub { font-size: 15px; color: #8EAAB8; line-height: 1.6; }
+
+/* ---- Stats Row ---- */
+.stats { display: flex; background: #0D1B2A; border-top: 1px solid rgba(255,255,255,0.06); }
+.stat { flex: 1; text-align: center; padding: 16px 8px; border-right: 1px solid rgba(255,255,255,0.06); }
+.stat:last-child { border-right: none; }
+.stat .num { font-size: 28px; font-weight: 800; color: #F77F00; }
+.stat .label { font-size: 11px; color: #8EAAB8; margin-top: 2px; }
+
+/* ---- Section Card ---- */
+.section { margin: 16px; border-radius: 14px; overflow: hidden; }
+.card-dark { background: #0D1B2A; }
+.card-white { background: #fff; color: #1a1a2e; }
+.card-header { padding: 20px 22px 0; }
+.card-header .num { font-size: 11px; color: #F77F00; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+.card-header h2 { font-size: 20px; font-weight: 800; color: #fff; }
+.card-dark .card-header h2 { color: #fff; }
+.card-white .card-header h2 { color: #1a1a2e; }
+.card-body { padding: 16px 22px 22px; }
+.card-white .card-body { color: #333; }
+.card-dark .card-body { color: #c8d6e5; }
+
+/* ---- Highlight Block ---- */
+.hl-block { background: rgba(247,127,0,0.12); border-left: 3px solid #F77F00; padding: 14px 16px; border-radius: 0 8px 8px 0; margin: 12px 0; }
+.hl-block p { color: #F77F00; font-weight: 600; font-size: 15px; }
+
+.danger-block { background: rgba(233,69,96,0.12); border-left: 3px solid #E94560; padding: 14px 16px; border-radius: 0 8px 8px 0; margin: 12px 0; }
+.danger-block .title { color: #E94560; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.danger-block p { color: #c8d6e5; font-size: 13px; }
+
+.success-block { background: rgba(76,175,80,0.12); border-left: 3px solid #4CAF50; padding: 14px 16px; border-radius: 0 8px 8px 0; margin: 12px 0; }
+.success-block .title { color: #4CAF50; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.success-block p { color: #c8d6e5; font-size: 13px; }
+
+.info-block { background: rgba(33,150,243,0.12); border-left: 3px solid #2196F3; padding: 14px 16px; border-radius: 0 8px 8px 0; margin: 12px 0; }
+.info-block .title { color: #2196F3; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.info-block p { color: #c8d6e5; font-size: 13px; }
+
+/* ---- Steps ---- */
+.step { display: flex; gap: 12px; margin-bottom: 16px; align-items: flex-start; }
+.step .icon { width: 36px; height: 36px; background: #F77F00; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; flex-shrink: 0; }
+.step .content { flex: 1; }
+.step .content h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.card-dark .step .content h4 { color: #fff; }
+.card-white .step .content h4 { color: #1a1a2e; }
+.step .content p { font-size: 13px; }
+.card-dark .step .content p { color: #8EAAB8; }
+.card-white .step .content p { color: #666; }
+
+/* ---- Flow Chart ---- */
+.flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 12px 0; }
+.flow .node { background: rgba(247,127,0,0.15); color: #F77F00; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+.flow .arrow { color: #8EAAB8; font-size: 14px; }
+.card-white .flow .node { background: rgba(247,127,0,0.1); }
+
+/* ---- List ---- */
+.point-list { list-style: none; padding: 0; }
+.point-list li { font-size: 14px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; gap: 8px; }
+.card-white .point-list li { border-bottom-color: #f0f0f0; color: #333; }
+.point-list li:last-child { border-bottom: none; }
+.point-list .bullet { color: #F77F00; font-weight: 700; flex-shrink: 0; }
+
+/* ---- Quote Band ---- */
+.quote-band { background: #0D1B2A; padding: 28px 24px; margin: 16px 0; border-radius: 14px; border: 1px solid rgba(255,255,255,0.06); text-align: center; }
+.quote-band .icon { font-size: 24px; margin-bottom: 8px; }
+.quote-band p { font-size: 16px; color: #fff; font-weight: 600; line-height: 1.6; }
+.quote-band .from { font-size: 12px; color: #8EAAB8; margin-top: 8px; }
+
+/* ---- Footer ---- */
+.footer { text-align: center; padding: 30px 20px; }
+.footer .sig { font-size: 13px; color: #8EAAB8; }
+.footer .sig strong { color: #F77F00; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ========== HERO ========== -->
+<div class="hero">
+  <div class="tag">Skin Consult · 搭建复盘</div>
+  <h1>我用<em>一个晚上</em><br>搭了一个<em>皮肤健康</em><br>咨询网站</h1>
+  <p class="sub">零成本 · 零代码基础 · 纯AI辅助<br>从注册账号到网站上线的完整踩坑记录</p>
+</div>
+
+<!-- ========== STATS ========== -->
+<div class="stats">
+  <div class="stat"><div class="num">0</div><div class="label">元成本</div></div>
+  <div class="stat"><div class="num">10</div><div class="label">个坑</div></div>
+  <div class="stat"><div class="num">4</div><div class="label">个平台</div></div>
+  <div class="stat"><div class="num">1</div><div class="label">个晚上</div></div>
+</div>
+
+<!-- ========== ARCHITECTURE ========== -->
+<div class="section">
+  <div class="card-dark">
+    <div class="card-header">
+      <div class="num">01 · ARCHITECTURE</div>
+      <h2>整体架构</h2>
+    </div>
+    <div class="card-body">
+      <div class="flow">
+        <div class="node">前端 HTML</div>
+        <div class="arrow">→</div>
+        <div class="node">Supabase 数据库</div>
+        <div class="arrow">→</div>
+        <div class="node">Cloudflare Pages</div>
+      </div>
+      <ul class="point-list">
+        <li><span class="bullet">•</span> 纯静态前端，一个 HTML 文件搞定全部功能</li>
+        <li><span class="bullet">•</span> Supabase 做云端数据库，免费 500MB</li>
+        <li><span class="bullet">•</span> Cloudflare Pages 做免费托管，全球 CDN</li>
+        <li><span class="bullet">•</span> 三个平台全部免费，总计 ¥0</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ========== STEP 1: Supabase ========== -->
+<div class="section">
+  <div class="card-white">
+    <div class="card-header">
+      <div class="num">02 · DATABASE</div>
+      <h2>创建 Supabase 数据库</h2>
+    </div>
+    <div class="card-body">
+      <div class="step">
+        <div class="icon">1</div>
+        <div class="content">
+          <h4>注册并登录</h4>
+          <p>用 GitHub 账号登录 supabase.com，不要用邮箱注册</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">2</div>
+        <div class="content">
+          <h4>创建新项目</h4>
+          <p>区域选新加坡或东京，不要选美国</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">3</div>
+        <div class="content">
+          <h4>执行建表脚本</h4>
+          <p>在 SQL Editor 中粘贴 setup-supabase.sql 全部内容，点 Run</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">4</div>
+        <div class="content">
+          <h4>获取 API 信息</h4>
+          <p>Settings → API，复制 Project URL 和 anon public Key</p>
+        </div>
+      </div>
+
+      <div class="danger-block">
+        <div class="title">踩坑 #1：注册方式</div>
+        <p>用邮箱注册后，后面 Cloudflare 也要 GitHub 授权，来回切换很麻烦。建议一开始就用 GitHub 账号登录所有服务。</p>
+      </div>
+      <div class="danger-block">
+        <div class="title">踩坑 #2：区域选择</div>
+        <p>选了美国区域，访问速度慢到怀疑人生。改成新加坡区域后速度提升 3 倍。客户在中国，一定选亚洲区域。</p>
+      </div>
+      <div class="danger-block">
+        <div class="title">踩坑 #3：表结构不完整（大坑）</div>
+        <p>SQL 脚本只建了 5 个字段，但网站需要 13 个。提交表单一直报错，以为是权限问题，查了半小时才发现是字段不够。解决：DROP TABLE 重新跑完整脚本。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== STEP 2: Code Config ========== -->
+<div class="section">
+  <div class="card-dark">
+    <div class="card-header">
+      <div class="num">03 · CONFIGURATION</div>
+      <h2>配置网站代码</h2>
+    </div>
+    <div class="card-body">
+      <div class="step">
+        <div class="icon">1</div>
+        <div class="content">
+          <h4>打开 index.html</h4>
+          <p>用文本编辑器（推荐 VS Code）打开</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">2</div>
+        <div class="content">
+          <h4>填入 Supabase 信息</h4>
+          <p>找到 URL 和 KEY 两行，替换为你自己的值</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">3</div>
+        <div class="content">
+          <h4>修改管理密码</h4>
+          <p>找到 DB = '8866'，改成你自己的密码</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">4</div>
+        <div class="content">
+          <h4>本地测试</h4>
+          <p>双击 index.html 在浏览器中打开，测试全部功能</p>
+        </div>
+      </div>
+
+      <div class="danger-block">
+        <div class="title">踩坑 #4：API 信息填反</div>
+        <p>把 URL 填到了 KEY 的位置，提交表单一直报 401。检查方法：搜索 supabase.co 确认 URL，搜索 eycJ 确认 Key。</p>
+      </div>
+      <div class="danger-block">
+        <div class="title">踩坑 #5：数据库未初始化</div>
+        <p>本地测试提交表单没反应，控制台报错找不到 consultations 表。原因是 Supabase 项目还没初始化完成，SQL 脚本没执行。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== STEP 3: GitHub ========== -->
+<div class="section">
+  <div class="card-white">
+    <div class="card-header">
+      <div class="num">04 · GITHUB</div>
+      <h2>上传到 GitHub</h2>
+    </div>
+    <div class="card-body">
+      <div class="step">
+        <div class="icon">1</div>
+        <div class="content">
+          <h4>创建新仓库</h4>
+          <p>Repository name 填 skin-consult，选 Public，不要勾选 Add a README</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">2</div>
+        <div class="content">
+          <h4>上传文件</h4>
+          <p>Add file → Upload files → 拖入 index.html</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">3</div>
+        <div class="content">
+          <h4>提交</h4>
+          <p>确保勾选 Replace all files，然后 Commit changes</p>
+        </div>
+      </div>
+
+      <div class="danger-block">
+        <div class="title">踩坑 #6：文件没替换成功（最崩溃）</div>
+        <p>没看到 Replace all files 选项，以为同名文件会自动替换。结果 GitHub 上还是旧文件，网站打开是旧版本。查了 API、试了 git push，折腾一小时才发现是上传时没正确替换。</p>
+      </div>
+      <div class="success-block">
+        <div class="title">解决方法</div>
+        <p>用 GitHub 编辑器：打开 /edit/main/index.html → 全选删除 → 粘贴新内容 → Commit。这种方式最可靠。</p>
+      </div>
+      <div class="info-block">
+        <div class="title">踩坑 #7：浏览器缓存</div>
+        <p>上传成功后网站还是旧版本？强制刷新：Ctrl+Shift+R（Windows）或 Cmd+Shift+R（Mac）。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== STEP 4: Cloudflare ========== -->
+<div class="section">
+  <div class="card-dark">
+    <div class="card-header">
+      <div class="num">05 · DEPLOYMENT</div>
+      <h2>部署到 Cloudflare Pages</h2>
+    </div>
+    <div class="card-body">
+      <div class="step">
+        <div class="icon">1</div>
+        <div class="content">
+          <h4>登录 Cloudflare</h4>
+          <p>dash.cloudflare.com，可以用 GitHub 账号登录</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">2</div>
+        <div class="content">
+          <h4>创建 Pages 项目</h4>
+          <p>Workers & Pages → Create application → Pages → Connect to Git</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">3</div>
+        <div class="content">
+          <h4>连接 GitHub 仓库</h4>
+          <p>选 GitHub → 授权 → 选 skin-consult → Begin setup</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">4</div>
+        <div class="content">
+          <h4>配置部署</h4>
+          <p>Build settings 全部留空，Build output directory 填 /</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">5</div>
+        <div class="content">
+          <h4>等待部署</h4>
+          <p>1-2 分钟后状态变 Success，得到 xxx.pages.dev 域名</p>
+        </div>
+      </div>
+
+      <div class="danger-block">
+        <div class="title">踩坑 #8：两步验证卡住</div>
+        <p>GitHub 授权时需要两步验证，手机没在身边卡了好久。教训：提前确保手机在身边。</p>
+      </div>
+      <div class="danger-block">
+        <div class="title">踩坑 #9：构建命令填错</div>
+        <p>在 Build command 里填了 npm install，结果部署失败。纯 HTML 网站不需要构建命令，全部留空。</p>
+      </div>
+      <div class="danger-block">
+        <div class="title">踩坑 #10：文件路径错误</div>
+        <p>部署完成后打开是空白页。原因是 index.html 不在仓库根目录。确保文件在根目录。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== QUOTE ========== -->
+<div class="quote-band">
+  <div class="icon">💡</div>
+  <p>缓存是万恶之源<br>很多时候代码没问题<br>是浏览器在骗你</p>
+  <div class="from">—— 搭建过程中最深刻的教训</div>
+</div>
+
+<!-- ========== LESSONS ========== -->
+<div class="section">
+  <div class="card-white">
+    <div class="card-header">
+      <div class="num">06 · LESSONS</div>
+      <h2>六条经验</h2>
+    </div>
+    <div class="card-body">
+      <div class="step">
+        <div class="icon">1</div>
+        <div class="content">
+          <h4>先小后大</h4>
+          <p>先做最小可用版本，测试通过再加功能。我一开始想做全部功能，结果到处出错。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">2</div>
+        <div class="content">
+          <h4>每步验证</h4>
+          <p>建表后测插入，上传后本地测，部署后查基本功能。别等全做完才测试。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">3</div>
+        <div class="content">
+          <h4>善用 F12</h4>
+          <p>Console 看错误，Network 看请求，Elements 看结构。开发者工具是你最好的朋友。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">4</div>
+        <div class="content">
+          <h4>缓存是万恶之源</h4>
+          <p>问题不是代码错，是浏览器在骗你。养成强制刷新的习惯。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">5</div>
+        <div class="content">
+          <h4>版本备份</h4>
+          <p>每次修改前备份当前版本。我好几次改坏了又没备份，只能重头再来。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="icon">6</div>
+        <div class="content">
+          <h4>不要怕问</h4>
+          <p>遇到问题先搜索，搜索不到就问 AI。技术只是工具，你的专业服务才是核心。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== RESULT ========== -->
+<div class="section">
+  <div class="card-dark">
+    <div class="card-header">
+      <div class="num">07 · RESULT</div>
+      <h2>最终成果</h2>
+    </div>
+    <div class="card-body">
+      <ul class="point-list">
+        <li><span class="bullet">✓</span> 在线问诊：客户填表单，数据存云端</li>
+        <li><span class="bullet">✓</span> 产品展示：治疗类 + 护肤类卡片</li>
+        <li><span class="bullet">✓</span> 管理后台：查看记录、更新状态、填写分析</li>
+        <li><span class="bullet">✓</span> 全终端适配：手机、平板、电脑自适应</li>
+        <li><span class="bullet">✓</span> 暗色模式：跟随系统自动切换</li>
+        <li><span class="bullet">✓</span> 部署地址：skin-consult.pages.dev</li>
+      </ul>
+
+      <div class="hl-block">
+        <p>总费用：¥0<br>总耗时：一个晚上<br>代码基础：零</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<div class="footer">
+  <p class="sig">皮肤健康咨询 · 从头发丝到脚底板<br><strong>云猫造梦</strong> × AI 协作搭建</p>
+</div>
+
+</div>
+</body>
+</html>
